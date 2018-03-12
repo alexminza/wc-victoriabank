@@ -1,0 +1,5 @@
+{
+    "require": {
+        "fruitware/victoria-bank-gateway": "^1.0"
+    }
+}

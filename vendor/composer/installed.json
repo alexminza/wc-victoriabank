@@ -1,0 +1,55 @@
+[
+    {
+        "name": "fruitware/victoria-bank-gateway",
+        "version": "1.0.7",
+        "version_normalized": "1.0.7.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Fruitware/VictoriaBankGateway.git",
+            "reference": "0b1d176eb3dda74974deb1a8f7edf9b6eb1fef5c"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Fruitware/VictoriaBankGateway/zipball/0b1d176eb3dda74974deb1a8f7edf9b6eb1fef5c",
+            "reference": "0b1d176eb3dda74974deb1a8f7edf9b6eb1fef5c",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.5"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^5.0",
+            "squizlabs/php_codesniffer": "^2.5"
+        },
+        "suggest": {
+            "monolog/monolog": "^1.0"
+        },
+        "time": "2017-11-23T10:27:17+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Fruitware\\VictoriaBankGateway\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Coroliov Oleg",
+                "email": "ruscon@gmail.com",
+                "homepage": "https://github.com/ruscon"
+            }
+        ],
+        "description": "Victoria bank e-Commerce Gateway merchant interface",
+        "homepage": "https://github.com/Fruitware/VictoriaBankGateway",
+        "keywords": [
+            "Bank",
+            "gateway",
+            "payment",
+            "victoria"
+        ]
+    }
+]
