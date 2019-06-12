@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Victoriabank Payment Gateway
  * Description: WooCommerce Payment Gateway for Victoriabank
  * Plugin URI: https://github.com/alexminza/wc-victoriabank
- * Version: 1.1
+ * Version: 1.1.1
  * Author: Alexander Minza
  * Author URI: https://profiles.wordpress.org/alexminza
  * Developer: Alexander Minza
@@ -13,9 +13,9 @@
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Requires at least: 4.8
- * Tested up to: 5.0.2
+ * Tested up to: 5.2.1
  * WC requires at least: 3.3
- * WC tested up to: 3.5.3
+ * WC tested up to: 3.6.4
  */
 
 //Looking to contribute code to this plugin? Go ahead and fork the repository over at GitHub https://github.com/alexminza/wc-victoriabank
@@ -625,13 +625,6 @@ function woocommerce_victoriabank_init() {
 		}
 		#endregion
 
-		protected function get_vb_client() {
-			if(!isset($this->vb_client))
-				$this->vb_client = $this->init_vb_client();
-
-			return $this->vb_client;
-		}
-
 		protected function init_vb_client() {
 			$victoriaBankGateway = new VictoriaBankGateway();
 
@@ -643,10 +636,10 @@ function woocommerce_victoriabank_init() {
 				->setMerchantName($this->vb_merchant_name)
 				->setMerchantAddress($this->vb_merchant_address)
 				->setTimezone(wc_timezone_string())
-				//->setCountryCode('md') //WC()->countries->get_base_country();
-				//->setDefaultCurrency('MDL') //get_woocommerce_currency();
-				->setDefaultLanguage($this->get_language())
-				->setDebug($this->debug);
+				->setDefaultLanguage($this->get_language());
+				//->setCountryCode(WC()->countries->get_base_country())
+				//->setDefaultCurrency(get_woocommerce_currency())
+				//->setDebug($this->debug)
 
 			//Set security options - provided by the bank
 			$victoriaBankGateway->setSecurityOptions(
@@ -748,7 +741,7 @@ function woocommerce_victoriabank_init() {
 
 			//Funds locked on bank side - transfer the product/service to the customer and request completion
 			try {
-				$victoriaBankGateway = $this->get_vb_client();
+				$victoriaBankGateway = $this->init_vb_client();
 				$completion_result = $victoriaBankGateway->requestCompletion(
 					$order_id,
 					$order_total,
@@ -758,7 +751,8 @@ function woocommerce_victoriabank_init() {
 				);
 
 				$this->log(self::print_var($completion_result));
-				return self::process_response_form($completion_result);
+				//return self::process_response_form($completion_result);
+				return $completion_result;
 			} catch(Exception $ex) {
 				$this->log($ex, WC_Log_Levels::ERROR);
 
@@ -782,7 +776,7 @@ function woocommerce_victoriabank_init() {
 			$order_currency = $order->get_currency();
 
 			try {
-				$victoriaBankGateway = $this->get_vb_client();
+				$victoriaBankGateway = $this->init_vb_client();
 				$reversal_result = $victoriaBankGateway->requestReversal($order_id, $amount, $rrn, $intRef, $order_currency);
 
 				$this->log(self::print_var($reversal_result));
@@ -895,7 +889,7 @@ function woocommerce_victoriabank_init() {
 			$this->log(sprintf('%1$s: %2$s', __FUNCTION__, self::print_var($vbdata)));
 
 			try {
-				$victoriaBankGateway = $this->get_vb_client();
+				$victoriaBankGateway = $this->init_vb_client();
 				$bankResponse = $victoriaBankGateway->getResponseObject($vbdata);
 				$check_result = $bankResponse->isValid();
 			} catch(Exception $ex) {
@@ -1012,6 +1006,8 @@ function woocommerce_victoriabank_init() {
 		}
 
 		protected function process_response_form($vbresponse) {
+			$this->log(sprintf('%1$s: %2$s', __FUNCTION__, self::print_var($vbresponse)));
+
 			if(empty($vbresponse))
 				return false;
 
@@ -1069,7 +1065,7 @@ function woocommerce_victoriabank_init() {
 			$backRefUrl = add_query_arg(self::VB_ORDER_ID, urlencode($order_id), $this->get_redirect_url());
 
 			//Request payment authorization - redirects to the banks page
-			$victoriaBankGateway = $this->get_vb_client();
+			$victoriaBankGateway = $this->init_vb_client();
 			$victoriaBankGateway->requestAuthorization(
 				$order_id,
 				$order_total,
