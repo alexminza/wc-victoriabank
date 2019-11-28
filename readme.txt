@@ -3,7 +3,7 @@ Contributors: alexminza
 Donate link: https://www.paypal.me/AlexMinza
 Tags: WooCommerce, Moldova, Victoriabank, VB, payment, gateway
 Requires at least: 4.8
-Tested up to: 5.2.1
+Tested up to: 5.3
 Stable tag: trunk
 Requires PHP: 7.0
 License: GPLv3 or later
@@ -29,17 +29,18 @@ WooCommerce Payment Gateway for Victoriabank
 
 == Installation ==
 
-1. Generate the private and public keys according to the instructions from *Appendix A*, section *"2. Key Generation and transmission"* of the *"e-Commerce Gateway merchant interface (CGI/WWW forms version)"* document received from the bank
+1. Generate the public / private key pair according to the instructions from *Appendix A*, section *"2. Key Generation and transmission"* of the *"e-Commerce Gateway merchant interface (CGI/WWW forms version)"* document received from the bank
 2. Configure the plugin Connection Settings by performing one of the following steps:
     * **BASIC**: Upload the generated PEM key files and the bank public key
     * **ADVANCED**: Copy the PEM key files to the server, securely set up the owner and file system permissions, configure the paths to the files
 3. Set the private key password (or leave the field empty if the private key is not encrypted)
-3. Provide the *Callback URL* to the bank to enable online payment notifications
-4. Perform all the tests described in *Appendix B*, section *"Test Cases"* of the document received from the bank:
+4. Provide the *Callback URL* to the bank to enable online payment notifications
+5. Enable *Test* and *Debug* modes in the plugin settings
+6. Perform all the tests described in *Appendix B*, section *"Test Cases"* of the document received from the bank:
     * **Test case No 1**: Set *Transaction type* to *Charge*, create a new order and pay with a test card
     * **Test case No 2**: Set *Transaction type* to *Authorization*, create a new order and pay with a test card, afterwards perform a full order refund
     * **Test case No 3**: Set *Transaction type* to *Charge*, create a new order and pay with a test card, afterwards perform a full order refund
-6. Disable *Debug mode* when ready to accept live payments
+7. Disable *Test* and *Debug* modes when ready to accept live payments
 
 == Frequently Asked Questions ==
 
@@ -77,6 +78,9 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 
 == Changelog ==
 
+= 1.2 =
+Added Test mode option - use Victoriabank test payment gateway during development and integration tests
+
 = 1.1.1 =
 Minor improvements
 
@@ -96,6 +100,10 @@ Minor improvements
 Initial release
 
 == Upgrade Notice ==
+
+= 1.2 =
+Added Test mode option.
+See Changelog for details.
 
 = 1.1 =
 Simplified payment gateway setup.

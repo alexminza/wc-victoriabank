@@ -1,20 +1,21 @@
 [
     {
         "name": "fruitware/victoria-bank-gateway",
-        "version": "1.0.7",
-        "version_normalized": "1.0.7.0",
+        "version": "1.1.0",
+        "version_normalized": "1.1.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Fruitware/VictoriaBankGateway.git",
-            "reference": "0b1d176eb3dda74974deb1a8f7edf9b6eb1fef5c"
+            "reference": "afef4aac14f8f3d9f8d2fe3d0152af080588a598"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Fruitware/VictoriaBankGateway/zipball/0b1d176eb3dda74974deb1a8f7edf9b6eb1fef5c",
-            "reference": "0b1d176eb3dda74974deb1a8f7edf9b6eb1fef5c",
+            "url": "https://api.github.com/repos/Fruitware/VictoriaBankGateway/zipball/afef4aac14f8f3d9f8d2fe3d0152af080588a598",
+            "reference": "afef4aac14f8f3d9f8d2fe3d0152af080588a598",
             "shasum": ""
         },
         "require": {
+            "ext-openssl": "*",
             "php": ">=5.5"
         },
         "require-dev": {
@@ -24,7 +25,7 @@
         "suggest": {
             "monolog/monolog": "^1.0"
         },
-        "time": "2017-11-23T10:27:17+00:00",
+        "time": "2019-11-26T04:10:48+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -40,7 +41,14 @@
             {
                 "name": "Coroliov Oleg",
                 "email": "ruscon@gmail.com",
-                "homepage": "https://github.com/ruscon"
+                "homepage": "https://github.com/ruscon",
+                "role": "Developer"
+            },
+            {
+                "name": "Serge Beresnev",
+                "email": "serge@fruitware.ru",
+                "homepage": "https://github.com/keriat",
+                "role": "Developer"
             }
         ],
         "description": "Victoria bank e-Commerce Gateway merchant interface",
