@@ -1,10 +1,17 @@
-<?php
+<?php /** @noinspection ALL */
 
 namespace Fruitware\VictoriaBankGateway;
 
+use DateTime;
+use DateTimeZone;
 use Fruitware\VictoriaBankGateway\VictoriaBank;
 use Fruitware\VictoriaBankGateway\VictoriaBank\ResponseInterface;
 
+/**
+ * Class VictoriaBankGateway
+ *
+ * @package Fruitware\VictoriaBankGateway
+ */
 class VictoriaBankGateway
 {
     const TRX_TYPE_AUTHORIZATION = 0;
@@ -15,6 +22,16 @@ class VictoriaBankGateway
      * @var bool
      */
     private $debug = false;
+
+    /**
+     * @var bool
+     */
+    private $sslVerify = true;
+
+    /**
+     * @var string
+     */
+    private $gatewayUrl = 'https://egateway.victoriabank.md/cgi-bin/cgi_link';
 
     /**
      * @var string
@@ -86,6 +103,7 @@ class VictoriaBankGateway
      * @param string $certDir
      *
      * @return $this
+     * @throws \Fruitware\VictoriaBankGateway\VictoriaBank\Exception
      */
     public function configureFromEnv($certDir)
     {
@@ -100,8 +118,7 @@ class VictoriaBankGateway
             ->setTimezone(getenv('VICTORIA_BANK_MERCHANT_TIMEZONE_NAME'))
             ->setCountryCode(getenv('VICTORIA_BANK_MERCHANT_COUNTRY_CODE'))
             ->setDefaultCurrency(getenv('VICTORIA_BANK_MERCHANT_DEFAULT_CURRENCY'))
-            ->setDefaultLanguage(getenv('VICTORIA_BANK_MERCHANT_DEFAULT_LANGUAGE'))
-        ;
+            ->setDefaultLanguage(getenv('VICTORIA_BANK_MERCHANT_DEFAULT_LANGUAGE'));
         //Set security options - provided by the bank
         $signatureFirst    = getenv('VICTORIA_BANK_SECURITY_SIGNATURE_FIRST');
         $signaturePrefix   = getenv('VICTORIA_BANK_SECURITY_SIGNATURE_PREFIX');
@@ -120,7 +137,7 @@ class VictoriaBankGateway
      */
     protected function getMerchantTimeZone()
     {
-        return new \DateTimeZone($this->timezoneName);
+        return new DateTimeZone($this->timezoneName);
     }
 
     /**
@@ -129,11 +146,12 @@ class VictoriaBankGateway
      * server must not exceed 1 hour, otherwise e-Gateway will reject this transaction
      *
      * @return string
+     * @throws \Exception
      */
     protected function getTransactionTimestamp()
     {
-        $date = new \DateTime('now', $this->getMerchantTimeZone());
-        $date->setTimezone(new \DateTimeZone('GMT'));
+        $date = new DateTime('now', $this->getMerchantTimeZone());
+        $date->setTimezone(new DateTimeZone('GMT'));
 
         return $date->format('YmdHis');
     }
@@ -144,11 +162,12 @@ class VictoriaBankGateway
      * in a time zone other than the gateway server's time zone.
      *
      * @return string
+     * @throws \Exception
      */
     protected function getMerchantGmtTimezoneOffset()
     {
         $dateTimeZone   = $this->getMerchantTimeZone();
-        $timezoneOffset = (float)$dateTimeZone->getOffset(new \DateTime()) / 3600;
+        $timezoneOffset = (float)$dateTimeZone->getOffset(new DateTime()) / 3600;
         if ($timezoneOffset > 0) {
             $timezoneOffset = '+'.$timezoneOffset;
         }
@@ -166,6 +185,34 @@ class VictoriaBankGateway
     public function setDebug($debug)
     {
         $this->debug = (boolean)$debug;
+
+        return $this;
+    }
+
+    /**
+     * SSL verify mode setter
+     *
+     * @param boolean $sslVerify
+     *
+     * @return $this
+     */
+    public function setSslVerify($sslVerify)
+    {
+        $this->sslVerify = (boolean)$sslVerify;
+
+        return $this;
+    }
+
+    /**
+     * Set Gateway URL
+     *
+     * @param string $gatewayUrl
+     *
+     * @return $this
+     */
+    public function setGatewayUrl($gatewayUrl)
+    {
+        $this->gatewayUrl = $gatewayUrl;
 
         return $this;
     }
@@ -328,6 +375,17 @@ class VictoriaBankGateway
         return $this;
     }
 
+    /**
+     * @param        $signatureFirst
+     * @param        $signaturePrefix
+     * @param        $signaturePadding
+     * @param        $publicKeyPath
+     * @param        $privateKeyPath
+     * @param        $bankPublicKeyPath
+     * @param string $privateKeyPass
+     *
+     * @return $this
+     */
     public function setSecurityOptions($signatureFirst, $signaturePrefix, $signaturePadding, $publicKeyPath, $privateKeyPath, $bankPublicKeyPath, $privateKeyPass='')
     {
         #Request security options
@@ -360,25 +418,26 @@ class VictoriaBankGateway
     public function requestAuthorization($orderId, $amount, $backRefUrl, $currency = null, $description = null, $clientEmail = null, $language = null)
     {
         try {
+            /** @noinspection PhpUnhandledExceptionInspection */
             $request = new VictoriaBank\Authorization\AuthorizationRequest(
                 [
-                    VictoriaBank\Authorization\AuthorizationRequest::TERMINAL => $this->terminal,
-                    VictoriaBank\Authorization\AuthorizationRequest::ORDER => $this->normalizeOrderId($orderId),
-                    VictoriaBank\Authorization\AuthorizationRequest::AMOUNT => $this->normalizeAmount($amount),
-                    VictoriaBank\Authorization\AuthorizationRequest::CURRENCY => $currency ? $currency : $this->defaultCurrency,
-                    VictoriaBank\Authorization\AuthorizationRequest::TIMESTAMP => $this->getTransactionTimestamp(),
-                    VictoriaBank\Authorization\AuthorizationRequest::NONCE => $this->generateNonce(),
-                    VictoriaBank\Authorization\AuthorizationRequest::DESC => $description ? $description : "Order {$orderId} payment",
-                    VictoriaBank\Authorization\AuthorizationRequest::EMAIL => (string)$clientEmail,
-                    VictoriaBank\Authorization\AuthorizationRequest::COUNTRY => $this->countryCode,
-                    VictoriaBank\Authorization\AuthorizationRequest::BACKREF => $backRefUrl,
-                    VictoriaBank\Authorization\AuthorizationRequest::MERCH_GMT => $this->getMerchantGmtTimezoneOffset(),
-                    VictoriaBank\Authorization\AuthorizationRequest::LANG => $language ? $language : $this->defaultLanguage,
-                    VictoriaBank\Authorization\AuthorizationRequest::MERCHANT => $this->merchant,
-                    VictoriaBank\Authorization\AuthorizationRequest::MERCH_NAME => $this->merchantName,
-                    VictoriaBank\Authorization\AuthorizationRequest::MERCH_URL => $this->merchantUrl,
+                    VictoriaBank\Authorization\AuthorizationRequest::TERMINAL      => $this->terminal,
+                    VictoriaBank\Authorization\AuthorizationRequest::ORDER         => static::normalizeOrderId($orderId),
+                    VictoriaBank\Authorization\AuthorizationRequest::AMOUNT        => static::normalizeAmount($amount),
+                    VictoriaBank\Authorization\AuthorizationRequest::CURRENCY      => $currency ? $currency : $this->defaultCurrency,
+                    VictoriaBank\Authorization\AuthorizationRequest::TIMESTAMP     => $this->getTransactionTimestamp(),
+                    VictoriaBank\Authorization\AuthorizationRequest::NONCE         => $this->generateNonce(),
+                    VictoriaBank\Authorization\AuthorizationRequest::DESC          => $description ? $description : "Order {$orderId} payment",
+                    VictoriaBank\Authorization\AuthorizationRequest::EMAIL         => (string)$clientEmail,
+                    VictoriaBank\Authorization\AuthorizationRequest::COUNTRY       => $this->countryCode,
+                    VictoriaBank\Authorization\AuthorizationRequest::BACKREF       => $backRefUrl,
+                    VictoriaBank\Authorization\AuthorizationRequest::MERCH_GMT     => $this->getMerchantGmtTimezoneOffset(),
+                    VictoriaBank\Authorization\AuthorizationRequest::LANG          => $language ? $language : $this->defaultLanguage,
+                    VictoriaBank\Authorization\AuthorizationRequest::MERCHANT      => $this->merchant,
+                    VictoriaBank\Authorization\AuthorizationRequest::MERCH_NAME    => $this->merchantName,
+                    VictoriaBank\Authorization\AuthorizationRequest::MERCH_URL     => $this->merchantUrl,
                     VictoriaBank\Authorization\AuthorizationRequest::MERCH_ADDRESS => $this->merchantAddress,
-                ], $this->debug
+                ], $this->gatewayUrl, $this->debug, $this->sslVerify
             );
             $request->request();
         } catch (VictoriaBank\Exception $e) {
@@ -407,15 +466,15 @@ class VictoriaBankGateway
         try {
             $request = new VictoriaBank\Completion\CompletionRequest(
                 [
-                    VictoriaBank\Completion\CompletionRequest::TERMINAL => $this->terminal,
-                    VictoriaBank\Completion\CompletionRequest::ORDER => $this->normalizeOrderId($orderId),
-                    VictoriaBank\Completion\CompletionRequest::AMOUNT => $this->normalizeAmount($amount),
-                    VictoriaBank\Completion\CompletionRequest::CURRENCY => $currency ? $currency : $this->defaultCurrency,
+                    VictoriaBank\Completion\CompletionRequest::TERMINAL  => $this->terminal,
+                    VictoriaBank\Completion\CompletionRequest::ORDER     => static::normalizeOrderId($orderId),
+                    VictoriaBank\Completion\CompletionRequest::AMOUNT    => static::normalizeAmount($amount),
+                    VictoriaBank\Completion\CompletionRequest::CURRENCY  => $currency ? $currency : $this->defaultCurrency,
                     VictoriaBank\Completion\CompletionRequest::TIMESTAMP => $this->getTransactionTimestamp(),
-                    VictoriaBank\Completion\CompletionRequest::NONCE => $this->generateNonce(),
-                    VictoriaBank\Completion\CompletionRequest::RRN => $rrn,
-                    VictoriaBank\Completion\CompletionRequest::INT_REF => $intRef,
-                ], $this->debug
+                    VictoriaBank\Completion\CompletionRequest::NONCE     => $this->generateNonce(),
+                    VictoriaBank\Completion\CompletionRequest::RRN       => $rrn,
+                    VictoriaBank\Completion\CompletionRequest::INT_REF   => $intRef,
+                ], $this->gatewayUrl, $this->debug, $this->sslVerify
             );
 
             return $request->request();
@@ -445,15 +504,15 @@ class VictoriaBankGateway
         try {
             $request = new VictoriaBank\Reversal\ReversalRequest(
                 [
-                    VictoriaBank\Reversal\ReversalRequest::TERMINAL => $this->terminal,
-                    VictoriaBank\Reversal\ReversalRequest::ORDER => $this->normalizeOrderId($orderId),
-                    VictoriaBank\Reversal\ReversalRequest::AMOUNT => $this->normalizeAmount($amount),
-                    VictoriaBank\Reversal\ReversalRequest::CURRENCY => $currency ? $currency : $this->defaultCurrency,
+                    VictoriaBank\Reversal\ReversalRequest::TERMINAL  => $this->terminal,
+                    VictoriaBank\Reversal\ReversalRequest::ORDER     => static::normalizeOrderId($orderId),
+                    VictoriaBank\Reversal\ReversalRequest::AMOUNT    => static::normalizeAmount($amount),
+                    VictoriaBank\Reversal\ReversalRequest::CURRENCY  => $currency ? $currency : $this->defaultCurrency,
                     VictoriaBank\Reversal\ReversalRequest::TIMESTAMP => $this->getTransactionTimestamp(),
-                    VictoriaBank\Reversal\ReversalRequest::NONCE => $this->generateNonce(),
-                    VictoriaBank\Reversal\ReversalRequest::RRN => $rrn,
-                    VictoriaBank\Reversal\ReversalRequest::INT_REF => $intRef,
-                ], $this->debug
+                    VictoriaBank\Reversal\ReversalRequest::NONCE     => $this->generateNonce(),
+                    VictoriaBank\Reversal\ReversalRequest::RRN       => $rrn,
+                    VictoriaBank\Reversal\ReversalRequest::INT_REF   => $intRef,
+                ], $this->gatewayUrl, $this->debug, $this->sslVerify
             );
 
             return $request->request();
@@ -462,7 +521,7 @@ class VictoriaBankGateway
                 throw $e;
             } else {
                 throw new VictoriaBank\Exception(
-                    'Completion request to the payment gateway failed. Please contact '.$this->merchantUrl.' for further details.'.$e->getMessage()
+                    'Reversal request to the payment gateway failed. Please contact '.$this->merchantUrl.' for further details.'.$e->getMessage()
                 );
             }
         }
