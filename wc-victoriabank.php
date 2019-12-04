@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Victoriabank Payment Gateway
  * Description: WooCommerce Payment Gateway for Victoriabank
  * Plugin URI: https://github.com/alexminza/wc-victoriabank
- * Version: 1.1.1
+ * Version: 1.2
  * Author: Alexander Minza
  * Author URI: https://profiles.wordpress.org/alexminza
  * Developer: Alexander Minza
@@ -13,9 +13,9 @@
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Requires at least: 4.8
- * Tested up to: 5.2.1
+ * Tested up to: 5.3
  * WC requires at least: 3.3
- * WC tested up to: 3.6.4
+ * WC tested up to: 3.8.1
  */
 
 //Looking to contribute code to this plugin? Go ahead and fork the repository over at GitHub https://github.com/alexminza/wc-victoriabank
@@ -69,9 +69,9 @@ function woocommerce_victoriabank_init() {
 		const VB_APPROVAL = self::MOD_PREFIX . 'APPROVAL';
 		const VB_CARD     = self::MOD_PREFIX . 'CARD';
 
-		//e-Gateway_Merchant_CGI_2.1.pdf
 		//e-Commerce Gateway merchant interface (CGI/WWW forms version)
 		//Appendix A: P_SIGN creation/verification in the Merchant System
+		//https://github.com/Fruitware/VictoriaBankGateway/blob/master/doc/e-Gateway_Merchant_CGI_2.1.pdf
 		const VB_SIGNATURE_FIRST   = '0001';
 		const VB_SIGNATURE_PREFIX  = '3020300C06082A864886F70D020505000410';
 		const VB_SIGNATURE_PADDING = '00';
@@ -103,6 +103,7 @@ function woocommerce_victoriabank_init() {
 			$plugin_icon             = ($this->logo_type === self::LOGO_TYPE_BANK ? $this->bank_logo : $this->systems_logo);
 			$this->icon              = apply_filters('woocommerce_victoriabank_icon', $plugin_icon);
 
+			$this->testmode          = 'yes' === $this->get_option('testmode', 'no');
 			$this->debug             = 'yes' === $this->get_option('debug', 'no');
 
 			$this->log_context       = array('source' => $this->id);
@@ -111,9 +112,7 @@ function woocommerce_victoriabank_init() {
 
 			$this->transaction_type     = $this->get_option('transaction_type', self::TRANSACTION_TYPE_CHARGE);
 			$this->transaction_auto     = false; //'yes' === $this->get_option('transaction_auto', 'no');
-
 			$this->order_template       = $this->get_option('order_template', self::ORDER_TEMPLATE);
-			//$this->email_payment_data   = 'yes' === $this->get_option('email_payment_data', 'yes');
 
 			$this->vb_merchant_id       = $this->get_option('vb_merchant_id');
 			$this->vb_merchant_terminal = $this->get_option('vb_merchant_terminal');
@@ -189,6 +188,13 @@ function woocommerce_victoriabank_init() {
 					)
 				),
 
+				'testmode'        => array(
+					'title'       => __('Test mode', self::MOD_TEXT_DOMAIN),
+					'type'        => 'checkbox',
+					'label'       => __('Enabled', self::MOD_TEXT_DOMAIN),
+					'desc_tip'    => __('Use Test or Live bank gateway to process the payments. Disable when ready to accept live payments.', self::MOD_TEXT_DOMAIN),
+					'default'     => 'no'
+				),
 				'debug'           => array(
 					'title'       => __('Debug mode', self::MOD_TEXT_DOMAIN),
 					'type'        => 'checkbox',
@@ -223,14 +229,6 @@ function woocommerce_victoriabank_init() {
 					'desc_tip'    => __('Order description that the customer will see on the bank payment page.', self::MOD_TEXT_DOMAIN),
 					'default'     => self::ORDER_TEMPLATE
 				),
-				/*'email_payment_data' => array(
-					'title'       => __('Email payment details', self::MOD_TEXT_DOMAIN),
-					'type'        => 'checkbox',
-					'label'       => __('Include payment transaction details in the order confirmation email', self::MOD_TEXT_DOMAIN),
-					'default'     => 'yes',
-					'desc_tip'    => __('Victoriabank requires including this data in the order confirmation emails: Retrieval Reference Number (RRN), Authorization code, Card number (masked).', self::MOD_TEXT_DOMAIN),
-					'disabled'    => true
-				),*/
 
 				'merchant_settings' => array(
 					'title'       => __('Merchant Data', self::MOD_TEXT_DOMAIN),
@@ -628,8 +626,13 @@ function woocommerce_victoriabank_init() {
 		protected function init_vb_client() {
 			$victoriaBankGateway = new VictoriaBankGateway();
 
+			$gatewayUrl = ($this->testmode ? 'https://ecomt.victoriabank.md/cgi-bin/cgi_link' : 'https://egateway.victoriabank.md/cgi-bin/cgi_link');
+			$sslVerify  = !$this->testmode;
+
 			//Set basic info
 			$victoriaBankGateway
+				->setGatewayUrl($gatewayUrl)
+				->setSslVerify($sslVerify)
 				->setMerchantId($this->vb_merchant_id)
 				->setMerchantTerminal($this->vb_merchant_terminal)
 				->setMerchantUrl($this->vb_merchant_url)
@@ -742,21 +745,14 @@ function woocommerce_victoriabank_init() {
 			//Funds locked on bank side - transfer the product/service to the customer and request completion
 			try {
 				$victoriaBankGateway = $this->init_vb_client();
-				$completion_result = $victoriaBankGateway->requestCompletion(
-					$order_id,
-					$order_total,
-					$rrn,
-					$intRef,
-					$order_currency
-				);
+				$completion_result = $victoriaBankGateway->requestCompletion($order_id, $order_total, $rrn, $intRef, $order_currency);
 
-				$this->log(self::print_var($completion_result));
-				//return self::process_response_form($completion_result);
-				return $completion_result;
+				return self::validate_response_form($completion_result);
 			} catch(Exception $ex) {
 				$this->log($ex, WC_Log_Levels::ERROR);
 
 				$message = sprintf(__('Payment completion failed via %1$s: %2$s', self::MOD_TEXT_DOMAIN), $this->method_title, $ex->getMessage());
+				$message = $this->get_order_message($message);
 				$order->add_order_note($message);
 			}
 
@@ -766,25 +762,33 @@ function woocommerce_victoriabank_init() {
 		public function refund_transaction($order_id, $order, $amount = null) {
 			$this->log(sprintf('%1$s: OrderID=%2$s Amount=%3$s', __FUNCTION__, $order_id, $amount));
 
-			if(!isset($amount)) {
-				//Refund entirely if no amount is specified
-				$amount = $order->get_total();
-			}
-
 			$rrn = get_post_meta($order_id, strtolower(self::VB_RRN), true);
 			$intRef = get_post_meta($order_id, strtolower(self::VB_INT_REF), true);
+			$order_total = $order->get_total();
 			$order_currency = $order->get_currency();
+
+			if(!isset($amount)) {
+				//Refund entirely if no amount is specified
+				$amount = $order_total;
+			}
+
+			if($amount <= 0 || $amount > $order_total) {
+				$message = sprintf(__('Invalid refund amount', self::MOD_TEXT_DOMAIN));
+				$this->log($message, WC_Log_Levels::ERROR);
+
+				return new WP_Error('error', $message);
+			}
 
 			try {
 				$victoriaBankGateway = $this->init_vb_client();
 				$reversal_result = $victoriaBankGateway->requestReversal($order_id, $amount, $rrn, $intRef, $order_currency);
 
-				$this->log(self::print_var($reversal_result));
-				return self::process_response_form($reversal_result);
+				return self::validate_response_form($reversal_result);
 			} catch(Exception $ex) {
 				$this->log($ex, WC_Log_Levels::ERROR);
 
 				$message = sprintf(__('Refund of %1$s %2$s via %3$s failed: %4$s', self::MOD_TEXT_DOMAIN), $amount, $order_currency, $this->method_title, $ex->getMessage());
+				$message = $this->get_order_message($message);
 				$order->add_order_note($message);
 
 				return new WP_Error('error', $message);
@@ -940,14 +944,18 @@ function woocommerce_victoriabank_init() {
 			if($check_result && $this->check_transaction($order, $bankResponse)) {
 				switch($bankResponse::TRX_TYPE) {
 					case VictoriaBankGateway::TRX_TYPE_AUTHORIZATION:
+						if($order->is_paid())
+							return true; //Duplicate callback notification from the bank
+
 						#region Update order payment metadata
-						add_post_meta($order_id, self::MOD_TRANSACTION_TYPE, $this->transaction_type);
+						self::set_post_meta($order_id, self::MOD_TRANSACTION_TYPE, $this->transaction_type);
 
 						foreach($bankParams as $key => $value)
-							add_post_meta($order_id, strtolower(self::MOD_PREFIX . $key), $value);
+							self::set_post_meta($order_id, strtolower(self::MOD_PREFIX . $key), $value);
 						#endregion
 
 						$message = sprintf(__('Payment authorized via %1$s: %2$s', self::MOD_TEXT_DOMAIN), $this->method_title, http_build_query($bankParams));
+						$message = $this->get_order_message($message);
 						$this->log($message, WC_Log_Levels::INFO);
 						$order->add_order_note($message);
 
@@ -972,8 +980,10 @@ function woocommerce_victoriabank_init() {
 					case VictoriaBankGateway::TRX_TYPE_COMPLETION:
 						//Funds successfully transferred on bank side
 						$message = sprintf(__('Payment completed via %1$s: %2$s', self::MOD_TEXT_DOMAIN), $this->method_title, http_build_query($bankParams));
+						$message = $this->get_order_message($message);
 						$this->log($message, WC_Log_Levels::INFO);
 						$order->add_order_note($message);
+
 						$this->mark_order_paid($order, $intRef);
 
 						return true;
@@ -982,6 +992,7 @@ function woocommerce_victoriabank_init() {
 					case VictoriaBankGateway::TRX_TYPE_REVERSAL:
 						//Reversal successfully applied on bank side
 						$message = sprintf(__('Refund of %1$s %2$s via %3$s approved: %4$s', self::MOD_TEXT_DOMAIN), $amount, $currency, $this->method_title, http_build_query($bankParams));
+						$message = $this->get_order_message($message);
 						$this->log($message, WC_Log_Levels::INFO);
 						$order->add_order_note($message);
 
@@ -1001,15 +1012,38 @@ function woocommerce_victoriabank_init() {
 			$this->log(self::print_var($bankResponse), WC_Log_Levels::ERROR);
 
 			$message = sprintf(__('%1$s payment transaction check failed: %2$s', self::MOD_TEXT_DOMAIN), $this->method_title, join('; ', $bankResponse->getErrors()) . ' ' . http_build_query($bankParams));
+			$message = $this->get_order_message($message);
 			$order->add_order_note($message);
 			return false;
 		}
 
-		protected function process_response_form($vbresponse) {
+		protected function get_order_message($message) {
+			if($this->testmode)
+				$message = 'TEST: ' . $message;
+
+			return $message;
+		}
+
+		protected function validate_response_form($vbresponse) {
 			$this->log(sprintf('%1$s: %2$s', __FUNCTION__, self::print_var($vbresponse)));
 
-			if(empty($vbresponse))
+			if($vbresponse === false) {
+				$error = error_get_last();
+				if($error) {
+					$message = $error['message'];
+
+					$this->log($message, WC_Log_Levels::ERROR);
+					$this->log(self::print_var($error));
+				}
+
 				return false;
+			}
+
+			return true;
+		}
+
+		protected function process_response_form($vbresponse) {
+			$this->log(sprintf('%1$s: %2$s', __FUNCTION__, self::print_var($vbresponse)));
 
 			$vbform = self::parse_response_form($vbresponse);
 			if(empty($vbform))
@@ -1045,13 +1079,14 @@ function woocommerce_victoriabank_init() {
 		}
 
 		protected function mark_order_refunded($order) {
-			$order_note = sprintf(__('Order fully refunded via %1$s.', self::MOD_TEXT_DOMAIN), $this->method_title);
+			$message = sprintf(__('Order fully refunded via %1$s.', self::MOD_TEXT_DOMAIN), $this->method_title);
+			$message = $this->get_order_message($message);
 
 			//Mark order as refunded if not already set
 			if(!$order->has_status('refunded'))
-				$order->update_status('refunded', $order_note);
+				$order->update_status('refunded', $message);
 			else
-				$order->add_order_note($order_note);
+				$order->add_order_note($message);
 		}
 
 		protected function generate_form($order) {
@@ -1192,9 +1227,16 @@ function woocommerce_victoriabank_init() {
 			);
 		}
 
-		//https://woocommerce.wordpress.com/2017/01/26/improved-logging-in-woocommerce-2-7/
-		//https://stackoverflow.com/questions/1423157/print-php-call-stack
+		static function set_post_meta($post_id, $meta_key, $meta_value) {
+			//https://developer.wordpress.org/reference/functions/add_post_meta/#comment-465
+			if(!add_post_meta($post_id, $meta_key, $meta_value, true)) {
+				update_post_meta($post_id, $meta_key, $meta_value);
+			 }
+		}
+
 		protected function log($message, $level = WC_Log_Levels::DEBUG) {
+			//https://woocommerce.wordpress.com/2017/01/26/improved-logging-in-woocommerce-2-7/
+			//https://stackoverflow.com/questions/1423157/print-php-call-stack
 			$this->logger->log($level, $message, $this->log_context);
 		}
 
@@ -1252,11 +1294,6 @@ function woocommerce_victoriabank_init() {
 				return $fields;
 			}
 
-			/*$plugin = new self();
-			if(!$plugin->email_payment_data) {
-				return $fields;
-			}*/
-
 			$fields[self::VB_RRN] = array(
 				'label' => __('Retrieval Reference Number (RRN)'),
 				'value' => $order->get_meta(strtolower(self::VB_RRN), true),
@@ -1293,8 +1330,8 @@ function woocommerce_victoriabank_init() {
 			return WC()->countries->get_formatted_address($address, ', ');
 		}
 
-		//https://docs.woocommerce.com/document/query-whether-woocommerce-is-activated/
 		public static function is_wc_active() {
+			//https://docs.woocommerce.com/document/query-whether-woocommerce-is-activated/
 			return class_exists('WooCommerce');
 		}
 	}

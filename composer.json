@@ -1,8 +1,8 @@
 {
     "name": "alexminza/wc-victoriabank",
-    "description": "WooCommerce VictoriaBank Payment Gateway",
+    "description": "WooCommerce Victoriabank Payment Gateway",
     "type": "wordpress-plugin",
-    "keywords": ["WooCommerce", "Moldova", "VictoriaBank", "payment", "gateway"],
+    "keywords": ["WooCommerce", "Moldova", "Victoriabank", "VB", "payment", "gateway"],
     "homepage": "https://github.com/alexminza/wc-victoriabank",
     "license": "GPL-3.0-or-later",
     "authors": [
@@ -19,7 +19,6 @@
     },
     "require": {
         "php": ">=7.0",
-        "composer/installers": "~1.2",
-        "fruitware/victoria-bank-gateway": "^1.0"
+        "fruitware/victoria-bank-gateway": "^1.1.0"
     }
 }
