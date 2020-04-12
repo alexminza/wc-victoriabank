@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the WooCommerce VictoriaBank Payment Gateway package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce VictoriaBank Payment Gateway 1.2.1\n"
+"Project-Id-Version: WooCommerce VictoriaBank Payment Gateway 1.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-victoriabank\n"
-"POT-Creation-Date: 2020-03-25 12:24+0200\n"
-"PO-Revision-Date: 2020-03-25 12:24+0200\n"
+"POT-Creation-Date: 2020-04-12 12:10+0300\n"
+"PO-Revision-Date: 2020-04-12 12:18+0300\n"
 "Last-Translator: Alexander Minza <alex@alexminza.com>\n"
 "Language-Team: \n"
 "Language: ro\n"
@@ -22,7 +22,7 @@ msgstr "Activare/dezactivare"
 
 #: wc-victoriabank.php:164
 msgid "Enable this gateway"
-msgstr "Activează acest gateway de plata"
+msgstr "Activează acest gateway de plată"
 
 #: wc-victoriabank.php:168
 msgid "Title"

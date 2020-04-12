@@ -3,7 +3,7 @@ Contributors: alexminza
 Donate link: https://www.paypal.me/AlexMinza
 Tags: WooCommerce, Moldova, Victoriabank, VB, payment, gateway
 Requires at least: 4.8
-Tested up to: 5.3.2
+Tested up to: 5.4
 Stable tag: trunk
 Requires PHP: 7.0
 License: GPLv3 or later
@@ -54,7 +54,7 @@ The merchant data and connection settings are provided by Victoriabank. This dat
 
 = What store settings are supported? =
 
-Victoriabank currently supports transactions in MDL (Moldovan Leu).
+Victoriabank currently supports transactions in MDL (Moldovan Leu), EUR (Euro) and USD (United States Dollar).
 
 = What is the difference between transaction types? =
 
@@ -77,6 +77,9 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 6. Order actions
 
 == Changelog ==
+
+= 1.2.2 =
+Added support for EUR and USD currencies
 
 = 1.2.1 =
 Updated WC tested up to 4.0.1
@@ -104,8 +107,8 @@ Initial release
 
 == Upgrade Notice ==
 
-= 1.2.1 =
-Updated WC tested up to 4.0.1
+= 1.2.2 =
+Added support for EUR and USD currencies
 
 = 1.2 =
 Added Test mode option.
