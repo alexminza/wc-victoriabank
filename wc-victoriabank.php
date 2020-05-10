@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Victoriabank Payment Gateway
  * Description: WooCommerce Payment Gateway for Victoriabank
  * Plugin URI: https://github.com/alexminza/wc-victoriabank
- * Version: 1.2.2
+ * Version: 1.2.3
  * Author: Alexander Minza
  * Author URI: https://profiles.wordpress.org/alexminza
  * Developer: Alexander Minza
@@ -13,9 +13,9 @@
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Requires at least: 4.8
- * Tested up to: 5.4
+ * Tested up to: 5.4.1
  * WC requires at least: 3.3
- * WC tested up to: 4.0.1
+ * WC tested up to: 4.1.0
  */
 
 //Looking to contribute code to this plugin? Go ahead and fork the repository over at GitHub https://github.com/alexminza/wc-victoriabank
@@ -626,7 +626,7 @@ function woocommerce_victoriabank_init() {
 		protected function init_vb_client() {
 			$victoriaBankGateway = new VictoriaBankGateway();
 
-			$gatewayUrl = ($this->testmode ? 'https://ecomt.victoriabank.md/cgi-bin/cgi_link' : 'https://egateway.victoriabank.md/cgi-bin/cgi_link');
+			$gatewayUrl = ($this->testmode ? 'https://ecomt.victoriabank.md/cgi-bin/cgi_link' : 'https://egateway.victoriabank.md/cgi-bin/cgi_link'); #ALT TEST vb19.victoriabank.md
 			$sslVerify  = !$this->testmode;
 
 			//Set basic info
