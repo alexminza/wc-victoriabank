@@ -3,7 +3,7 @@ Contributors: alexminza
 Donate link: https://www.paypal.me/AlexMinza
 Tags: WooCommerce, Moldova, Victoriabank, VB, payment, gateway
 Requires at least: 4.8
-Tested up to: 5.4
+Tested up to: 5.4.1
 Stable tag: trunk
 Requires PHP: 7.0
 License: GPLv3 or later
@@ -78,6 +78,9 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 
 == Changelog ==
 
+= 1.2.3 =
+Updated WC tested up to 4.1.0
+
 = 1.2.2 =
 Added support for EUR and USD currencies
 
@@ -106,6 +109,9 @@ Minor improvements
 Initial release
 
 == Upgrade Notice ==
+
+= 1.2.3 =
+Updated WC tested up to 4.1.0
 
 = 1.2.2 =
 Added support for EUR and USD currencies
