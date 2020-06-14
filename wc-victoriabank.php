@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Victoriabank Payment Gateway
  * Description: WooCommerce Payment Gateway for Victoriabank
  * Plugin URI: https://github.com/alexminza/wc-victoriabank
- * Version: 1.2.3
+ * Version: 1.3
  * Author: Alexander Minza
  * Author URI: https://profiles.wordpress.org/alexminza
  * Developer: Alexander Minza
@@ -13,9 +13,9 @@
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Requires at least: 4.8
- * Tested up to: 5.4.1
+ * Tested up to: 5.4.2
  * WC requires at least: 3.3
- * WC tested up to: 4.1.0
+ * WC tested up to: 4.2.0
  */
 
 //Looking to contribute code to this plugin? Go ahead and fork the repository over at GitHub https://github.com/alexminza/wc-victoriabank
@@ -354,7 +354,16 @@ function woocommerce_victoriabank_init() {
 					//'disabled'    => true
 					'custom_attributes' => array(
 						'readonly' => 'readonly'
-					)
+					),
+					'description' => sprintf('<a href="#" id="woocommerce_victoriabank_payment_notification_advanced" class="button">%1$s</a>',
+						__('Advanced&raquo;', self::MOD_TEXT_DOMAIN)),
+				),
+				'vb_callback_data'  => array(
+					'title'       => __('Process callback data', self::MOD_TEXT_DOMAIN),
+					'description' => '<a href="#" id="woocommerce_victoriabank_callback_data_process" class="button">Process</a>',
+					'type'        => 'textarea',
+					'desc_tip'    => __('Manually process bank transaction response callback data received by email as part of the backup procedure.', self::MOD_TEXT_DOMAIN),
+					'placeholder' => __('Bank transaction response callback data', self::MOD_TEXT_DOMAIN),
 				)
 			);
 		}
@@ -387,26 +396,69 @@ function woocommerce_victoriabank_init() {
 
 			wc_enqueue_js('
 				jQuery(function() {
-					var basic_fields_ids    = "#woocommerce_victoriabank_vb_public_key_pem, #woocommerce_victoriabank_vb_bank_public_key_pem, #woocommerce_victoriabank_vb_private_key_pem";
-					var advanced_fields_ids = "#woocommerce_victoriabank_vb_public_key, #woocommerce_victoriabank_vb_bank_public_key, #woocommerce_victoriabank_vb_private_key, #woocommerce_victoriabank_vb_private_key_pass";
+					var vb_connection_basic_fields_ids      = "#woocommerce_victoriabank_vb_public_key_pem, #woocommerce_victoriabank_vb_bank_public_key_pem, #woocommerce_victoriabank_vb_private_key_pem, #woocommerce_victoriabank_vb_private_key_pass";
+					var vb_connection_advanced_fields_ids   = "#woocommerce_victoriabank_vb_public_key, #woocommerce_victoriabank_vb_bank_public_key, #woocommerce_victoriabank_vb_private_key, #woocommerce_victoriabank_vb_private_key_pass";
+					var vb_notification_advanced_fields_ids = "#woocommerce_victoriabank_vb_callback_data";
 
-					var basic_fields    = jQuery(basic_fields_ids).closest("tr");
-					var advanced_fields = jQuery(advanced_fields_ids).closest("tr");
+					var vb_connection_basic_fields      = jQuery(vb_connection_basic_fields_ids).closest("tr");
+					var vb_connection_advanced_fields   = jQuery(vb_connection_advanced_fields_ids).closest("tr");
+					var vb_notification_advanced_fields = jQuery(vb_notification_advanced_fields_ids).closest("tr");
 
 					jQuery(document).ready(function() {
-						basic_fields.hide();
-						advanced_fields.hide();
+						vb_connection_basic_fields.hide();
+						vb_connection_advanced_fields.hide();
+						vb_notification_advanced_fields.hide();
 					});
 
 					jQuery("#woocommerce_victoriabank_basic_settings").on("click", function() {
-						advanced_fields.hide();
-						basic_fields.show();
+						vb_connection_advanced_fields.hide();
+						vb_connection_basic_fields.show();
 						return false;
 					});
 
 					jQuery("#woocommerce_victoriabank_advanced_settings").on("click", function() {
-						basic_fields.hide();
-						advanced_fields.show();
+						vb_connection_basic_fields.hide();
+						vb_connection_advanced_fields.show();
+						return false;
+					});
+
+					jQuery("#woocommerce_victoriabank_payment_notification_advanced").on("click", function() {
+						vb_notification_advanced_fields.show();
+						return false;
+					});
+
+					jQuery("#woocommerce_victoriabank_callback_data_process").on("click", function() {
+						if(!confirm("' . esc_js(__('Are you sure you want to process the entered bank transaction response callback data?', self::MOD_TEXT_DOMAIN)) . '"))
+							return false;
+
+						var $this = jQuery(this);
+
+						if($this.attr("disabled"))
+							return false;
+
+						$this.attr("disabled", true);
+						var callback_data = jQuery("#woocommerce_victoriabank_vb_callback_data").val();
+
+						jQuery.ajax({
+							type: "POST",
+							data: {
+								_ajax_nonce: "' . wp_create_nonce('callback_data_process') . '",
+								action: "victoriabank_callback_data_process",
+								callback_data: callback_data
+							},
+							dataType: "json",
+							url: ajaxurl,
+							complete: function(response, textStatus) {
+								$this.attr("disabled", false);
+
+								if(response.responseJSON && response.responseJSON.data) {
+									alert(response.responseJSON.data);
+								} else {
+									alert(response.responseText);
+								}
+							}
+						});
+
 						return false;
 					});
 				});
@@ -416,6 +468,8 @@ function woocommerce_victoriabank_init() {
 		}
 
 		public function process_admin_options() {
+			unset($_POST['woocommerce_victoriabank_vb_callback_data']);
+
 			$this->process_pem_setting('woocommerce_victoriabank_vb_public_key_pem', $this->vb_public_key_pem, 'woocommerce_victoriabank_vb_public_key', 'pubkey.pem');
 			$this->process_pem_setting('woocommerce_victoriabank_vb_bank_public_key_pem', $this->vb_bank_public_key_pem, 'woocommerce_victoriabank_vb_bank_public_key', 'victoria_pub.pem');
 			$this->process_pem_setting('woocommerce_victoriabank_vb_private_key_pem', $this->vb_private_key_pem, 'woocommerce_victoriabank_vb_private_key', 'key.pem');
@@ -465,11 +519,16 @@ function woocommerce_victoriabank_init() {
 				$validate_result = false;
 			}
 
+			if(ini_get('allow_url_fopen') != 1) {
+				$this->add_error(sprintf('<strong>PHP %1$s</strong>: %2$s', 'allow_url_fopen', __('Current server settings do not allow web requests to the bank payment gateway. See <a href="https://www.php.net/manual/en/filesystem.configuration.php#ini.allow-url-fopen" target="_blank">PHP Runtime Configuration</a> for details.', self::MOD_TEXT_DOMAIN)));
+				$validate_result = false;
+			}
+
 			return $validate_result;
 		}
 
 		protected function settings_admin_notice() {
-			if(current_user_can('manage_woocommerce')) {
+			if(self::is_wc_admin()) {
 				$message = sprintf(__('Please review the <a href="%1$s">payment method settings</a> page for log details and setup instructions.', self::MOD_TEXT_DOMAIN), self::get_settings_url());
 				wc_add_notice($message, 'error');
 			}
@@ -743,20 +802,24 @@ function woocommerce_victoriabank_init() {
 			$order_currency = $order->get_currency();
 
 			//Funds locked on bank side - transfer the product/service to the customer and request completion
+			$validate_result = false;
 			try {
 				$victoriaBankGateway = $this->init_vb_client();
 				$completion_result = $victoriaBankGateway->requestCompletion($order_id, $order_total, $rrn, $intRef, $order_currency);
-
-				return self::validate_response_form($completion_result);
+				$validate_result = self::validate_response_form($completion_result);
 			} catch(Exception $ex) {
 				$this->log($ex, WC_Log_Levels::ERROR);
-
-				$message = sprintf(__('Payment completion failed via %1$s: %2$s', self::MOD_TEXT_DOMAIN), $this->method_title, $ex->getMessage());
-				$message = $this->get_order_message($message);
-				$order->add_order_note($message);
 			}
 
-			return false;
+			if(!$validate_result) {
+				$message = sprintf(__('Payment completion via %1$s failed', self::MOD_TEXT_DOMAIN), $this->method_title);
+				$message = $this->get_order_message($message);
+				$order->add_order_note($message);
+
+				return new WP_Error('error', $message);
+			}
+
+			return $validate_result;
 		}
 
 		public function refund_transaction($order_id, $order, $amount = null) {
@@ -779,22 +842,24 @@ function woocommerce_victoriabank_init() {
 				return new WP_Error('error', $message);
 			}
 
+			$validate_result = false;
 			try {
 				$victoriaBankGateway = $this->init_vb_client();
 				$reversal_result = $victoriaBankGateway->requestReversal($order_id, $amount, $rrn, $intRef, $order_currency);
-
-				return self::validate_response_form($reversal_result);
+				$validate_result = self::validate_response_form($reversal_result);
 			} catch(Exception $ex) {
 				$this->log($ex, WC_Log_Levels::ERROR);
+			}
 
-				$message = sprintf(__('Refund of %1$s %2$s via %3$s failed: %4$s', self::MOD_TEXT_DOMAIN), $amount, $order_currency, $this->method_title, $ex->getMessage());
+			if(!$validate_result) {
+				$message = sprintf(__('Refund of %1$s %2$s via %3$s failed', self::MOD_TEXT_DOMAIN), $amount, $order_currency, $this->method_title);
 				$message = $this->get_order_message($message);
 				$order->add_order_note($message);
 
 				return new WP_Error('error', $message);
 			}
 
-			return false;
+			return $validate_result;
 		}
 
 		protected function check_transaction(WC_Order $order, $bankResponse) {
@@ -820,7 +885,7 @@ function woocommerce_victoriabank_init() {
 		}
 
 		public function check_redirect() {
-			$this->log(sprintf('%1$s: %2$s %3$s %4$s', __FUNCTION__, $this->get_client_ip(), $_SERVER['REQUEST_METHOD'], self::print_var($_REQUEST)));
+			$this->log_request(__FUNCTION__);
 
 			//Received payment data from VB here instead of CallbackURL?
 			if($_SERVER['REQUEST_METHOD'] === 'POST')
@@ -875,7 +940,7 @@ function woocommerce_victoriabank_init() {
 		}
 
 		public function check_response() {
-			$this->log(sprintf('%1$s: %2$s %3$s %4$s', __FUNCTION__, $this->get_client_ip(), $_SERVER['REQUEST_METHOD'], self::print_var($_REQUEST)));
+			$this->log_request(__FUNCTION__);
 
 			if($_SERVER['REQUEST_METHOD'] === 'GET') {
 				$message = __('This Callback URL works and should not be called directly.', self::MOD_TEXT_DOMAIN);
@@ -1017,6 +1082,60 @@ function woocommerce_victoriabank_init() {
 			return false;
 		}
 
+		public function callback_data_process() {
+			self::static_log_request(__FUNCTION__);
+
+			//https://codex.wordpress.org/AJAX_in_Plugins
+			//https://developer.wordpress.org/plugins/javascript/ajax/
+
+			//https://developer.wordpress.org/reference/functions/check_ajax_referer/
+			check_ajax_referer('callback_data_process');
+
+			if(!self::is_wc_admin()) {
+				//https://developer.wordpress.org/reference/functions/wp_die/
+				$message = get_status_header_desc(WP_Http::FORBIDDEN);
+				self::static_log($message, WC_Log_Levels::ERROR);
+				wp_die($message, WP_Http::FORBIDDEN);
+				return;
+			}
+
+			$callback_data = $_POST['callback_data'];
+			if(!self::string_empty($callback_data)) {
+				$vbdata = self::parse_response_post($callback_data);
+
+				if(!empty($vbdata)) {
+					$plugin = new self();
+					if($plugin->is_available() && $plugin->enabled) {
+						$response = $plugin->process_response_data($vbdata);
+
+						if($response) {
+							$message = sprintf(__('Processed successfully', self::MOD_TEXT_DOMAIN), self::MOD_TITLE);
+							self::static_log($message, WC_Log_Levels::INFO);
+							wp_send_json_success($response);
+						} else {
+							$message = sprintf(__('Processing error', self::MOD_TEXT_DOMAIN), self::MOD_TITLE);
+							self::static_log($message, WC_Log_Levels::ERROR);
+							wp_send_json_error($message);
+						}
+					} else {
+						$message = sprintf(__('%1$s is not configured', self::MOD_TEXT_DOMAIN), self::MOD_TITLE);
+						self::static_log($message, WC_Log_Levels::ERROR);
+						wp_send_json_error($message);
+					}
+				} else {
+					$message = sprintf(__('Invalid message', self::MOD_TEXT_DOMAIN), self::MOD_TITLE);
+					self::static_log($message, WC_Log_Levels::ERROR);
+					wp_send_json_error($message);
+				}
+			} else {
+				$message = sprintf(__('Empty message', self::MOD_TEXT_DOMAIN), self::MOD_TITLE);
+				self::static_log($message, WC_Log_Levels::ERROR);
+				wp_send_json_error($message);
+			}
+
+			wp_die();
+		}
+
 		protected function get_order_message($message) {
 			if($this->testmode)
 				$message = 'TEST: ' . $message;
@@ -1053,11 +1172,11 @@ function woocommerce_victoriabank_init() {
 		}
 
 		protected function parse_response_form($vbformhtml) {
-			return self::parse_response_regex($vbformhtml, '/<input.*name="(\w+)".*value="(.*)"/i');
+			return self::parse_response_regex($vbformhtml, '/<input.+name="(\w+)".+value="(.*)"/i');
 		}
 
-		static function parse_respons_post($vbpost) {
-			return self::parse_response_regex($vbpost, '/(\w+)=(.*)/i');
+		static function parse_response_post($vbpost) {
+			return self::parse_response_regex($vbpost, '/^(\w+)=(.*)$/im');
 		}
 
 		static function parse_response_regex($vbresponse, $regex) {
@@ -1181,9 +1300,7 @@ function woocommerce_victoriabank_init() {
 			return substr($lang, 0, 2);
 		}
 
-		protected function get_client_ip() {
-			//return $_SERVER['REMOTE_ADDR'];
-
+		static function get_client_ip() {
 			return WC_Geolocation::get_ip_address();
 		}
 
@@ -1238,6 +1355,20 @@ function woocommerce_victoriabank_init() {
 			//https://woocommerce.wordpress.com/2017/01/26/improved-logging-in-woocommerce-2-7/
 			//https://stackoverflow.com/questions/1423157/print-php-call-stack
 			$this->logger->log($level, $message, $this->log_context);
+		}
+
+		static function static_log($message, $level = WC_Log_Levels::DEBUG) {
+			$logger = wc_get_logger();
+			$log_context = array('source' => self::MOD_ID);
+			$logger->log($level, $message, $log_context);
+		}
+
+		protected function log_request($source) {
+			$this->log(sprintf('%1$s: %2$s %3$s %4$s', $source, self::get_client_ip(), $_SERVER['REQUEST_METHOD'], self::print_var($_REQUEST)));
+		}
+
+		static function static_log_request($source) {
+			self::static_log(sprintf('%1$s: %2$s %3$s %4$s', $source, self::get_client_ip(), $_SERVER['REQUEST_METHOD'], self::print_var($_REQUEST)));
 		}
 
 		static function print_var($var) {
@@ -1334,6 +1465,11 @@ function woocommerce_victoriabank_init() {
 			//https://docs.woocommerce.com/document/query-whether-woocommerce-is-activated/
 			return class_exists('WooCommerce');
 		}
+
+		public static function is_wc_admin() {
+			//https://developer.wordpress.org/reference/functions/current_user_can/
+			return current_user_can('manage_woocommerce');
+		}
 	}
 
 	//Check if WooCommerce is active
@@ -1351,6 +1487,8 @@ function woocommerce_victoriabank_init() {
 		add_filter('woocommerce_order_actions', array(WC_VictoriaBank::class, 'order_actions'));
 		add_action('woocommerce_order_action_victoriabank_complete_transaction', array(WC_VictoriaBank::class, 'action_complete_transaction'));
 		//add_action('woocommerce_order_action_victoriabank_reverse_transaction', array(WC_VictoriaBank::class, 'action_reverse_transaction'));
+
+		add_action('wp_ajax_victoriabank_callback_data_process', array(WC_VictoriaBank::class, 'callback_data_process'));
 	}
 	#endregion
 
