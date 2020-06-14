@@ -1,9 +1,9 @@
 === WooCommerce Victoriabank Payment Gateway ===
 Contributors: alexminza
 Donate link: https://www.paypal.me/AlexMinza
-Tags: WooCommerce, Moldova, Victoriabank, VB, payment, gateway
+Tags: WooCommerce, Moldova, Victoriabank, VB, bank, payment, gateway, visa, mastercard, credit card
 Requires at least: 4.8
-Tested up to: 5.4.1
+Tested up to: 5.4.2
 Stable tag: trunk
 Requires PHP: 7.0
 License: GPLv3 or later
@@ -13,14 +13,15 @@ WooCommerce Payment Gateway for Victoriabank
 
 == Description ==
 
-WooCommerce Payment Gateway for Victoriabank
+Accept Visa and Mastercard directly on your store with the Victoriabank payment gateway for WooCommerce.
 
 = Features =
 
 * Charge and Authorization card transaction types
-* Reverse transactions - partial or complete refunds
-* Admin order actions - complete authorized transaction
+* Reverse transactions – partial or complete refunds
+* Admin order actions – complete authorized transaction
 * Order confirmation email with card transaction details
+* Free to use – [Open-source GPL-3.0 license on GitHub](https://github.com/alexminza/wc-victoriabank)
 
 = Getting Started =
 
@@ -33,7 +34,7 @@ WooCommerce Payment Gateway for Victoriabank
 2. Configure the plugin Connection Settings by performing one of the following steps:
     * **BASIC**: Upload the generated PEM key files and the bank public key
     * **ADVANCED**: Copy the PEM key files to the server, securely set up the owner and file system permissions, configure the paths to the files
-3. Set the private key password (or leave the field empty if the private key is not encrypted)
+3. Set the private key password
 4. Provide the *Callback URL* to the bank to enable online payment notifications
 5. Enable *Test* and *Debug* modes in the plugin settings
 6. Perform all the tests described in *Appendix B*, section *"Test Cases"* of the document received from the bank:
@@ -50,7 +51,7 @@ Use the *WooCommerce > Settings > Payments > Victoriabank* screen to configure t
 
 = Where can I get the Merchant Data and Connection Settings? =
 
-The merchant data and connection settings are provided by Victoriabank. This data is used by the plugin to connect to the Victoriabank payment gateway and process the card transactions. Please see [www.victoriabank.md](https://www.victoriabank.md) and contact [Card.Acceptare@vb.md](mailto:Card.Acceptare@vb.md) for details.
+The merchant data and connection settings are provided by Victoriabank. This data is used by the plugin to connect to the Victoriabank payment gateway and process the card transactions. Please see [https://www.victoriabank.md/en/details-corporate-banking-cards-ecommerce](https://www.victoriabank.md/en/details-corporate-banking-cards-ecommerce) and contact [Card.Acceptare@vb.md](mailto:Card.Acceptare@vb.md) for details.
 
 = What store settings are supported? =
 
@@ -60,6 +61,12 @@ Victoriabank currently supports transactions in MDL (Moldovan Leu), EUR (Euro) a
 
 * **Charge** submits all transactions for settlement.
 * **Authorization** simply authorizes the order total for capture later. Use the *Complete transaction* order action to settle the previously authorized transaction.
+
+= How can I manually process a bank transaction response callback data message received by email from the bank? =
+
+As part of the backup procedure Victoriabank payment gateway sends a duplicate copy of the transaction responses to a specially designated merchant email address specified during initial setup.
+If the automated response payment notification callback failed the shop administrator can manually process the transaction response message received from the bank.
+Go to the payment gateway settings screen *Payment Notification* section and click *Advanced*, paste the bank transaction response data as received in the email and click *Process*.
 
 = How can I contribute to the plugin? =
 
@@ -78,6 +85,9 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 
 == Changelog ==
 
+= 1.3 =
+Added manual processing of bank transaction response callback data
+
 = 1.2.3 =
 Updated WC tested up to 4.1.0
 
@@ -88,7 +98,7 @@ Added support for EUR and USD currencies
 Updated WC tested up to 4.0.1
 
 = 1.2 =
-Added Test mode option - use Victoriabank test payment gateway during development and integration tests
+Added Test mode option – use Victoriabank test payment gateway during development and integration tests
 
 = 1.1.1 =
 Minor improvements
@@ -110,16 +120,5 @@ Initial release
 
 == Upgrade Notice ==
 
-= 1.2.3 =
-Updated WC tested up to 4.1.0
-
-= 1.2.2 =
-Added support for EUR and USD currencies
-
-= 1.2 =
-Added Test mode option.
-See Changelog for details.
-
-= 1.1 =
-Simplified payment gateway setup.
-See Changelog for details.
+= 1.3 =
+Added manual processing of bank transaction response callback data
