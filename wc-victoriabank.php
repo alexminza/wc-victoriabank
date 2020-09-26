@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Victoriabank Payment Gateway
  * Description: WooCommerce Payment Gateway for Victoriabank
  * Plugin URI: https://github.com/alexminza/wc-victoriabank
- * Version: 1.3
+ * Version: 1.3.1
  * Author: Alexander Minza
  * Author URI: https://profiles.wordpress.org/alexminza
  * Developer: Alexander Minza
@@ -13,9 +13,9 @@
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Requires at least: 4.8
- * Tested up to: 5.4.2
+ * Tested up to: 5.5.1
  * WC requires at least: 3.3
- * WC tested up to: 4.2.0
+ * WC tested up to: 4.5.2
  */
 
 //Looking to contribute code to this plugin? Go ahead and fork the repository over at GitHub https://github.com/alexminza/wc-victoriabank
