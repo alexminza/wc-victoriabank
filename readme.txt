@@ -3,7 +3,7 @@ Contributors: alexminza
 Donate link: https://www.paypal.me/AlexMinza
 Tags: WooCommerce, Moldova, Victoriabank, VB, bank, payment, gateway, visa, mastercard, credit card
 Requires at least: 4.8
-Tested up to: 5.5.1
+Tested up to: 5.6
 Stable tag: trunk
 Requires PHP: 7.0
 License: GPLv3 or later
@@ -85,20 +85,16 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 
 == Changelog ==
 
-= 1.3.1 =
-Updated WC tested up to 4.5.2
+See [wc-victoriabank project releases on GitHub](https://github.com/alexminza/wc-victoriabank/releases) for details.
+
+= 1.3.2 =
+Updated Tested up to 5.6 and WC tested up to 4.8.0
 
 = 1.3 =
 Added manual processing of bank transaction response callback data
 
-= 1.2.3 =
-Updated WC tested up to 4.1.0
-
 = 1.2.2 =
 Added support for EUR and USD currencies
-
-= 1.2.1 =
-Updated WC tested up to 4.0.1
 
 = 1.2 =
 Added Test mode option – use Victoriabank test payment gateway during development and integration tests
@@ -123,8 +119,8 @@ Initial release
 
 == Upgrade Notice ==
 
-= 1.3.1 =
-Updated WC tested up to 4.5.2
+= 1.3.2 =
+Updated Tested up to 5.6 and WC tested up to 4.8.0
 
 = 1.3 =
 Added manual processing of bank transaction response callback data
