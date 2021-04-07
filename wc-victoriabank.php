@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Victoriabank Payment Gateway
  * Description: Accept Visa and Mastercard directly on your store with the Victoriabank payment gateway for WooCommerce.
  * Plugin URI: https://github.com/alexminza/wc-victoriabank
- * Version: 1.3.2
+ * Version: 1.3.3
  * Author: Alexander Minza
  * Author URI: https://profiles.wordpress.org/alexminza
  * Developer: Alexander Minza
@@ -13,9 +13,9 @@
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Requires at least: 4.8
- * Tested up to: 5.6
+ * Tested up to: 5.7
  * WC requires at least: 3.3
- * WC tested up to: 4.8.0
+ * WC tested up to: 5.1.0
  */
 
 //Looking to contribute code to this plugin? Go ahead and fork the repository over at GitHub https://github.com/alexminza/wc-victoriabank
@@ -350,8 +350,7 @@ function woocommerce_victoriabank_init() {
 				'vb_callback_url'  => array(
 					'title'       => __('Callback URL', self::MOD_TEXT_DOMAIN),
 					'type'        => 'text',
-					//'default'     => $this->get_callback_url(),
-					//'disabled'    => true
+					'desc_tip'    => sprintf(__('Bank payment gateway URL: %1$s', self::MOD_TEXT_DOMAIN), esc_url($this->get_vb_gateway_url())),
 					'custom_attributes' => array(
 						'readonly' => 'readonly'
 					),
@@ -685,12 +684,11 @@ function woocommerce_victoriabank_init() {
 		protected function init_vb_client() {
 			$victoriaBankGateway = new VictoriaBankGateway();
 
-			$gatewayUrl = ($this->testmode ? 'https://ecomt.victoriabank.md/cgi-bin/cgi_link' : 'https://egateway.victoriabank.md/cgi-bin/cgi_link'); #ALT TEST vb19.victoriabank.md
 			$sslVerify  = !$this->testmode;
 
 			//Set basic info
 			$victoriaBankGateway
-				->setGatewayUrl($gatewayUrl)
+				->setGatewayUrl($this->get_vb_gateway_url())
 				->setSslVerify($sslVerify)
 				->setMerchantId($this->vb_merchant_id)
 				->setMerchantTerminal($this->vb_merchant_terminal)
@@ -714,6 +712,11 @@ function woocommerce_victoriabank_init() {
 				$this->vb_private_key_pass);
 
 			return $victoriaBankGateway;
+		}
+
+		protected function get_vb_gateway_url() {
+			$gateway_url = ($this->testmode ? 'https://ecomt.victoriabank.md/cgi-bin/cgi_link' : 'https://vb059.vb.md/cgi-bin/cgi_link');
+			return $gateway_url;
 		}
 
 		public function process_payment($order_id) {
@@ -1111,7 +1114,7 @@ function woocommerce_victoriabank_init() {
 						if($response) {
 							$message = sprintf(__('Processed successfully', self::MOD_TEXT_DOMAIN), self::MOD_TITLE);
 							self::static_log($message, WC_Log_Levels::INFO);
-							wp_send_json_success($response);
+							wp_send_json_success($message);
 						} else {
 							$message = sprintf(__('Processing error', self::MOD_TEXT_DOMAIN), self::MOD_TITLE);
 							self::static_log($message, WC_Log_Levels::ERROR);
