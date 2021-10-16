@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bd79105ba1d9a394a5e8b0a0de9c1b9b",
+    "content-hash": "eead9c2020fbe584193767f0e04ce138",
     "packages": [
         {
             "name": "fruitware/victoria-bank-gateway",
-            "version": "1.1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Fruitware/VictoriaBankGateway.git",
-                "reference": "afef4aac14f8f3d9f8d2fe3d0152af080588a598"
+                "reference": "a0f061e39d69a501841fc68e90004c5d71c1985a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Fruitware/VictoriaBankGateway/zipball/afef4aac14f8f3d9f8d2fe3d0152af080588a598",
-                "reference": "afef4aac14f8f3d9f8d2fe3d0152af080588a598",
+                "url": "https://api.github.com/repos/Fruitware/VictoriaBankGateway/zipball/a0f061e39d69a501841fc68e90004c5d71c1985a",
+                "reference": "a0f061e39d69a501841fc68e90004c5d71c1985a",
                 "shasum": ""
             },
             "require": {
@@ -31,6 +31,7 @@
             "suggest": {
                 "monolog/monolog": "^1.0"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -63,17 +64,30 @@
                 "payment",
                 "victoria"
             ],
-            "time": "2019-11-26T04:10:48+00:00"
+            "support": {
+                "issues": "https://github.com/Fruitware/VictoriaBankGateway/issues",
+                "source": "https://github.com/Fruitware/VictoriaBankGateway/tree/master"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/fruitware",
+                    "type": "custom"
+                }
+            ],
+            "time": "2021-06-03T00:50:34+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "fruitware/victoria-bank-gateway": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": ">=7.0"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.1.0"
 }
