@@ -3,7 +3,7 @@ Contributors: alexminza
 Donate link: https://www.paypal.me/AlexMinza
 Tags: WooCommerce, Moldova, Victoriabank, VB, bank, payment, gateway, visa, mastercard, credit card
 Requires at least: 4.8
-Tested up to: 5.7
+Tested up to: 5.8.1
 Stable tag: trunk
 Requires PHP: 7.0
 License: GPLv3 or later
@@ -62,6 +62,12 @@ Victoriabank currently supports transactions in MDL (Moldovan Leu), EUR (Euro) a
 * **Charge** submits all transactions for settlement.
 * **Authorization** simply authorizes the order total for capture later. Use the *Complete transaction* order action to settle the previously authorized transaction.
 
+= Why the last four digits of the card number are not received from the bank? =
+
+Make sure Victoriabank has properly set up the *Callback URL* in the payment gateway terminal settings. See [Installation Instructions](./installation/) for more details.
+
+To verify the exact response data received from the bank payment gateway - enable *Debug mode* logging in the plugin settings.
+
 = How can I manually process a bank transaction response callback data message received by email from the bank? =
 
 As part of the backup procedure Victoriabank payment gateway sends a duplicate copy of the transaction responses to a specially designated merchant email address specified during initial setup.
@@ -86,6 +92,9 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 == Changelog ==
 
 See [wc-victoriabank project releases on GitHub](https://github.com/alexminza/wc-victoriabank/releases) for details.
+
+= 1.3.4 =
+Updated Tested up to 5.8.1 and WC tested up to 5.7.1
 
 = 1.3.3 =
 Modified Victoriabank payment gateway URL for 3DS v2 compliance
@@ -122,8 +131,8 @@ Initial release
 
 == Upgrade Notice ==
 
-= 1.3.2 =
-Updated Tested up to 5.6 and WC tested up to 4.8.0
+= 1.3.4 =
+Updated Tested up to 5.8.1 and WC tested up to 5.7.1
 
-= 1.3 =
-Added manual processing of bank transaction response callback data
+= 1.3.3 =
+Modified Victoriabank payment gateway URL for 3DS v2 compliance

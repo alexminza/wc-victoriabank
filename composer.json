@@ -19,6 +19,6 @@
     },
     "require": {
         "php": ">=7.0",
-        "fruitware/victoria-bank-gateway": "^1.1.0"
+        "fruitware/victoria-bank-gateway": "dev-master"
     }
 }
