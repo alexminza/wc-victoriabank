@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce VictoriaBank Payment Gateway 1.3.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-victoriabank\n"
 "POT-Creation-Date: 2023-04-14 16:07+0300\n"
-"PO-Revision-Date: 2023-04-14 16:09+0300\n"
+"PO-Revision-Date: 2023-04-14 18:25+0300\n"
 "Last-Translator: Alexander Minza <alex@alexminza.com>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -462,9 +462,3 @@ msgstr "Код авторизации"
 #: wc-victoriabank.php:1368
 msgid "Card number"
 msgstr "Номер карты"
-
-#~ msgid "Bank payment gateway URL: %1$s"
-#~ msgstr "URL платежного шлюза: %1$s"
-
-#~ msgid "WooCommerce Payment Gateway for Victoriabank"
-#~ msgstr "Платежный шлюз WooCommerce для Victoriabank"
