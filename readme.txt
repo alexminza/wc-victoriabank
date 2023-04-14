@@ -1,9 +1,9 @@
 === WooCommerce Victoriabank Payment Gateway ===
 Contributors: alexminza
-Donate link: https://www.paypal.me/AlexMinza
+Donate link: https://www.revolut.me/alexminza
 Tags: WooCommerce, Moldova, Victoriabank, VB, bank, payment, gateway, visa, mastercard, credit card
 Requires at least: 4.8
-Tested up to: 6.1
+Tested up to: 6.2
 Stable tag: trunk
 Requires PHP: 7.0
 License: GPLv3 or later
@@ -93,6 +93,9 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 
 See [wc-victoriabank project releases on GitHub](https://github.com/alexminza/wc-victoriabank/releases) for details.
 
+= 1.3.6 =
+Added *No logo* option for payment method at checkout
+
 = 1.3.5 =
 Updated Tested up to 6.1 and WC tested up to 7.1.0
 
@@ -134,11 +137,5 @@ Initial release
 
 == Upgrade Notice ==
 
-= 1.3.5 =
-Updated Tested up to 6.1 and WC tested up to 7.1.0
-
-= 1.3.4 =
-Updated Tested up to 5.8.1 and WC tested up to 5.7.1
-
-= 1.3.3 =
-Modified Victoriabank payment gateway URL for 3DS v2 compliance
+= 1.3.6 =
+Added *No logo* option for payment method at checkout

@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Victoriabank Payment Gateway
  * Description: Accept Visa and Mastercard directly on your store with the Victoriabank payment gateway for WooCommerce.
  * Plugin URI: https://github.com/alexminza/wc-victoriabank
- * Version: 1.3.5
+ * Version: 1.3.6
  * Author: Alexander Minza
  * Author URI: https://profiles.wordpress.org/alexminza
  * Developer: Alexander Minza
@@ -13,9 +13,9 @@
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Requires at least: 4.8
- * Tested up to: 6.1
+ * Tested up to: 6.2
  * WC requires at least: 3.3
- * WC tested up to: 7.1.0
+ * WC tested up to: 7.5.1
  */
 
 //Looking to contribute code to this plugin? Go ahead and fork the repository over at GitHub https://github.com/alexminza/wc-victoriabank
@@ -28,10 +28,10 @@ if(!defined('ABSPATH')) {
 require_once(__DIR__ . '/vendor/autoload.php');
 
 use Fruitware\VictoriaBankGateway\VictoriaBankGateway;
-use Fruitware\VictoriaBankGateway\VictoriaBank\Exception;
-use Fruitware\VictoriaBankGateway\VictoriaBank\Request;
+#use Fruitware\VictoriaBankGateway\VictoriaBank\Exception;
+#use Fruitware\VictoriaBankGateway\VictoriaBank\Request;
 use Fruitware\VictoriaBankGateway\VictoriaBank\Response;
-use Fruitware\VictoriaBankGateway\VictoriaBank\AuthorizationResponse;
+#use Fruitware\VictoriaBankGateway\VictoriaBank\AuthorizationResponse;
 
 add_action('plugins_loaded', 'woocommerce_victoriabank_init', 0);
 
@@ -42,8 +42,6 @@ function woocommerce_victoriabank_init() {
 	load_plugin_textdomain('wc-victoriabank', false, dirname(plugin_basename(__FILE__)) . '/languages');
 
 	class WC_VictoriaBank extends WC_Payment_Gateway {
-		protected $logger;
-
 		#region Constants
 		const MOD_ID          = 'victoriabank';
 		const MOD_TITLE       = 'Victoriabank';
@@ -55,6 +53,7 @@ function woocommerce_victoriabank_init() {
 
 		const LOGO_TYPE_BANK       = 'bank';
 		const LOGO_TYPE_SYSTEMS    = 'systems';
+		const LOGO_TYPE_NONE       = 'none';
 
 		const MOD_TRANSACTION_TYPE = self::MOD_PREFIX . 'transaction_type';
 
@@ -77,20 +76,16 @@ function woocommerce_victoriabank_init() {
 		const VB_SIGNATURE_PADDING = '00';
 		#endregion
 
+		protected $logo_type, $testmode, $debug, $logger, $transaction_type, $order_template;
+		protected $vb_merchant_id, $vb_merchant_terminal, $vb_merchant_name, $vb_merchant_url, $vb_merchant_address;
+		protected $vb_public_key_pem, $vb_bank_public_key_pem, $vb_private_key_pem, $vb_private_key_pass, $vb_public_key, $vb_private_key, $vb_bank_public_key;
+
 		public function __construct() {
-			$plugin_dir = plugin_dir_url(__FILE__);
-
-			$this->logger = wc_get_logger();
-
 			$this->id                 = self::MOD_ID;
 			$this->method_title       = self::MOD_TITLE;
 			$this->method_description = 'WooCommerce Payment Gateway for Victoriabank';
-			$this->icon               = apply_filters('woocommerce_victoriabank_icon', $plugin_dir . 'assets/img/victoriabank.png');
 			$this->has_fields         = false;
 			$this->supports           = array('products', 'refunds');
-
-			$this->init_form_fields();
-			$this->init_settings();
 
 			#region Initialize user set variables
 			$this->enabled           = $this->get_option('enabled', 'yes');
@@ -98,20 +93,13 @@ function woocommerce_victoriabank_init() {
 			$this->description       = $this->get_option('description');
 
 			$this->logo_type         = $this->get_option('logo_type', self::LOGO_TYPE_BANK);
-			$this->bank_logo         = $plugin_dir . 'assets/img/victoriabank.png';
-			$this->systems_logo      = $plugin_dir . 'assets/img/paymentsystems.png';
-			$plugin_icon             = ($this->logo_type === self::LOGO_TYPE_BANK ? $this->bank_logo : $this->systems_logo);
-			$this->icon              = apply_filters('woocommerce_victoriabank_icon', $plugin_icon);
+			$this->icon              = apply_filters('woocommerce_victoriabank_icon', self::get_logo_icon($this->logo_type));
 
 			$this->testmode          = 'yes' === $this->get_option('testmode', 'no');
 			$this->debug             = 'yes' === $this->get_option('debug', 'no');
-
-			$this->log_context       = array('source' => $this->id);
-			$this->log_threshold     = $this->debug ? WC_Log_Levels::DEBUG : WC_Log_Levels::NOTICE;
-			$this->logger            = new WC_Logger(null, $this->log_threshold);
+			$this->logger            = new WC_Logger(null, $this->debug ? WC_Log_Levels::DEBUG : WC_Log_Levels::INFO);
 
 			$this->transaction_type     = $this->get_option('transaction_type', self::TRANSACTION_TYPE_CHARGE);
-			$this->transaction_auto     = false; //'yes' === $this->get_option('transaction_auto', 'no');
 			$this->order_template       = $this->get_option('order_template', self::ORDER_TEMPLATE);
 
 			$this->vb_merchant_id       = $this->get_option('vb_merchant_id');
@@ -128,11 +116,12 @@ function woocommerce_victoriabank_init() {
 			$this->vb_public_key        = $this->get_option('vb_public_key');
 			$this->vb_private_key       = $this->get_option('vb_private_key');
 			$this->vb_bank_public_key   = $this->get_option('vb_bank_public_key');
-			#endregion
+
+			$this->init_form_fields();
+			$this->init_settings();
 
 			$this->initialize_keys();
-
-			$this->update_option('vb_callback_url', $this->get_callback_url());
+			#endregion
 
 			if(is_admin()) {
 				//Save options
@@ -140,12 +129,6 @@ function woocommerce_victoriabank_init() {
 			}
 
 			add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
-
-			if($this->transaction_auto) {
-				add_filter('woocommerce_order_status_completed', array($this, 'order_status_completed'));
-				add_filter('woocommerce_order_status_cancelled', array($this, 'order_status_cancelled'));
-				add_filter('woocommerce_order_status_refunded', array($this, 'order_status_refunded'));
-			}
 
 			#region Payment listener/API hook
 			add_action('woocommerce_api_wc_' . $this->id, array($this, 'check_response'));
@@ -184,7 +167,8 @@ function woocommerce_victoriabank_init() {
 					'default'     => self::LOGO_TYPE_BANK,
 					'options'     => array(
 						self::LOGO_TYPE_BANK    => __('Bank logo', self::MOD_TEXT_DOMAIN),
-						self::LOGO_TYPE_SYSTEMS => __('Payment systems logos', self::MOD_TEXT_DOMAIN)
+						self::LOGO_TYPE_SYSTEMS => __('Payment systems logos', self::MOD_TEXT_DOMAIN),
+						self::LOGO_TYPE_NONE    => __('No logo', self::MOD_TEXT_DOMAIN)
 					)
 				),
 
@@ -215,13 +199,6 @@ function woocommerce_victoriabank_init() {
 						self::TRANSACTION_TYPE_AUTHORIZATION => __('Authorization', self::MOD_TEXT_DOMAIN)
 					)
 				),
-				/*'transaction_auto' => array(
-					'title'       => __('Transaction auto', self::MOD_TEXT_DOMAIN),
-					'type'        => 'checkbox',
-					//'label'       => __('Enabled', self::MOD_TEXT_DOMAIN),
-					'label'       => __('Automatically complete/reverse bank transactions when order status changes', self::MOD_TEXT_DOMAIN),
-					'default'     => 'no'
-				),*/
 				'order_template'  => array(
 					'title'       => __('Order description', self::MOD_TEXT_DOMAIN),
 					'type'        => 'text',
@@ -257,7 +234,7 @@ function woocommerce_victoriabank_init() {
 				'vb_merchant_address' => array(
 					'title'       => __('Merchant address', self::MOD_TEXT_DOMAIN),
 					'type'        => 'text',
-					'description' => $storeAddress = $this->get_store_address(),
+					'description' => $storeAddress = self::get_store_address(),
 					'default'     => $storeAddress,
 					'custom_attributes' => array(
 						'maxlength' => '250'
@@ -344,18 +321,12 @@ function woocommerce_victoriabank_init() {
 
 				'payment_notification' => array(
 					'title'       => __('Payment Notification', self::MOD_TEXT_DOMAIN),
-					'description' => __('Provide this URL to the bank to enable online payment notifications.', self::MOD_TEXT_DOMAIN),
-					'type'        => 'title'
-				),
-				'vb_callback_url'  => array(
-					'title'       => __('Callback URL', self::MOD_TEXT_DOMAIN),
-					'type'        => 'text',
-					'desc_tip'    => sprintf(__('Bank payment gateway URL: %1$s', self::MOD_TEXT_DOMAIN), esc_url($this->get_vb_gateway_url())),
-					'custom_attributes' => array(
-						'readonly' => 'readonly'
-					),
-					'description' => sprintf('<a href="#" id="woocommerce_victoriabank_payment_notification_advanced" class="button">%1$s</a>',
+					'description' => sprintf('%1$s<br /><br /><b>%2$s:</b> <code>%3$s</code><br /><br /><a href="#" id="woocommerce_victoriabank_payment_notification_advanced" class="button">%4$s</a>',
+						__('Provide this URL to the bank to enable online payment notifications.', self::MOD_TEXT_DOMAIN),
+						__('Callback URL', self::MOD_TEXT_DOMAIN),
+						esc_url($this->get_callback_url()),
 						__('Advanced&raquo;', self::MOD_TEXT_DOMAIN)),
+					'type'        => 'title'
 				),
 				'vb_callback_data'  => array(
 					'title'       => __('Process callback data', self::MOD_TEXT_DOMAIN),
@@ -365,6 +336,24 @@ function woocommerce_victoriabank_init() {
 					'placeholder' => __('Bank transaction response callback data', self::MOD_TEXT_DOMAIN),
 				)
 			);
+		}
+
+		protected static function get_logo_icon($logo_type) {
+			$plugin_dir = plugin_dir_url(__FILE__);
+
+			switch($logo_type) {
+				case self::LOGO_TYPE_BANK:
+					return $plugin_dir . 'assets/img/victoriabank.png';
+					break;
+				case self::LOGO_TYPE_SYSTEMS:
+					return $plugin_dir . 'assets/img/paymentsystems.png';
+					break;
+				case self::LOGO_TYPE_NONE:
+					return '';
+					break;
+			}
+
+			return '';
 		}
 
 		public function is_valid_for_use() {
@@ -653,30 +642,30 @@ function woocommerce_victoriabank_init() {
 				$this->log($opensslError, WC_Log_Levels::ERROR);
 		}
 
-		static function save_temp_file($fileData, $fileSuffix = '') {
+		protected static function save_temp_file($fileData, $fileSuffix = '') {
 			//http://www.pathname.com/fhs/pub/fhs-2.3.html#TMPTEMPORARYFILES
 			$tempFileName = sprintf('%1$s%2$s_', self::MOD_PREFIX, $fileSuffix);
 			$temp_file = tempnam(get_temp_dir(),  $tempFileName);
 
 			if(!$temp_file) {
-				$this->log(sprintf(__('Unable to create temporary file: %1$s', self::MOD_TEXT_DOMAIN), $temp_file), WC_Log_Levels::ERROR);
+				self::static_log(sprintf(__('Unable to create temporary file: %1$s', self::MOD_TEXT_DOMAIN), $temp_file), WC_Log_Levels::ERROR);
 				return null;
 			}
 
 			if(false === file_put_contents($temp_file, $fileData)) {
-				$this->log(sprintf(__('Unable to save data to temporary file: %1$s', self::MOD_TEXT_DOMAIN), $temp_file), WC_Log_Levels::ERROR);
+				self::static_log(sprintf(__('Unable to save data to temporary file: %1$s', self::MOD_TEXT_DOMAIN), $temp_file), WC_Log_Levels::ERROR);
 				return null;
 			}
 
 			return $temp_file;
 		}
 
-		static function is_temp_file($fileName) {
+		protected static function is_temp_file($fileName) {
 			$temp_dir = get_temp_dir();
 			return strncmp($fileName, $temp_dir, strlen($temp_dir)) === 0;
 		}
 
-		static function is_overwritable($fileName) {
+		protected static function is_overwritable($fileName) {
 			return self::string_empty($fileName) || self::is_temp_file($fileName);
 		}
 		#endregion
@@ -743,58 +732,6 @@ function woocommerce_victoriabank_init() {
 
 			$this->receipt_page($order_id);
 		}
-
-		#region Order status
-		public function order_status_completed($order_id) {
-			$this->log(sprintf('%1$s: OrderID=%2$s', __FUNCTION__, $order_id));
-
-			if(!$this->transaction_auto)
-				return;
-
-			$order = wc_get_order($order_id);
-
-			if($order && $order->get_payment_method() === $this->id) {
-				if($order->has_status('completed') && $order->is_paid()) {
-					$transaction_type = get_post_meta($order_id, self::MOD_TRANSACTION_TYPE, true);
-
-					if($transaction_type === self::TRANSACTION_TYPE_AUTHORIZATION) {
-						return $this->complete_transaction($order_id, $order);
-					}
-				}
-			}
-		}
-
-		public function order_status_cancelled($order_id) {
-			$this->log(sprintf('%1$s: OrderID=%2$s', __FUNCTION__, $order_id));
-
-			if(!$this->transaction_auto)
-				return;
-
-			$order = wc_get_order($order_id);
-
-			if($order && $order->get_payment_method() === $this->id) {
-				if($order->has_status('cancelled') && $order->is_paid()) {
-					$transaction_type = get_post_meta($order_id, self::MOD_TRANSACTION_TYPE, true);
-
-					if($transaction_type === self::TRANSACTION_TYPE_AUTHORIZATION) {
-						return $this->refund_transaction($order_id, $order);
-					}
-				}
-			}
-		}
-
-		public function order_status_refunded($order_id) {
-			$this->log(sprintf('%1$s: OrderID=%2$s', __FUNCTION__, $order_id));
-
-			$order = wc_get_order($order_id);
-
-			if($order && $order->get_payment_method() === $this->id) {
-				if($order->has_status('refunded') && $order->is_paid()) {
-					return $this->refund_transaction($order_id, $order);
-				}
-			}
-		}
-		#endregion
 
 		public function complete_transaction($order_id, $order) {
 			$this->log(sprintf('%1$s: OrderID=%2$s', __FUNCTION__, $order_id));
@@ -895,7 +832,7 @@ function woocommerce_victoriabank_init() {
 				$this->process_response_data($_POST);
 
 			$order_id = $_REQUEST[self::VB_ORDER_ID];
-			$oder_id = wc_clean($oder_id);
+			$order_id = wc_clean($order_id);
 
 			if(self::string_empty($order_id)) {
 				$message = sprintf(__('Payment verification failed: Order ID not received from %1$s.', self::MOD_TEXT_DOMAIN), $this->method_title);
@@ -1085,7 +1022,7 @@ function woocommerce_victoriabank_init() {
 			return false;
 		}
 
-		public function callback_data_process() {
+		public static function callback_data_process() {
 			self::static_log_request(__FUNCTION__);
 
 			//https://codex.wordpress.org/AJAX_in_Plugins
@@ -1178,11 +1115,11 @@ function woocommerce_victoriabank_init() {
 			return self::parse_response_regex($vbformhtml, '/<input.+name="(\w+)".+value="(.*)"/i');
 		}
 
-		static function parse_response_post($vbpost) {
+		protected static function parse_response_post($vbpost) {
 			return self::parse_response_regex($vbpost, '/^(\w+)=(.*)$/im');
 		}
 
-		static function parse_response_regex($vbresponse, $regex) {
+		protected static function parse_response_regex($vbresponse, $regex) {
 			$matchResult = preg_match_all($regex, $vbresponse, $matches, PREG_SET_ORDER);
 			if(empty($matchResult))
 				return false;
@@ -1303,7 +1240,7 @@ function woocommerce_victoriabank_init() {
 			return substr($lang, 0, 2);
 		}
 
-		static function get_client_ip() {
+		protected static function get_client_ip() {
 			return WC_Geolocation::get_ip_address();
 		}
 
@@ -1321,7 +1258,7 @@ function woocommerce_victoriabank_init() {
 			return add_query_arg('wc-api', get_class($this) . '_redirect', home_url('/'));
 		}
 
-		static function get_logs_url() {
+		protected static function get_logs_url() {
 			return add_query_arg(
 				array(
 					'page'    => 'wc-status',
@@ -1332,11 +1269,7 @@ function woocommerce_victoriabank_init() {
 			);
 		}
 
-		static function get_logs_path() {
-			return WC_Log_Handler_File::get_log_file_path(self::MOD_ID);
-		}
-
-		static function get_settings_url() {
+		public static function get_settings_url() {
 			return add_query_arg(
 				array(
 					'page'    => 'wc-settings',
@@ -1347,7 +1280,7 @@ function woocommerce_victoriabank_init() {
 			);
 		}
 
-		static function set_post_meta($post_id, $meta_key, $meta_value) {
+		protected static function set_post_meta($post_id, $meta_key, $meta_value) {
 			//https://developer.wordpress.org/reference/functions/add_post_meta/#comment-465
 			if(!add_post_meta($post_id, $meta_key, $meta_value, true)) {
 				update_post_meta($post_id, $meta_key, $meta_value);
@@ -1357,10 +1290,11 @@ function woocommerce_victoriabank_init() {
 		protected function log($message, $level = WC_Log_Levels::DEBUG) {
 			//https://woocommerce.wordpress.com/2017/01/26/improved-logging-in-woocommerce-2-7/
 			//https://stackoverflow.com/questions/1423157/print-php-call-stack
-			$this->logger->log($level, $message, $this->log_context);
+			$log_context = array('source' => self::MOD_ID);
+			$this->logger->log($level, $message, $log_context);
 		}
 
-		static function static_log($message, $level = WC_Log_Levels::DEBUG) {
+		protected static function static_log($message, $level = WC_Log_Levels::DEBUG) {
 			$logger = wc_get_logger();
 			$log_context = array('source' => self::MOD_ID);
 			$logger->log($level, $message, $log_context);
@@ -1370,11 +1304,11 @@ function woocommerce_victoriabank_init() {
 			$this->log(sprintf('%1$s: %2$s %3$s %4$s', $source, self::get_client_ip(), $_SERVER['REQUEST_METHOD'], self::print_var($_REQUEST)));
 		}
 
-		static function static_log_request($source) {
+		protected static function static_log_request($source) {
 			self::static_log(sprintf('%1$s: %2$s %3$s %4$s', $source, self::get_client_ip(), $_SERVER['REQUEST_METHOD'], self::print_var($_REQUEST)));
 		}
 
-		static function print_var($var) {
+		protected static function print_var($var) {
 			//https://docs.woocommerce.com/wc-apidocs/function-wc_print_r.html
 			return wc_print_r($var, true);
 		}
@@ -1384,7 +1318,7 @@ function woocommerce_victoriabank_init() {
 		}
 
 		#region Admin
-		static function plugin_links($links) {
+		public static function plugin_links($links) {
 			$plugin_links = array(
 				sprintf('<a href="%1$s">%2$s</a>', esc_url(self::get_settings_url()), __('Settings', self::MOD_TEXT_DOMAIN))
 			);
@@ -1392,7 +1326,7 @@ function woocommerce_victoriabank_init() {
 			return array_merge($plugin_links, $links);
 		}
 
-		static function order_actions($actions) {
+		public static function order_actions($actions) {
 			global $theorder;
 			if(!$theorder->is_paid() || $theorder->get_payment_method() !== self::MOD_ID) {
 				return $actions;
@@ -1404,26 +1338,18 @@ function woocommerce_victoriabank_init() {
 			}
 
 			$actions['victoriabank_complete_transaction'] = sprintf(__('Complete %1$s transaction', self::MOD_TEXT_DOMAIN), self::MOD_TITLE);
-			//$actions['victoriabank_reverse_transaction'] = sprintf(__('Reverse %1$s transaction', self::MOD_TEXT_DOMAIN), self::MOD_TITLE);
 			return $actions;
 		}
 
-		static function action_complete_transaction($order) {
+		public static function action_complete_transaction($order) {
 			$order_id = $order->get_id();
 
 			$plugin = new self();
 			return $plugin->complete_transaction($order_id, $order);
 		}
-
-		static function action_reverse_transaction($order) {
-			$order_id = $order->get_id();
-
-			$plugin = new self();
-			return $plugin->refund_transaction($order_id, $order);
-		}
 		#endregion
 
-		static function email_order_meta_fields($fields, $sent_to_admin, $order) {
+		public static function email_order_meta_fields($fields, $sent_to_admin, $order) {
 			if(!$order->is_paid() || $order->get_payment_method() !== self::MOD_ID) {
 				return $fields;
 			}
@@ -1446,22 +1372,23 @@ function woocommerce_victoriabank_init() {
 			return $fields;
 		}
 
-		static function add_gateway($methods) {
+		public static function add_gateway($methods) {
 			$methods[] = self::class;
 			return $methods;
 		}
 
-		protected function get_store_address() {
+		protected static function get_store_address() {
+			$wc_countries = WC()->countries;
 			$address = array(
-				'address_1' => WC()->countries->get_base_address(),
-				'address_2' => WC()->countries->get_base_address_2(),
-				'city'      => WC()->countries->get_base_city(),
-				'state'     => WC()->countries->get_base_state(),
-				'postcode'  => WC()->countries->get_base_postcode(),
-				'country'   => WC()->countries->get_base_country()
+				'address_1' => $wc_countries->get_base_address(),
+				'address_2' => $wc_countries->get_base_address_2(),
+				'city'      => $wc_countries->get_base_city(),
+				'state'     => $wc_countries->get_base_state(),
+				'postcode'  => $wc_countries->get_base_postcode(),
+				'country'   => $wc_countries->get_base_country()
 			);
 
-			return WC()->countries->get_formatted_address($address, ', ');
+			return $wc_countries->get_formatted_address($address, ', ');
 		}
 
 		public static function is_wc_active() {
@@ -1489,7 +1416,6 @@ function woocommerce_victoriabank_init() {
 		//Add WooCommerce order actions
 		add_filter('woocommerce_order_actions', array(WC_VictoriaBank::class, 'order_actions'));
 		add_action('woocommerce_order_action_victoriabank_complete_transaction', array(WC_VictoriaBank::class, 'action_complete_transaction'));
-		//add_action('woocommerce_order_action_victoriabank_reverse_transaction', array(WC_VictoriaBank::class, 'action_reverse_transaction'));
 
 		add_action('wp_ajax_victoriabank_callback_data_process', array(WC_VictoriaBank::class, 'callback_data_process'));
 	}
