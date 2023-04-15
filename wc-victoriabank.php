@@ -15,7 +15,7 @@
  * Requires at least: 4.8
  * Tested up to: 6.2
  * WC requires at least: 3.3
- * WC tested up to: 7.5.1
+ * WC tested up to: 7.6.0
  */
 
 //Looking to contribute code to this plugin? Go ahead and fork the repository over at GitHub https://github.com/alexminza/wc-victoriabank
