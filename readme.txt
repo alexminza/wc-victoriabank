@@ -3,7 +3,7 @@ Contributors: alexminza
 Donate link: https://www.revolut.me/alexminza
 Tags: WooCommerce, Moldova, Victoriabank, VB, bank, payment, gateway, visa, mastercard, credit card
 Requires at least: 4.8
-Tested up to: 6.2
+Tested up to: 6.2.2
 Stable tag: trunk
 Requires PHP: 7.0
 License: GPLv3 or later
@@ -92,6 +92,9 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 == Changelog ==
 
 See [wc-victoriabank project releases on GitHub](https://github.com/alexminza/wc-victoriabank/releases) for details.
+
+= 1.3.7 =
+Updated Tested up to 6.2.2 and WC tested up to 7.7.2
 
 = 1.3.6 =
 Added *No logo* option for payment method at checkout

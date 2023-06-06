@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Victoriabank Payment Gateway
  * Description: Accept Visa and Mastercard directly on your store with the Victoriabank payment gateway for WooCommerce.
  * Plugin URI: https://github.com/alexminza/wc-victoriabank
- * Version: 1.3.6
+ * Version: 1.3.7
  * Author: Alexander Minza
  * Author URI: https://profiles.wordpress.org/alexminza
  * Developer: Alexander Minza
@@ -13,9 +13,9 @@
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Requires at least: 4.8
- * Tested up to: 6.2
+ * Tested up to: 6.2.2
  * WC requires at least: 3.3
- * WC tested up to: 7.6.0
+ * WC tested up to: 7.7.2
  */
 
 //Looking to contribute code to this plugin? Go ahead and fork the repository over at GitHub https://github.com/alexminza/wc-victoriabank
