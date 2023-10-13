@@ -3,7 +3,7 @@ Contributors: alexminza
 Donate link: https://www.revolut.me/alexminza
 Tags: WooCommerce, Moldova, Victoriabank, VB, bank, payment, gateway, visa, mastercard, credit card
 Requires at least: 4.8
-Tested up to: 6.2.2
+Tested up to: 6.3.1
 Stable tag: trunk
 Requires PHP: 7.0
 License: GPLv3 or later
@@ -93,6 +93,9 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 
 See [wc-victoriabank project releases on GitHub](https://github.com/alexminza/wc-victoriabank/releases) for details.
 
+= 1.3.8 =
+Added support for WooCommerce [High-Performance Order Storage (HPOS)](https://woocommerce.com/document/high-performance-order-storage/).
+
 = 1.3.7 =
 Updated Tested up to 6.2.2 and WC tested up to 7.7.2
 
@@ -140,5 +143,5 @@ Initial release
 
 == Upgrade Notice ==
 
-= 1.3.6 =
-Added *No logo* option for payment method at checkout
+= 1.3.8 =
+Added support for WooCommerce [High-Performance Order Storage (HPOS)](https://woocommerce.com/document/high-performance-order-storage/)
