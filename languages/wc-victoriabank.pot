@@ -3,334 +3,334 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Victoriabank Payment Gateway 1.3.7\n"
+"Project-Id-Version: WooCommerce Victoriabank Payment Gateway 1.3.8\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-victoriabank\n"
-"POT-Creation-Date: 2023-06-06 11:00+0300\n"
+"POT-Creation-Date: 2023-10-17 13:55+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.3.1\n"
+"X-Generator: Poedit 3.4\n"
 
 #. Description of the plugin
 msgid "Accept Visa and Mastercard directly on your store with the Victoriabank payment gateway for WooCommerce."
 msgstr ""
 
-#: wc-victoriabank.php:145
+#: wc-victoriabank.php:142
 msgid "Enable/Disable"
 msgstr ""
 
-#: wc-victoriabank.php:147
+#: wc-victoriabank.php:144
 msgid "Enable this gateway"
 msgstr ""
 
-#: wc-victoriabank.php:151
+#: wc-victoriabank.php:148
 msgid "Title"
 msgstr ""
 
-#: wc-victoriabank.php:153
+#: wc-victoriabank.php:150
 msgid "Payment method title that the customer will see during checkout."
 msgstr ""
 
-#: wc-victoriabank.php:157
+#: wc-victoriabank.php:154
 msgid "Description"
 msgstr ""
 
-#: wc-victoriabank.php:159
+#: wc-victoriabank.php:156
 msgid "Payment method description that the customer will see during checkout."
 msgstr ""
 
-#: wc-victoriabank.php:163
+#: wc-victoriabank.php:160
 msgid "Logo"
 msgstr ""
 
-#: wc-victoriabank.php:166
+#: wc-victoriabank.php:163
 msgid "Payment method logo image that the customer will see during checkout."
 msgstr ""
 
-#: wc-victoriabank.php:169
+#: wc-victoriabank.php:166
 msgid "Bank logo"
 msgstr ""
 
-#: wc-victoriabank.php:170
+#: wc-victoriabank.php:167
 msgid "Payment systems logos"
 msgstr ""
 
-#: wc-victoriabank.php:171
+#: wc-victoriabank.php:168
 msgid "No logo"
 msgstr ""
 
-#: wc-victoriabank.php:176
+#: wc-victoriabank.php:173
 msgid "Test mode"
 msgstr ""
 
-#: wc-victoriabank.php:178
+#: wc-victoriabank.php:175
 msgid "Enabled"
 msgstr ""
 
-#: wc-victoriabank.php:179
+#: wc-victoriabank.php:176
 msgid "Use Test or Live bank gateway to process the payments. Disable when ready to accept live payments."
 msgstr ""
 
-#: wc-victoriabank.php:183
+#: wc-victoriabank.php:180
 msgid "Debug mode"
 msgstr ""
 
-#: wc-victoriabank.php:185
+#: wc-victoriabank.php:182
 msgid "Enable logging"
 msgstr ""
 
-#: wc-victoriabank.php:187
+#: wc-victoriabank.php:184
 msgid "View logs"
 msgstr ""
 
-#: wc-victoriabank.php:188
+#: wc-victoriabank.php:185
 msgid "Save debug messages to the WooCommerce System Status logs. Note: this may log personal information. Use this for debugging purposes only and delete the logs when finished."
 msgstr ""
 
-#: wc-victoriabank.php:192
+#: wc-victoriabank.php:189
 msgid "Transaction type"
 msgstr ""
 
-#: wc-victoriabank.php:195
+#: wc-victoriabank.php:192
 msgid "Select how transactions should be processed. Charge submits all transactions for settlement, Authorization simply authorizes the order total for capture later."
 msgstr ""
 
-#: wc-victoriabank.php:198
+#: wc-victoriabank.php:195
 msgid "Charge"
 msgstr ""
 
-#: wc-victoriabank.php:199
+#: wc-victoriabank.php:196
 msgid "Authorization"
 msgstr ""
 
-#: wc-victoriabank.php:203
+#: wc-victoriabank.php:200
 msgid "Order description"
 msgstr ""
 
-#: wc-victoriabank.php:205
+#: wc-victoriabank.php:202
 msgid "Format: <code>%1$s</code> - Order ID, <code>%2$s</code> - Order items summary"
 msgstr ""
 
-#: wc-victoriabank.php:206
+#: wc-victoriabank.php:203
 msgid "Order description that the customer will see on the bank payment page."
 msgstr ""
 
-#: wc-victoriabank.php:211
+#: wc-victoriabank.php:208
 msgid "Merchant Data"
 msgstr ""
 
-#: wc-victoriabank.php:212
+#: wc-victoriabank.php:209
 msgid "Merchant information that the customer will see on the bank payment page."
 msgstr ""
 
-#: wc-victoriabank.php:216
+#: wc-victoriabank.php:213
 msgid "Merchant name"
 msgstr ""
 
-#: wc-victoriabank.php:226
+#: wc-victoriabank.php:223
 msgid "Merchant URL"
 msgstr ""
 
-#: wc-victoriabank.php:235
+#: wc-victoriabank.php:232
 msgid "Merchant address"
 msgstr ""
 
-#: wc-victoriabank.php:244
+#: wc-victoriabank.php:241
 msgid "Card acceptor ID"
 msgstr ""
 
-#: wc-victoriabank.php:253
+#: wc-victoriabank.php:250
 msgid "Terminal ID"
 msgstr ""
 
-#: wc-victoriabank.php:263 wc-victoriabank.php:488
+#: wc-victoriabank.php:260 wc-victoriabank.php:485
 msgid "Connection Settings"
 msgstr ""
 
-#: wc-victoriabank.php:265
+#: wc-victoriabank.php:262
 msgid "Use Basic settings to upload the key files received from the bank or configure manually using Advanced settings below."
 msgstr ""
 
-#: wc-victoriabank.php:266
+#: wc-victoriabank.php:263
 msgid "Basic settings&raquo;"
 msgstr ""
 
-#: wc-victoriabank.php:267
+#: wc-victoriabank.php:264
 msgid "or"
 msgstr ""
 
-#: wc-victoriabank.php:268
+#: wc-victoriabank.php:265
 msgid "Advanced settings&raquo;"
 msgstr ""
 
-#: wc-victoriabank.php:272
+#: wc-victoriabank.php:269
 msgid "Public key"
 msgstr ""
 
-#: wc-victoriabank.php:280
+#: wc-victoriabank.php:277
 msgid "Bank public key"
 msgstr ""
 
-#: wc-victoriabank.php:288
+#: wc-victoriabank.php:285
 msgid "Private key"
 msgstr ""
 
-#: wc-victoriabank.php:297 wc-victoriabank.php:494
+#: wc-victoriabank.php:294 wc-victoriabank.php:491
 msgid "Public key file"
 msgstr ""
 
-#: wc-victoriabank.php:303 wc-victoriabank.php:500
+#: wc-victoriabank.php:300 wc-victoriabank.php:497
 msgid "Bank public key file"
 msgstr ""
 
-#: wc-victoriabank.php:309 wc-victoriabank.php:506
+#: wc-victoriabank.php:306 wc-victoriabank.php:503
 msgid "Private key file"
 msgstr ""
 
-#: wc-victoriabank.php:315
+#: wc-victoriabank.php:312
 msgid "Private key passphrase"
 msgstr ""
 
-#: wc-victoriabank.php:317
+#: wc-victoriabank.php:314
 msgid "Leave empty if private key is not encrypted."
 msgstr ""
 
-#: wc-victoriabank.php:318
+#: wc-victoriabank.php:315
 msgid "Optional"
 msgstr ""
 
-#: wc-victoriabank.php:323
+#: wc-victoriabank.php:320
 msgid "Payment Notification"
 msgstr ""
 
-#: wc-victoriabank.php:325
+#: wc-victoriabank.php:322
 msgid "Provide this URL to the bank to enable online payment notifications."
 msgstr ""
 
-#: wc-victoriabank.php:326
+#: wc-victoriabank.php:323
 msgid "Callback URL"
 msgstr ""
 
-#: wc-victoriabank.php:328
+#: wc-victoriabank.php:325
 msgid "Advanced&raquo;"
 msgstr ""
 
-#: wc-victoriabank.php:332
+#: wc-victoriabank.php:329
 msgid "Process callback data"
 msgstr ""
 
-#: wc-victoriabank.php:335
+#: wc-victoriabank.php:332
 msgid "Manually process bank transaction response callback data received by email as part of the backup procedure."
 msgstr ""
 
-#: wc-victoriabank.php:336
+#: wc-victoriabank.php:333
 msgid "Bank transaction response callback data"
 msgstr ""
 
-#: wc-victoriabank.php:419
+#: wc-victoriabank.php:416
 msgid "Are you sure you want to process the entered bank transaction response callback data?"
 msgstr ""
 
-#: wc-victoriabank.php:479
+#: wc-victoriabank.php:476
 msgid "Unsupported store currency"
 msgstr ""
 
-#: wc-victoriabank.php:481
+#: wc-victoriabank.php:478
 msgid "Supported currencies"
 msgstr ""
 
-#: wc-victoriabank.php:488
+#: wc-victoriabank.php:485
 msgid "Not configured"
 msgstr ""
 
-#: wc-victoriabank.php:511
+#: wc-victoriabank.php:508
 msgid "Current server settings do not allow web requests to the bank payment gateway. See <a href=\"https://www.php.net/manual/en/filesystem.configuration.php#ini.allow-url-fopen\" target=\"_blank\">PHP Runtime Configuration</a> for details."
 msgstr ""
 
-#: wc-victoriabank.php:520
+#: wc-victoriabank.php:517
 msgid "Please review the <a href=\"%1$s\">payment method settings</a> page for log details and setup instructions."
 msgstr ""
 
-#: wc-victoriabank.php:595
+#: wc-victoriabank.php:592
 msgid "Invalid public key"
 msgstr ""
 
-#: wc-victoriabank.php:599
+#: wc-victoriabank.php:596
 msgid "Could not validate public key"
 msgstr ""
 
-#: wc-victoriabank.php:616
+#: wc-victoriabank.php:613
 msgid "Invalid private key or wrong private key passphrase"
 msgstr ""
 
-#: wc-victoriabank.php:620
+#: wc-victoriabank.php:617
 msgid "Could not validate private key"
 msgstr ""
 
-#: wc-victoriabank.php:627
+#: wc-victoriabank.php:624
 msgid "Invalid value"
 msgstr ""
 
-#: wc-victoriabank.php:630
+#: wc-victoriabank.php:627
 msgid "File not found"
 msgstr ""
 
-#: wc-victoriabank.php:633
+#: wc-victoriabank.php:630
 msgid "File not readable"
 msgstr ""
 
-#: wc-victoriabank.php:636
+#: wc-victoriabank.php:633
 msgid "Could not validate file"
 msgstr ""
 
-#: wc-victoriabank.php:651
+#: wc-victoriabank.php:648
 msgid "Unable to create temporary file: %1$s"
 msgstr ""
 
-#: wc-victoriabank.php:656
+#: wc-victoriabank.php:653
 msgid "Unable to save data to temporary file: %1$s"
 msgstr ""
 
-#: wc-victoriabank.php:713
+#: wc-victoriabank.php:710
 msgid "%1$s is not properly configured."
 msgstr ""
 
-#: wc-victoriabank.php:755
+#: wc-victoriabank.php:752
 msgid "Payment completion via %1$s failed"
 msgstr ""
 
-#: wc-victoriabank.php:779
+#: wc-victoriabank.php:776
 msgid "Invalid refund amount"
 msgstr ""
 
-#: wc-victoriabank.php:795
+#: wc-victoriabank.php:792
 msgid "Refund of %1$s %2$s via %3$s failed"
 msgstr ""
 
-#: wc-victoriabank.php:838
+#: wc-victoriabank.php:835
 msgid "Payment verification failed: Order ID not received from %1$s."
 msgstr ""
 
-#: wc-victoriabank.php:850 wc-victoriabank.php:943
+#: wc-victoriabank.php:847 wc-victoriabank.php:940
 msgid "Order #%1$s not found as received from %2$s."
 msgstr ""
 
-#: wc-victoriabank.php:863
+#: wc-victoriabank.php:860
 msgid "Order #%1$s paid successfully via %2$s."
 msgstr ""
 
-#: wc-victoriabank.php:871
+#: wc-victoriabank.php:868
 msgid "Order #%1$s payment failed via %2$s."
 msgstr ""
 
-#: wc-victoriabank.php:886
+#: wc-victoriabank.php:883
 msgid "This Callback URL works and should not be called directly."
 msgstr ""
 
-#: wc-victoriabank.php:936
+#: wc-victoriabank.php:933
 msgid "Order ID not received from %1$s."
 msgstr ""
 
@@ -382,22 +382,22 @@ msgstr ""
 msgid "Payment initiation failed via %1$s."
 msgstr ""
 
-#: wc-victoriabank.php:1323
+#: wc-victoriabank.php:1316
 msgid "Settings"
 msgstr ""
 
-#: wc-victoriabank.php:1340
+#: wc-victoriabank.php:1333
 msgid "Complete %1$s transaction"
 msgstr ""
 
-#: wc-victoriabank.php:1358
+#: wc-victoriabank.php:1351
 msgid "Retrieval Reference Number (RRN)"
 msgstr ""
 
-#: wc-victoriabank.php:1363
+#: wc-victoriabank.php:1356
 msgid "Authorization code"
 msgstr ""
 
-#: wc-victoriabank.php:1368
+#: wc-victoriabank.php:1361
 msgid "Card number"
 msgstr ""
