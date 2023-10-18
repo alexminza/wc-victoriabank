@@ -964,7 +964,7 @@ function woocommerce_victoriabank_init() {
 						$this->log($message, WC_Log_Levels::INFO);
 						$order->add_order_note($message);
 
-						$this->mark_order_paid($order, $intRef);
+						$this->mark_order_paid($order, $rrn);
 
 						switch($this->transaction_type) {
 							case self::TRANSACTION_TYPE_CHARGE:
@@ -989,7 +989,7 @@ function woocommerce_victoriabank_init() {
 						$this->log($message, WC_Log_Levels::INFO);
 						$order->add_order_note($message);
 
-						$this->mark_order_paid($order, $intRef);
+						$this->mark_order_paid($order, $rrn);
 
 						return true;
 						break;
@@ -1132,9 +1132,9 @@ function woocommerce_victoriabank_init() {
 			return $vbdata;
 		}
 
-		protected function mark_order_paid($order, $intRef) {
+		protected function mark_order_paid($order, $transaction_id) {
 			if(!$order->is_paid())
-				$order->payment_complete($intRef);
+				$order->payment_complete($transaction_id);
 		}
 
 		protected function mark_order_refunded($order) {
