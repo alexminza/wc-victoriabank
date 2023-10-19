@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Victoriabank Payment Gateway
  * Description: Accept Visa and Mastercard directly on your store with the Victoriabank payment gateway for WooCommerce.
  * Plugin URI: https://github.com/alexminza/wc-victoriabank
- * Version: 1.3.7
+ * Version: 1.3.8
  * Author: Alexander Minza
  * Author URI: https://profiles.wordpress.org/alexminza
  * Developer: Alexander Minza
@@ -13,9 +13,9 @@
  * License: GPLv3 or later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Requires at least: 4.8
- * Tested up to: 6.2.2
+ * Tested up to: 6.3.2
  * WC requires at least: 3.3
- * WC tested up to: 7.7.2
+ * WC tested up to: 8.2.1
  */
 
 //Looking to contribute code to this plugin? Go ahead and fork the repository over at GitHub https://github.com/alexminza/wc-victoriabank
@@ -28,10 +28,7 @@ if(!defined('ABSPATH')) {
 require_once(__DIR__ . '/vendor/autoload.php');
 
 use Fruitware\VictoriaBankGateway\VictoriaBankGateway;
-#use Fruitware\VictoriaBankGateway\VictoriaBank\Exception;
-#use Fruitware\VictoriaBankGateway\VictoriaBank\Request;
 use Fruitware\VictoriaBankGateway\VictoriaBank\Response;
-#use Fruitware\VictoriaBankGateway\VictoriaBank\AuthorizationResponse;
 
 add_action('plugins_loaded', 'woocommerce_victoriabank_init', 0);
 
@@ -736,8 +733,8 @@ function woocommerce_victoriabank_init() {
 		public function complete_transaction($order_id, $order) {
 			$this->log(sprintf('%1$s: OrderID=%2$s', __FUNCTION__, $order_id));
 
-			$rrn = get_post_meta($order_id, strtolower(self::VB_RRN), true);
-			$intRef = get_post_meta($order_id, strtolower(self::VB_INT_REF), true);
+			$rrn = $order->get_meta(strtolower(self::VB_RRN), true);
+			$intRef = $order->get_meta(strtolower(self::VB_INT_REF), true);
 			$order_total = $this->get_order_net_total($order);
 			$order_currency = $order->get_currency();
 
@@ -765,8 +762,8 @@ function woocommerce_victoriabank_init() {
 		public function refund_transaction($order_id, $order, $amount = null) {
 			$this->log(sprintf('%1$s: OrderID=%2$s Amount=%3$s', __FUNCTION__, $order_id, $amount));
 
-			$rrn = get_post_meta($order_id, strtolower(self::VB_RRN), true);
-			$intRef = get_post_meta($order_id, strtolower(self::VB_INT_REF), true);
+			$rrn = $order->get_meta(strtolower(self::VB_RRN), true);
+			$intRef = $order->get_meta(strtolower(self::VB_INT_REF), true);
 			$order_total = $order->get_total();
 			$order_currency = $order->get_currency();
 
@@ -953,10 +950,13 @@ function woocommerce_victoriabank_init() {
 							return true; //Duplicate callback notification from the bank
 
 						#region Update order payment metadata
-						self::set_post_meta($order_id, self::MOD_TRANSACTION_TYPE, $this->transaction_type);
+						//https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book
+						$order->add_meta_data(self::MOD_TRANSACTION_TYPE, $this->transaction_type, true);
 
 						foreach($bankParams as $key => $value)
-							self::set_post_meta($order_id, strtolower(self::MOD_PREFIX . $key), $value);
+							$order->add_meta_data(strtolower(self::MOD_PREFIX . $key), $value, true);
+
+						$order->save();
 						#endregion
 
 						$message = sprintf(__('Payment authorized via %1$s: %2$s', self::MOD_TEXT_DOMAIN), $this->method_title, http_build_query($bankParams));
@@ -964,7 +964,7 @@ function woocommerce_victoriabank_init() {
 						$this->log($message, WC_Log_Levels::INFO);
 						$order->add_order_note($message);
 
-						$this->mark_order_paid($order, $intRef);
+						$this->mark_order_paid($order, $rrn);
 
 						switch($this->transaction_type) {
 							case self::TRANSACTION_TYPE_CHARGE:
@@ -989,7 +989,7 @@ function woocommerce_victoriabank_init() {
 						$this->log($message, WC_Log_Levels::INFO);
 						$order->add_order_note($message);
 
-						$this->mark_order_paid($order, $intRef);
+						$this->mark_order_paid($order, $rrn);
 
 						return true;
 						break;
@@ -1132,9 +1132,9 @@ function woocommerce_victoriabank_init() {
 			return $vbdata;
 		}
 
-		protected function mark_order_paid($order, $intRef) {
+		protected function mark_order_paid($order, $transaction_id) {
 			if(!$order->is_paid())
-				$order->payment_complete($intRef);
+				$order->payment_complete($transaction_id);
 		}
 
 		protected function mark_order_refunded($order) {
@@ -1280,13 +1280,6 @@ function woocommerce_victoriabank_init() {
 			);
 		}
 
-		protected static function set_post_meta($post_id, $meta_key, $meta_value) {
-			//https://developer.wordpress.org/reference/functions/add_post_meta/#comment-465
-			if(!add_post_meta($post_id, $meta_key, $meta_value, true)) {
-				update_post_meta($post_id, $meta_key, $meta_value);
-			 }
-		}
-
 		protected function log($message, $level = WC_Log_Levels::DEBUG) {
 			//https://woocommerce.wordpress.com/2017/01/26/improved-logging-in-woocommerce-2-7/
 			//https://stackoverflow.com/questions/1423157/print-php-call-stack
@@ -1332,7 +1325,7 @@ function woocommerce_victoriabank_init() {
 				return $actions;
 			}
 
-			$transaction_type = get_post_meta($theorder->get_id(), self::MOD_TRANSACTION_TYPE, true);
+			$transaction_type = $theorder->get_meta(self::MOD_TRANSACTION_TYPE, true);
 			if($transaction_type !== self::TRANSACTION_TYPE_AUTHORIZATION) {
 				return $actions;
 			}
@@ -1424,3 +1417,12 @@ function woocommerce_victoriabank_init() {
 	//Add WooCommerce email templates actions
 	add_filter('woocommerce_email_order_meta_fields', array(WC_VictoriaBank::class, 'email_order_meta_fields'), 10, 3);
 }
+
+#region WooCommerce HPOS compatibility
+//https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book#declaring-extension-incompatibility
+add_action('before_woocommerce_init', function() {
+	if(class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
+	}
+});
+#endregion
