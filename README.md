@@ -1,8 +1,9 @@
 # WooCommerce Victoriabank Payment Gateway
 
-[![Plugin version](https://img.shields.io/wordpress/plugin/v/wc-victoriabank)](https://wordpress.org/plugins/wc-victoriabank/)
-[![WordPress plugin](https://img.shields.io/wordpress/plugin/dt/wc-victoriabank)](https://wordpress.org/plugins/wc-victoriabank/)
-[![Active installs](https://img.shields.io/wordpress/plugin/installs/wc-victoriabank)](https://wordpress.org/plugins/wc-victoriabank/advanced/)
+[![WordPress Plugin Version](https://img.shields.io/wordpress/plugin/v/wc-victoriabank?logo=wordpress)](https://wordpress.org/plugins/wc-victoriabank/)
+[![WordPress Plugin Downloads](https://img.shields.io/wordpress/plugin/dt/wc-victoriabank?logo=wordpress)](https://wordpress.org/plugins/wc-victoriabank/advanced/)
+[![WordPress Plugin Active Installs](https://img.shields.io/wordpress/plugin/installs/wc-victoriabank?logo=wordpress)](https://wordpress.org/plugins/wc-victoriabank/advanced/)
+[![WordPress Plugin Stars](https://img.shields.io/wordpress/plugin/stars/wc-victoriabank?logo=wordpress)](https://wordpress.org/support/plugin/wc-victoriabank/reviews/)
 
 _Accept Visa and Mastercard directly on your store with the Victoriabank payment gateway for WooCommerce._
 
