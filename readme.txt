@@ -3,7 +3,7 @@ Contributors: alexminza
 Donate link: https://www.revolut.me/alexminza
 Tags: WooCommerce, Moldova, Victoriabank, VB, bank, payment, gateway, visa, mastercard, credit card
 Requires at least: 4.8
-Tested up to: 6.3.2
+Tested up to: 6.5.3
 Stable tag: trunk
 Requires PHP: 7.0
 License: GPLv3 or later
@@ -21,6 +21,7 @@ Accept Visa and Mastercard directly on your store with the Victoriabank payment 
 * Reverse transactions – partial or complete refunds
 * Admin order actions – complete authorized transaction
 * Order confirmation email with card transaction details
+* Supports WooCommerce [block-based checkout experience](https://woo.com/checkout-blocks/)
 * Free to use – [Open-source GPL-3.0 license on GitHub](https://github.com/alexminza/wc-victoriabank)
 
 = Getting Started =
@@ -51,7 +52,7 @@ Use the *WooCommerce > Settings > Payments > Victoriabank* screen to configure t
 
 = Where can I get the Merchant Data and Connection Settings? =
 
-The merchant data and connection settings are provided by Victoriabank. This data is used by the plugin to connect to the Victoriabank payment gateway and process the card transactions. Please see [https://www.victoriabank.md/en/details-corporate-banking-cards-ecommerce](https://www.victoriabank.md/en/details-corporate-banking-cards-ecommerce) and contact [Card.Acceptare@vb.md](mailto:Card.Acceptare@vb.md) for details.
+The merchant data and connection settings are provided by Victoriabank. This data is used by the plugin to connect to the Victoriabank payment gateway and process the card transactions. Please see [https://www.victoriabank.md/en/carduri-pj/e-commerce](https://www.victoriabank.md/en/carduri-pj/e-commerce) and contact [Card.Acceptare@vb.md](mailto:Card.Acceptare@vb.md) for details.
 
 = What store settings are supported? =
 
@@ -92,6 +93,9 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 == Changelog ==
 
 See [wc-victoriabank project releases on GitHub](https://github.com/alexminza/wc-victoriabank/releases) for details.
+
+= 1.4.0 =
+Added support for WooCommerce [Cart and Checkout Blocks](https://woo.com/document/cart-checkout-blocks-status/).
 
 = 1.3.8 =
 Added support for WooCommerce [High-Performance Order Storage (HPOS)](https://woocommerce.com/document/high-performance-order-storage/).
@@ -143,5 +147,8 @@ Initial release
 
 == Upgrade Notice ==
 
+= 1.4.0 =
+Added support for WooCommerce [Cart and Checkout Blocks](https://woo.com/document/cart-checkout-blocks-status/).
+
 = 1.3.8 =
-Added support for WooCommerce [High-Performance Order Storage (HPOS)](https://woocommerce.com/document/high-performance-order-storage/)
+Added support for WooCommerce [High-Performance Order Storage (HPOS)](https://woocommerce.com/document/high-performance-order-storage/).
