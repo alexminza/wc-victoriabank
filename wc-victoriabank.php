@@ -14,9 +14,9 @@
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Requires PHP: 7.0
  * Requires at least: 4.8
- * Tested up to: 6.5.3
+ * Tested up to: 6.5.4
  * WC requires at least: 3.3
- * WC tested up to: 8.9.1
+ * WC tested up to: 9.0.1
  * Requires Plugins: woocommerce
  */
 
@@ -98,34 +98,37 @@ function woocommerce_victoriabank_init() {
 			$this->supports           = array('products', 'refunds');
 
 			#region Initialize user set variables
-			$this->enabled           = $this->get_option('enabled', 'no');
-			$this->title             = $this->get_option('title', $this->method_title);
-			$this->description       = $this->get_option('description');
+			$this->enabled            = $this->get_option('enabled', 'no');
+			$this->title              = $this->get_option('title', $this->method_title);
+			$this->description        = $this->get_option('description');
 
-			$this->logo_type         = $this->get_option('logo_type', self::LOGO_TYPE_BANK);
-			$this->icon              = apply_filters('woocommerce_victoriabank_icon', self::get_logo_icon($this->logo_type));
+			$this->logo_type          = $this->get_option('logo_type', self::LOGO_TYPE_BANK);
+			$this->icon               = apply_filters('woocommerce_victoriabank_icon', self::get_logo_icon($this->logo_type));
 
-			$this->testmode          = wc_string_to_bool($this->get_option('testmode', 'no'));
-			$this->debug             = wc_string_to_bool($this->get_option('debug', 'no'));
-			$this->logger            = new WC_Logger(null, $this->debug ? WC_Log_Levels::DEBUG : WC_Log_Levels::INFO);
+			$this->testmode           = wc_string_to_bool($this->get_option('testmode', 'no'));
+			$this->debug              = wc_string_to_bool($this->get_option('debug', 'no'));
+			$this->logger             = new WC_Logger(null, $this->debug ? WC_Log_Levels::DEBUG : WC_Log_Levels::INFO);
 
-			$this->transaction_type     = $this->get_option('transaction_type', self::TRANSACTION_TYPE_CHARGE);
-			$this->order_template       = $this->get_option('order_template', self::ORDER_TEMPLATE);
+			if($this->testmode)
+				$this->description = $this->get_test_message($this->description);
 
-			$this->vb_merchant_id       = $this->get_option('vb_merchant_id');
-			$this->vb_merchant_terminal = $this->get_option('vb_merchant_terminal');
-			$this->vb_merchant_name     = $this->get_option('vb_merchant_name');
-			$this->vb_merchant_url      = $this->get_option('vb_merchant_url');
-			$this->vb_merchant_address  = $this->get_option('vb_merchant_address');
+			$this->transaction_type       = $this->get_option('transaction_type', self::TRANSACTION_TYPE_CHARGE);
+			$this->order_template         = $this->get_option('order_template', self::ORDER_TEMPLATE);
+
+			$this->vb_merchant_id         = $this->get_option('vb_merchant_id');
+			$this->vb_merchant_terminal   = $this->get_option('vb_merchant_terminal');
+			$this->vb_merchant_name       = $this->get_option('vb_merchant_name');
+			$this->vb_merchant_url        = $this->get_option('vb_merchant_url');
+			$this->vb_merchant_address    = $this->get_option('vb_merchant_address');
 
 			$this->vb_public_key_pem      = $this->get_option('vb_public_key_pem');
 			$this->vb_bank_public_key_pem = $this->get_option('vb_bank_public_key_pem');
 			$this->vb_private_key_pem     = $this->get_option('vb_private_key_pem');
 			$this->vb_private_key_pass    = $this->get_option('vb_private_key_pass');
 
-			$this->vb_public_key        = $this->get_option('vb_public_key');
-			$this->vb_private_key       = $this->get_option('vb_private_key');
-			$this->vb_bank_public_key   = $this->get_option('vb_bank_public_key');
+			$this->vb_public_key          = $this->get_option('vb_public_key');
+			$this->vb_private_key         = $this->get_option('vb_private_key');
+			$this->vb_bank_public_key     = $this->get_option('vb_bank_public_key');
 
 			$this->init_form_fields();
 			$this->init_settings();
@@ -732,7 +735,8 @@ function woocommerce_victoriabank_init() {
 				);
 			}
 
-			if(is_ajax()) {
+			//https://github.com/woocommerce/woocommerce/issues/48126#issuecomment-2180991020
+			if(WC()->is_store_api_request()) {
 				$order = wc_get_order($order_id);
 
 				return array(
@@ -1235,7 +1239,7 @@ function woocommerce_victoriabank_init() {
 		#region Utility
 		protected function get_test_message($message) {
 			if($this->testmode)
-				$message = "TEST: $message";
+				$message = sprintf(__('TEST: %1$s', self::MOD_TEXT_DOMAIN), $message);
 
 			return $message;
 		}

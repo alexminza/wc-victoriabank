@@ -1,11 +1,11 @@
 const vb_settings = window.wc.wcSettings.getSetting('victoriabank_data', {});
 const vb_title = window.wp.htmlEntities.decodeEntities(vb_settings.title);
 
-const Content = () => {
+const vb_content = () => {
     return window.wp.htmlEntities.decodeEntities(vb_settings.description || '');
 };
 
-const Label = () => {
+const vb_label = () => {
     let icon = vb_settings.icon
         ? window.wp.element.createElement(
             'img',
@@ -28,12 +28,12 @@ const Label = () => {
     return label;
 };
 
-const vb_Block_Gateway = {
+const vb_blockGateway = {
     name: vb_settings.id,
-    label: Object(window.wp.element.createElement)(Label, null),
+    label: Object(window.wp.element.createElement)(vb_label, null),
     icons: ['visa', 'mastercard'],
-    content: Object(window.wp.element.createElement)(Content, null),
-    edit: Object(window.wp.element.createElement)(Content, null),
+    content: Object(window.wp.element.createElement)(vb_content, null),
+    edit: Object(window.wp.element.createElement)(vb_content, null),
     canMakePayment: () => true,
     ariaLabel: vb_title,
     supports: {
@@ -41,4 +41,4 @@ const vb_Block_Gateway = {
     },
 };
 
-window.wc.wcBlocksRegistry.registerPaymentMethod(vb_Block_Gateway);
+window.wc.wcBlocksRegistry.registerPaymentMethod(vb_blockGateway);
