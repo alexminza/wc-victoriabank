@@ -726,6 +726,11 @@ function woocommerce_victoriabank_init() {
 			if(!$this->check_settings()) {
 				$message = sprintf(__('%1$s is not properly configured.', self::MOD_TEXT_DOMAIN), $this->method_title);
 
+				//https://github.com/woocommerce/woocommerce/issues/48687#issuecomment-2186475264
+				if(WC()->is_store_api_request()) {
+					throw new Exception($message);
+				}
+
 				wc_add_notice($message, 'error');
 				$this->settings_admin_notice();
 
