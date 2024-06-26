@@ -3,7 +3,7 @@ Contributors: alexminza
 Donate link: https://www.revolut.me/alexminza
 Tags: WooCommerce, Moldova, Victoriabank, payment gateway, credit card
 Requires at least: 4.8
-Tested up to: 6.5.4
+Tested up to: 6.5.5
 Stable tag: trunk
 Requires PHP: 7.0
 License: GPLv3 or later

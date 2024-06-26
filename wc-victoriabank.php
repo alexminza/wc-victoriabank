@@ -14,9 +14,9 @@
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Requires PHP: 7.0
  * Requires at least: 4.8
- * Tested up to: 6.5.4
+ * Tested up to: 6.5.5
  * WC requires at least: 3.3
- * WC tested up to: 9.0.1
+ * WC tested up to: 9.0.2
  * Requires Plugins: woocommerce
  */
 
