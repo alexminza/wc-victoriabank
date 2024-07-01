@@ -758,7 +758,7 @@ function woocommerce_victoriabank_init() {
 
 			$rrn = $order->get_meta(strtolower(self::VB_RRN), true);
 			$intRef = $order->get_meta(strtolower(self::VB_INT_REF), true);
-			$order_total = $this->get_order_net_total($order);
+			$order_total = self::get_order_net_total($order);
 			$order_currency = $order->get_currency();
 
 			//Funds locked on bank side - transfer the product/service to the customer and request completion
@@ -1166,7 +1166,7 @@ function woocommerce_victoriabank_init() {
 
 		protected function generate_form($order) {
 			$order_id = $order->get_id();
-			$order_total = $this->price_format($order->get_total());
+			$order_total = $order->get_total();
 			$order_currency = $order->get_currency();
 			$order_description = $this->get_order_description($order);
 			$order_email = $order->get_billing_email();
@@ -1210,20 +1210,14 @@ function woocommerce_victoriabank_init() {
 		#endregion
 
 		#region Order
-		protected function get_order_net_total($order) {
+		protected static function get_order_net_total($order) {
 			//https://github.com/woocommerce/woocommerce/issues/17795
 			//https://github.com/woocommerce/woocommerce/pull/18196
 			$total_refunded = 0;
-			if(method_exists(WC_Order_Refund::class, 'get_refunded_payment')) {
-				$order_refunds = $order->get_refunds();
-				foreach($order_refunds as $refund) {
-					if($refund->get_refunded_payment())
-						$total_refunded += $refund->get_amount();
-				}
-			}
-			else
-			{
-				$total_refunded = $order->get_total_refunded();
+			$order_refunds = $order->get_refunds();
+			foreach($order_refunds as $refund) {
+				if($refund->get_refunded_payment())
+					$total_refunded += $refund->get_amount();
 			}
 
 			$order_total = $order->get_total();
@@ -1251,12 +1245,6 @@ function woocommerce_victoriabank_init() {
 				$message = sprintf(__('TEST: %1$s', self::MOD_TEXT_DOMAIN), $message);
 
 			return $message;
-		}
-
-		protected function price_format($price) {
-			$decimals = 2;
-
-			return number_format($price, $decimals, '.', '');
 		}
 
 		protected function get_language() {
