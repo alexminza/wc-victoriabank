@@ -1189,7 +1189,11 @@ function woocommerce_victoriabank_init() {
 		public function receipt_page($order_id) {
 			try {
 				$order = wc_get_order($order_id);
-				$this->generate_form($order);
+				$payment_method = $order->get_payment_method();
+
+				if($payment_method === self::MOD_ID) {
+					$this->generate_form($order);
+				}
 			} catch(Exception $ex) {
 				$this->log($ex, WC_Log_Levels::ERROR);
 
