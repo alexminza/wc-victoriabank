@@ -741,7 +741,7 @@ function woocommerce_victoriabank_init() {
 			}
 
 			//https://github.com/woocommerce/woocommerce/issues/48126#issuecomment-2180991020
-			if(WC()->is_store_api_request()) {
+			if(WC()->is_store_api_request() || wp_doing_ajax()) {
 				$order = wc_get_order($order_id);
 
 				return array(
