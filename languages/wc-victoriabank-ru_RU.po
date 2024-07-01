@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Victoriabank Payment Gateway 1.4.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-victoriabank\n"
-"POT-Creation-Date: 2024-07-01 16:38+0300\n"
-"PO-Revision-Date: 2024-07-01 16:39+0300\n"
+"POT-Creation-Date: 2024-07-01 17:46+0300\n"
+"PO-Revision-Date: 2024-07-01 17:46+0300\n"
 "Last-Translator: Alexander Minza <alex@alexminza.com>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -459,26 +459,26 @@ msgstr "Оплата заказа полностью возвращена чер
 msgid "Payment initiation failed via %1$s."
 msgstr "Ошибка инициирования платежа через %1$s."
 
-#: wc-victoriabank.php:1251
+#: wc-victoriabank.php:1245
 msgid "TEST: %1$s"
 msgstr "ТЕСТ: %1$s"
 
-#: wc-victoriabank.php:1350
+#: wc-victoriabank.php:1338
 msgid "Settings"
 msgstr "Настройки"
 
-#: wc-victoriabank.php:1367
+#: wc-victoriabank.php:1355
 msgid "Complete %1$s transaction"
 msgstr "Провести платеж через %1$s"
 
-#: wc-victoriabank.php:1396
+#: wc-victoriabank.php:1384
 msgid "Retrieval Reference Number (RRN)"
 msgstr "Номер транзакции (RRN)"
 
-#: wc-victoriabank.php:1401
+#: wc-victoriabank.php:1389
 msgid "Authorization code"
 msgstr "Код авторизации"
 
-#: wc-victoriabank.php:1406
+#: wc-victoriabank.php:1394
 msgid "Card number"
 msgstr "Номер карты"

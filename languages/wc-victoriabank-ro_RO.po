@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Victoriabank Payment Gateway 1.4.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-victoriabank\n"
-"POT-Creation-Date: 2024-07-01 16:38+0300\n"
-"PO-Revision-Date: 2024-07-01 16:39+0300\n"
+"POT-Creation-Date: 2024-07-01 17:46+0300\n"
+"PO-Revision-Date: 2024-07-01 17:46+0300\n"
 "Last-Translator: Alexander Minza <alex@alexminza.com>\n"
 "Language-Team: \n"
 "Language: ro\n"
@@ -454,26 +454,26 @@ msgstr "Comanda a fost rambursată integral prin %1$s."
 msgid "Payment initiation failed via %1$s."
 msgstr "Inițierea plății prin %1$s a eșuat."
 
-#: wc-victoriabank.php:1251
+#: wc-victoriabank.php:1245
 msgid "TEST: %1$s"
 msgstr "TEST: %1$s"
 
-#: wc-victoriabank.php:1350
+#: wc-victoriabank.php:1338
 msgid "Settings"
 msgstr "Setări"
 
-#: wc-victoriabank.php:1367
+#: wc-victoriabank.php:1355
 msgid "Complete %1$s transaction"
 msgstr "Finalizează tranzacția prin %1$s"
 
-#: wc-victoriabank.php:1396
+#: wc-victoriabank.php:1384
 msgid "Retrieval Reference Number (RRN)"
 msgstr "Număr referință (RRN)"
 
-#: wc-victoriabank.php:1401
+#: wc-victoriabank.php:1389
 msgid "Authorization code"
 msgstr "Cod autorizare"
 
-#: wc-victoriabank.php:1406
+#: wc-victoriabank.php:1394
 msgid "Card number"
 msgstr "Număr card"
