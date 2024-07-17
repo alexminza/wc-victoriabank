@@ -14,9 +14,9 @@
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Requires PHP: 7.0
  * Requires at least: 4.8
- * Tested up to: 6.5.5
+ * Tested up to: 6.6
  * WC requires at least: 3.3
- * WC tested up to: 9.0.2
+ * WC tested up to: 9.1.2
  * Requires Plugins: woocommerce
  */
 
@@ -741,7 +741,7 @@ function woocommerce_victoriabank_init() {
 			}
 
 			//https://github.com/woocommerce/woocommerce/issues/48126#issuecomment-2180991020
-			if(WC()->is_store_api_request() || wp_doing_ajax()) {
+			if(WC()->is_store_api_request() || is_ajax()) {
 				$order = wc_get_order($order_id);
 
 				return array(
@@ -987,7 +987,7 @@ function woocommerce_victoriabank_init() {
 						$this->log($message, WC_Log_Levels::INFO);
 						$order->add_order_note($message);
 
-						$this->mark_order_paid($order, $rrn);
+						$order->payment_complete($rrn);
 
 						switch($this->transaction_type) {
 							case self::TRANSACTION_TYPE_CHARGE:
@@ -1011,8 +1011,6 @@ function woocommerce_victoriabank_init() {
 						$message = $this->get_test_message($message);
 						$this->log($message, WC_Log_Levels::INFO);
 						$order->add_order_note($message);
-
-						$this->mark_order_paid($order, $rrn);
 
 						return true;
 						break;
@@ -1146,11 +1144,6 @@ function woocommerce_victoriabank_init() {
 					$vbdata[$match[1]] = $match[2];
 
 			return $vbdata;
-		}
-
-		protected function mark_order_paid($order, $transaction_id) {
-			if(!$order->is_paid())
-				$order->payment_complete($transaction_id);
 		}
 
 		protected function mark_order_refunded($order) {
