@@ -271,10 +271,9 @@ function woocommerce_victoriabank_init() {
 
 				'connection_settings' => array(
 					'title'       => __('Connection Settings', self::MOD_TEXT_DOMAIN),
-					'description' => sprintf('%1$s<br /><br /><a href="#" id="woocommerce_victoriabank_basic_settings" class="button">%2$s</a>&nbsp;%3$s&nbsp;<a href="#" id="woocommerce_victoriabank_advanced_settings" class="button">%4$s</a>',
+					'description' => sprintf('%1$s<br /><br /><a href="#" id="woocommerce_victoriabank_basic_settings" class="button">%2$s</a> <a href="#" id="woocommerce_victoriabank_advanced_settings" class="button">%3$s</a>',
 						__('Use Basic settings to upload the key files received from the bank or configure manually using Advanced settings below.', self::MOD_TEXT_DOMAIN),
 						__('Basic settings&raquo;', self::MOD_TEXT_DOMAIN),
-						__('or', self::MOD_TEXT_DOMAIN),
 						__('Advanced settings&raquo;', self::MOD_TEXT_DOMAIN)),
 					'type'        => 'title'
 				),
