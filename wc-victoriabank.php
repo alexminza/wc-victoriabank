@@ -722,11 +722,13 @@ function woocommerce_victoriabank_init() {
 		}
 
 		public function process_payment($order_id) {
+			$is_store_api_request = method_exists(WC(), 'is_store_api_request') && WC()->is_store_api_request();
+
 			if(!$this->check_settings()) {
 				$message = sprintf(__('%1$s is not properly configured.', self::MOD_TEXT_DOMAIN), $this->method_title);
 
 				//https://github.com/woocommerce/woocommerce/issues/48687#issuecomment-2186475264
-				if(WC()->is_store_api_request()) {
+				if($is_store_api_request) {
 					throw new Exception($message);
 				}
 
@@ -740,7 +742,7 @@ function woocommerce_victoriabank_init() {
 			}
 
 			//https://github.com/woocommerce/woocommerce/issues/48126#issuecomment-2180991020
-			if(WC()->is_store_api_request() || is_ajax()) {
+			if($is_store_api_request || is_ajax()) {
 				$order = wc_get_order($order_id);
 
 				return array(

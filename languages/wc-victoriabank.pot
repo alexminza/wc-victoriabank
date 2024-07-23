@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Victoriabank Payment Gateway 1.4.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-victoriabank\n"
-"POT-Creation-Date: 2024-07-18 22:28+0300\n"
+"POT-Creation-Date: 2024-07-23 21:00+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -299,114 +299,114 @@ msgstr ""
 msgid "Unable to save data to temporary file: %1$s"
 msgstr ""
 
-#: wc-victoriabank.php:726
+#: wc-victoriabank.php:728
 msgid "%1$s is not properly configured."
 msgstr ""
 
-#: wc-victoriabank.php:774
+#: wc-victoriabank.php:776
 msgid "Payment completion via %1$s failed"
 msgstr ""
 
-#: wc-victoriabank.php:798
+#: wc-victoriabank.php:800
 msgid "Invalid refund amount"
 msgstr ""
 
-#: wc-victoriabank.php:814
+#: wc-victoriabank.php:816
 msgid "Refund of %1$s %2$s via %3$s failed"
 msgstr ""
 
-#: wc-victoriabank.php:857
+#: wc-victoriabank.php:859
 msgid "Payment verification failed: Order ID not received from %1$s."
 msgstr ""
 
-#: wc-victoriabank.php:869 wc-victoriabank.php:962
+#: wc-victoriabank.php:871 wc-victoriabank.php:964
 msgid "Order #%1$s not found as received from %2$s."
 msgstr ""
 
-#: wc-victoriabank.php:882
+#: wc-victoriabank.php:884
 msgid "Order #%1$s paid successfully via %2$s."
 msgstr ""
 
-#: wc-victoriabank.php:890
+#: wc-victoriabank.php:892
 msgid "Order #%1$s payment failed via %2$s."
 msgstr ""
 
-#: wc-victoriabank.php:905
+#: wc-victoriabank.php:907
 msgid "This Callback URL works and should not be called directly."
 msgstr ""
 
-#: wc-victoriabank.php:955
+#: wc-victoriabank.php:957
 msgid "Order ID not received from %1$s."
 msgstr ""
 
-#: wc-victoriabank.php:984
+#: wc-victoriabank.php:986
 msgid "Payment authorized via %1$s: %2$s"
 msgstr ""
 
-#: wc-victoriabank.php:1009
+#: wc-victoriabank.php:1011
 msgid "Payment completed via %1$s: %2$s"
 msgstr ""
 
-#: wc-victoriabank.php:1019
+#: wc-victoriabank.php:1021
 msgid "Refund of %1$s %2$s via %3$s approved: %4$s"
 msgstr ""
 
-#: wc-victoriabank.php:1036
+#: wc-victoriabank.php:1038
 msgid "Payment transaction check failed for order #%1$s."
 msgstr ""
 
-#: wc-victoriabank.php:1039
+#: wc-victoriabank.php:1041
 msgid "%1$s payment transaction check failed: %2$s"
 msgstr ""
 
-#: wc-victoriabank.php:1072
+#: wc-victoriabank.php:1074
 msgid "Processed successfully"
 msgstr ""
 
-#: wc-victoriabank.php:1076
+#: wc-victoriabank.php:1078
 msgid "Processing error"
 msgstr ""
 
-#: wc-victoriabank.php:1081
+#: wc-victoriabank.php:1083
 msgid "%1$s is not configured"
 msgstr ""
 
-#: wc-victoriabank.php:1086
+#: wc-victoriabank.php:1088
 msgid "Invalid message"
 msgstr ""
 
-#: wc-victoriabank.php:1091
+#: wc-victoriabank.php:1093
 msgid "Empty message"
 msgstr ""
 
-#: wc-victoriabank.php:1149
+#: wc-victoriabank.php:1151
 msgid "Order fully refunded via %1$s."
 msgstr ""
 
-#: wc-victoriabank.php:1192
+#: wc-victoriabank.php:1194
 msgid "Payment initiation failed via %1$s."
 msgstr ""
 
-#: wc-victoriabank.php:1237
+#: wc-victoriabank.php:1239
 msgid "TEST: %1$s"
 msgstr ""
 
-#: wc-victoriabank.php:1330
+#: wc-victoriabank.php:1332
 msgid "Settings"
 msgstr ""
 
-#: wc-victoriabank.php:1347
+#: wc-victoriabank.php:1349
 msgid "Complete %1$s transaction"
 msgstr ""
 
-#: wc-victoriabank.php:1376
+#: wc-victoriabank.php:1378
 msgid "Retrieval Reference Number (RRN)"
 msgstr ""
 
-#: wc-victoriabank.php:1381
+#: wc-victoriabank.php:1383
 msgid "Authorization code"
 msgstr ""
 
-#: wc-victoriabank.php:1386
+#: wc-victoriabank.php:1388
 msgid "Card number"
 msgstr ""

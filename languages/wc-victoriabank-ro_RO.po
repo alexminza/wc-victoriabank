@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Victoriabank Payment Gateway 1.4.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-victoriabank\n"
-"POT-Creation-Date: 2024-07-18 22:28+0300\n"
-"PO-Revision-Date: 2024-07-18 22:29+0300\n"
+"POT-Creation-Date: 2024-07-23 21:00+0300\n"
+"PO-Revision-Date: 2024-07-23 21:01+0300\n"
 "Last-Translator: Alexander Minza <alex@alexminza.com>\n"
 "Language-Team: \n"
 "Language: ro\n"
@@ -360,116 +360,116 @@ msgstr "Nu s-a putut crea fișier temporar: %1$s"
 msgid "Unable to save data to temporary file: %1$s"
 msgstr "Nu s-au putut salva datele in fișier temporar: %1$s"
 
-#: wc-victoriabank.php:726
+#: wc-victoriabank.php:728
 msgid "%1$s is not properly configured."
 msgstr "%1$s nu este configurat corect."
 
-#: wc-victoriabank.php:774
+#: wc-victoriabank.php:776
 msgid "Payment completion via %1$s failed"
 msgstr "Finalizarea plății prin %1$s a eșuat"
 
-#: wc-victoriabank.php:798
+#: wc-victoriabank.php:800
 msgid "Invalid refund amount"
 msgstr "Sumă de rambursare nevalidă"
 
-#: wc-victoriabank.php:814
+#: wc-victoriabank.php:816
 msgid "Refund of %1$s %2$s via %3$s failed"
 msgstr "Rambursarea sumei de %1$s %2$s prin %3$s a eșuat"
 
-#: wc-victoriabank.php:857
+#: wc-victoriabank.php:859
 msgid "Payment verification failed: Order ID not received from %1$s."
 msgstr "Verificarea plății a eșuat: Order ID nu a fost primit de la %1$s."
 
-#: wc-victoriabank.php:869 wc-victoriabank.php:962
+#: wc-victoriabank.php:871 wc-victoriabank.php:964
 msgid "Order #%1$s not found as received from %2$s."
 msgstr "Comanda #%1$s nu a fost găsită conform datelor primite de la %2$s."
 
-#: wc-victoriabank.php:882
+#: wc-victoriabank.php:884
 msgid "Order #%1$s paid successfully via %2$s."
 msgstr "Comanda #%1$s a fost platită cu succes prin %2$s."
 
-#: wc-victoriabank.php:890
+#: wc-victoriabank.php:892
 msgid "Order #%1$s payment failed via %2$s."
 msgstr "Plata comenzii #%1$s prin %2$s a eșuat."
 
-#: wc-victoriabank.php:905
+#: wc-victoriabank.php:907
 msgid "This Callback URL works and should not be called directly."
 msgstr ""
 "Această adresă de apel invers (Callback URL) funcționează și nu trebuie "
 "apelată direct."
 
-#: wc-victoriabank.php:955
+#: wc-victoriabank.php:957
 msgid "Order ID not received from %1$s."
 msgstr "Order ID nu a fost primit de la %1$s."
 
-#: wc-victoriabank.php:984
+#: wc-victoriabank.php:986
 msgid "Payment authorized via %1$s: %2$s"
 msgstr "Plată autorizată prin %1$s: %2$s"
 
-#: wc-victoriabank.php:1009
+#: wc-victoriabank.php:1011
 msgid "Payment completed via %1$s: %2$s"
 msgstr "Plată finalizată prin %1$s: %2$s"
 
-#: wc-victoriabank.php:1019
+#: wc-victoriabank.php:1021
 msgid "Refund of %1$s %2$s via %3$s approved: %4$s"
 msgstr "Rambursarea sumei de %1$s %2$s prin %3$s a fost aprobată: %4$s"
 
-#: wc-victoriabank.php:1036
+#: wc-victoriabank.php:1038
 msgid "Payment transaction check failed for order #%1$s."
 msgstr "Verificarea tranzacției a eșuat pentru comanda #%1$s."
 
-#: wc-victoriabank.php:1039
+#: wc-victoriabank.php:1041
 msgid "%1$s payment transaction check failed: %2$s"
 msgstr "Verificarea tranzacției prin %1$s a eșuat: %2$s"
 
-#: wc-victoriabank.php:1072
+#: wc-victoriabank.php:1074
 msgid "Processed successfully"
 msgstr "Procesat cu succes"
 
-#: wc-victoriabank.php:1076
+#: wc-victoriabank.php:1078
 msgid "Processing error"
 msgstr "Eroare de procesare"
 
-#: wc-victoriabank.php:1081
+#: wc-victoriabank.php:1083
 msgid "%1$s is not configured"
 msgstr "%1$s nu este configurat corect"
 
-#: wc-victoriabank.php:1086
+#: wc-victoriabank.php:1088
 msgid "Invalid message"
 msgstr "Mesaj nevalid"
 
-#: wc-victoriabank.php:1091
+#: wc-victoriabank.php:1093
 msgid "Empty message"
 msgstr "Mesaj vid"
 
-#: wc-victoriabank.php:1149
+#: wc-victoriabank.php:1151
 msgid "Order fully refunded via %1$s."
 msgstr "Comanda a fost rambursată integral prin %1$s."
 
-#: wc-victoriabank.php:1192
+#: wc-victoriabank.php:1194
 msgid "Payment initiation failed via %1$s."
 msgstr "Inițierea plății prin %1$s a eșuat."
 
-#: wc-victoriabank.php:1237
+#: wc-victoriabank.php:1239
 msgid "TEST: %1$s"
 msgstr "TEST: %1$s"
 
-#: wc-victoriabank.php:1330
+#: wc-victoriabank.php:1332
 msgid "Settings"
 msgstr "Setări"
 
-#: wc-victoriabank.php:1347
+#: wc-victoriabank.php:1349
 msgid "Complete %1$s transaction"
 msgstr "Finalizează tranzacția prin %1$s"
 
-#: wc-victoriabank.php:1376
+#: wc-victoriabank.php:1378
 msgid "Retrieval Reference Number (RRN)"
 msgstr "Număr referință (RRN)"
 
-#: wc-victoriabank.php:1381
+#: wc-victoriabank.php:1383
 msgid "Authorization code"
 msgstr "Cod autorizare"
 
-#: wc-victoriabank.php:1386
+#: wc-victoriabank.php:1388
 msgid "Card number"
 msgstr "Număr card"
