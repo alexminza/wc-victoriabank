@@ -21,7 +21,7 @@ Accept Visa and Mastercard directly on your store with the Victoriabank payment 
 * Reverse transactions – partial or complete refunds
 * Admin order actions – complete authorized transaction
 * Order confirmation email with card transaction details
-* Supports WooCommerce [block-based checkout experience](https://woo.com/checkout-blocks/)
+* Supports WooCommerce [block-based checkout experience](https://woocommerce.com/checkout-blocks/)
 * Free to use – [Open-source GPL-3.0 license on GitHub](https://github.com/alexminza/wc-victoriabank)
 
 = Getting Started =
@@ -95,7 +95,7 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 See [wc-victoriabank project releases on GitHub](https://github.com/alexminza/wc-victoriabank/releases) for details.
 
 = 1.4.0 =
-Added support for WooCommerce [Cart and Checkout Blocks](https://woo.com/document/cart-checkout-blocks-status/).
+Added support for WooCommerce [Cart and Checkout Blocks](https://woocommerce.com/document/cart-checkout-blocks-status/).
 
 = 1.3.8 =
 Added support for WooCommerce [High-Performance Order Storage (HPOS)](https://woocommerce.com/document/high-performance-order-storage/).
@@ -148,7 +148,7 @@ Initial release
 == Upgrade Notice ==
 
 = 1.4.0 =
-Added support for WooCommerce [Cart and Checkout Blocks](https://woo.com/document/cart-checkout-blocks-status/).
+Added support for WooCommerce [Cart and Checkout Blocks](https://woocommerce.com/document/cart-checkout-blocks-status/).
 
 = 1.3.8 =
 Added support for WooCommerce [High-Performance Order Storage (HPOS)](https://woocommerce.com/document/high-performance-order-storage/).
