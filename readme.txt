@@ -3,7 +3,7 @@ Contributors: alexminza
 Donate link: https://www.revolut.me/alexminza
 Tags: WooCommerce, Moldova, Victoriabank, payment gateway, credit card
 Requires at least: 4.8
-Tested up to: 6.6.1
+Tested up to: 6.8
 Stable tag: trunk
 Requires PHP: 7.0
 License: GPLv3 or later
@@ -94,6 +94,9 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 
 See [wc-victoriabank project releases on GitHub](https://github.com/alexminza/wc-victoriabank/releases) for details.
 
+= 1.4.1 =
+Updated Tested up to 6.8 and WC tested up to 9.8.2
+
 = 1.4.0 =
 Added support for WooCommerce [Cart and Checkout Blocks](https://woocommerce.com/document/cart-checkout-blocks-status/).
 
@@ -146,6 +149,9 @@ Minor improvements
 Initial release
 
 == Upgrade Notice ==
+
+= 1.4.1 =
+Updated Tested up to 6.8 and WC tested up to 9.8.2
 
 = 1.4.0 =
 Added support for WooCommerce [Cart and Checkout Blocks](https://woocommerce.com/document/cart-checkout-blocks-status/).
