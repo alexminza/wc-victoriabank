@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the WooCommerce VictoriaBank Payment Gateway package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Victoriabank Payment Gateway 1.4.0\n"
+"Project-Id-Version: WooCommerce Victoriabank Payment Gateway 1.4.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-victoriabank\n"
-"POT-Creation-Date: 2024-07-23 21:00+0300\n"
-"PO-Revision-Date: 2024-07-23 21:01+0300\n"
+"POT-Creation-Date: 2025-04-25 17:36+0300\n"
+"PO-Revision-Date: 2025-04-25 17:37+0300\n"
 "Last-Translator: Alexander Minza <alex@alexminza.com>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.6\n"
 
 #. Description of the plugin
 #: wc-victoriabank.php
@@ -308,14 +308,14 @@ msgstr "Не настроено"
 #: wc-victoriabank.php:521
 msgid ""
 "Current server settings do not allow web requests to the bank payment "
-"gateway. See <a href=\"https://www.php.net/manual/en/filesystem."
-"configuration.php#ini.allow-url-fopen\" target=\"_blank\">PHP Runtime "
-"Configuration</a> for details."
+"gateway. See <a href=\"https://www.php.net/manual/en/"
+"filesystem.configuration.php#ini.allow-url-fopen\" target=\"_blank\">PHP "
+"Runtime Configuration</a> for details."
 msgstr ""
 "Текущие настройки сервера не позволяют веб-запросы к банковскому платежному "
-"шлюзу. См. <a href=\"https://www.php.net/manual/en/filesystem.configuration."
-"php#ini.allow-url-fopen\" target=\"_blank\">PHP Runtime Configuration</a> "
-"для деталей."
+"шлюзу. См. <a href=\"https://www.php.net/manual/en/"
+"filesystem.configuration.php#ini.allow-url-fopen\" target=\"_blank\">PHP "
+"Runtime Configuration</a> для деталей."
 
 #: wc-victoriabank.php:530
 msgid ""
