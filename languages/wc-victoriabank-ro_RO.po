@@ -1,11 +1,11 @@
-# Copyright (C) 2017 WooCommerce VictoriaBank Payment Gateway
-# This file is distributed under the same license as the WooCommerce VictoriaBank Payment Gateway package.
+# Copyright (C) 2025 Alexander Minza
+# This file is distributed under the same license as the Victoriabank Payment Gateway for WooCommerce package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WooCommerce Victoriabank Payment Gateway 1.4.1\n"
+"Project-Id-Version: Victoriabank Payment Gateway for WooCommerce 1.4.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-victoriabank\n"
-"POT-Creation-Date: 2025-04-25 17:36+0300\n"
-"PO-Revision-Date: 2025-04-25 17:36+0300\n"
+"POT-Creation-Date: 2025-08-03 18:38+0300\n"
+"PO-Revision-Date: 2025-08-03 18:42+0300\n"
 "Last-Translator: Alexander Minza <alex@alexminza.com>\n"
 "Language-Team: \n"
 "Language: ro\n"
@@ -141,6 +141,7 @@ msgid "Order description"
 msgstr "Descriere comandă"
 
 #: wc-victoriabank.php:215
+#, php-format
 msgid ""
 "Format: <code>%1$s</code> - Order ID, <code>%2$s</code> - Order items summary"
 msgstr ""
@@ -289,6 +290,7 @@ msgid "Supported currencies"
 msgstr "Valute suportate"
 
 #: wc-victoriabank.php:497
+#, php-format
 msgid ""
 "See plugin documentation for <a href=\"%1$s\" target=\"_blank\">installation "
 "instructions</a>."
@@ -313,6 +315,7 @@ msgstr ""
 "Runtime Configuration</a> pentru mai multe detalii."
 
 #: wc-victoriabank.php:530
+#, php-format
 msgid ""
 "Please review the <a href=\"%1$s\">payment method settings</a> page for log "
 "details and setup instructions."
@@ -353,18 +356,22 @@ msgid "Could not validate file"
 msgstr "Nu s-a putut valida fișierul"
 
 #: wc-victoriabank.php:667
+#, php-format
 msgid "Unable to create temporary file: %1$s"
 msgstr "Nu s-a putut crea fișier temporar: %1$s"
 
 #: wc-victoriabank.php:672
+#, php-format
 msgid "Unable to save data to temporary file: %1$s"
 msgstr "Nu s-au putut salva datele in fișier temporar: %1$s"
 
 #: wc-victoriabank.php:728
+#, php-format
 msgid "%1$s is not properly configured."
 msgstr "%1$s nu este configurat corect."
 
 #: wc-victoriabank.php:776
+#, php-format
 msgid "Payment completion via %1$s failed"
 msgstr "Finalizarea plății prin %1$s a eșuat"
 
@@ -373,22 +380,27 @@ msgid "Invalid refund amount"
 msgstr "Sumă de rambursare nevalidă"
 
 #: wc-victoriabank.php:816
+#, php-format
 msgid "Refund of %1$s %2$s via %3$s failed"
 msgstr "Rambursarea sumei de %1$s %2$s prin %3$s a eșuat"
 
 #: wc-victoriabank.php:859
+#, php-format
 msgid "Payment verification failed: Order ID not received from %1$s."
 msgstr "Verificarea plății a eșuat: Order ID nu a fost primit de la %1$s."
 
 #: wc-victoriabank.php:871 wc-victoriabank.php:964
+#, php-format
 msgid "Order #%1$s not found as received from %2$s."
 msgstr "Comanda #%1$s nu a fost găsită conform datelor primite de la %2$s."
 
 #: wc-victoriabank.php:884
+#, php-format
 msgid "Order #%1$s paid successfully via %2$s."
 msgstr "Comanda #%1$s a fost platită cu succes prin %2$s."
 
 #: wc-victoriabank.php:892
+#, php-format
 msgid "Order #%1$s payment failed via %2$s."
 msgstr "Plata comenzii #%1$s prin %2$s a eșuat."
 
@@ -399,26 +411,32 @@ msgstr ""
 "apelată direct."
 
 #: wc-victoriabank.php:957
+#, php-format
 msgid "Order ID not received from %1$s."
 msgstr "Order ID nu a fost primit de la %1$s."
 
 #: wc-victoriabank.php:986
+#, php-format
 msgid "Payment authorized via %1$s: %2$s"
 msgstr "Plată autorizată prin %1$s: %2$s"
 
 #: wc-victoriabank.php:1011
+#, php-format
 msgid "Payment completed via %1$s: %2$s"
 msgstr "Plată finalizată prin %1$s: %2$s"
 
 #: wc-victoriabank.php:1021
+#, php-format
 msgid "Refund of %1$s %2$s via %3$s approved: %4$s"
 msgstr "Rambursarea sumei de %1$s %2$s prin %3$s a fost aprobată: %4$s"
 
 #: wc-victoriabank.php:1038
+#, php-format
 msgid "Payment transaction check failed for order #%1$s."
 msgstr "Verificarea tranzacției a eșuat pentru comanda #%1$s."
 
 #: wc-victoriabank.php:1041
+#, php-format
 msgid "%1$s payment transaction check failed: %2$s"
 msgstr "Verificarea tranzacției prin %1$s a eșuat: %2$s"
 
@@ -431,6 +449,7 @@ msgid "Processing error"
 msgstr "Eroare de procesare"
 
 #: wc-victoriabank.php:1083
+#, php-format
 msgid "%1$s is not configured"
 msgstr "%1$s nu este configurat corect"
 
@@ -443,33 +462,37 @@ msgid "Empty message"
 msgstr "Mesaj vid"
 
 #: wc-victoriabank.php:1151
+#, php-format
 msgid "Order fully refunded via %1$s."
 msgstr "Comanda a fost rambursată integral prin %1$s."
 
-#: wc-victoriabank.php:1194
+#: wc-victoriabank.php:1197
+#, php-format
 msgid "Payment initiation failed via %1$s."
 msgstr "Inițierea plății prin %1$s a eșuat."
 
-#: wc-victoriabank.php:1239
+#: wc-victoriabank.php:1242
+#, php-format
 msgid "TEST: %1$s"
 msgstr "TEST: %1$s"
 
-#: wc-victoriabank.php:1332
+#: wc-victoriabank.php:1335
 msgid "Settings"
 msgstr "Setări"
 
-#: wc-victoriabank.php:1349
+#: wc-victoriabank.php:1352
+#, php-format
 msgid "Complete %1$s transaction"
 msgstr "Finalizează tranzacția prin %1$s"
 
-#: wc-victoriabank.php:1378
+#: wc-victoriabank.php:1381
 msgid "Retrieval Reference Number (RRN)"
 msgstr "Număr referință (RRN)"
 
-#: wc-victoriabank.php:1383
+#: wc-victoriabank.php:1386
 msgid "Authorization code"
 msgstr "Cod autorizare"
 
-#: wc-victoriabank.php:1388
+#: wc-victoriabank.php:1391
 msgid "Card number"
 msgstr "Număr card"
