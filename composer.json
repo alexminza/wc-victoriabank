@@ -1,6 +1,6 @@
 {
     "name": "alexminza/wc-victoriabank",
-    "description": "WooCommerce Victoriabank Payment Gateway",
+    "description": "Victoriabank Payment Gateway for WooCommerce",
     "type": "wordpress-plugin",
     "keywords": ["WooCommerce", "Moldova", "Victoriabank", "VB", "bank", "payment", "gateway", "visa", "mastercard", "credit card"],
     "homepage": "https://github.com/alexminza/wc-victoriabank",

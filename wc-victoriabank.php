@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: WooCommerce Victoriabank Payment Gateway
+ * Plugin Name: Victoriabank Payment Gateway for WooCommerce
  * Description: Accept Visa and Mastercard directly on your store with the Victoriabank payment gateway for WooCommerce.
  * Plugin URI: https://github.com/alexminza/wc-victoriabank
- * Version: 1.4.1
+ * Version: 1.4.2
  * Author: Alexander Minza
  * Author URI: https://profiles.wordpress.org/alexminza
  * Developer: Alexander Minza
@@ -14,9 +14,9 @@
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Requires PHP: 7.0
  * Requires at least: 4.8
- * Tested up to: 6.8
+ * Tested up to: 6.8.2
  * WC requires at least: 3.3
- * WC tested up to: 9.8.2
+ * WC tested up to: 10.0.4
  * Requires Plugins: woocommerce
  */
 
@@ -93,7 +93,7 @@ function woocommerce_victoriabank_init() {
 		public function __construct() {
 			$this->id                 = self::MOD_ID;
 			$this->method_title       = self::MOD_TITLE;
-			$this->method_description = 'WooCommerce Payment Gateway for Victoriabank';
+			$this->method_description = 'Victoriabank Payment Gateway for WooCommerce';
 			$this->has_fields         = false;
 			$this->supports           = array('products', 'refunds');
 
@@ -755,7 +755,7 @@ function woocommerce_victoriabank_init() {
 		}
 
 		public function complete_transaction($order_id, $order) {
-			$this->log(sprintf('%1$s: OrderID=%2$s', __FUNCTION__, $order_id));
+			$this->log(sprintf('%s: order_id=%s', __FUNCTION__, $order_id));
 
 			$rrn = $order->get_meta(strtolower(self::VB_RRN), true);
 			$intRef = $order->get_meta(strtolower(self::VB_INT_REF), true);
@@ -784,7 +784,7 @@ function woocommerce_victoriabank_init() {
 		}
 
 		public function refund_transaction($order_id, $order, $amount = null) {
-			$this->log(sprintf('%1$s: OrderID=%2$s Amount=%3$s', __FUNCTION__, $order_id, $amount));
+			$this->log(sprintf('%s: order_id=%s amount=%s', __FUNCTION__, $order_id, $amount));
 
 			$rrn = $order->get_meta(strtolower(self::VB_RRN), true);
 			$intRef = $order->get_meta(strtolower(self::VB_INT_REF), true);
@@ -1166,14 +1166,17 @@ function woocommerce_victoriabank_init() {
 			$order_email = $order->get_billing_email();
 			$language = $this->get_language();
 
-			$backRefUrl = add_query_arg(self::VB_ORDER_ID, urlencode($order_id), $this->get_redirect_url());
+			$redirect_url = add_query_arg(self::VB_ORDER_ID, urlencode($order_id), $this->get_redirect_url());
 
-			//Request payment authorization - redirects to the banks page
+			$this->log(sprintf('%s: order_id=%s, order_total=%s, redirect_url=%s, order_currency=%s, order_description=%s, order_email=%s, language=%s',
+				__FUNCTION__, $order_id, $order_total, $redirect_url, $order_currency, $order_description, $order_email, $language));
+
+			//Request payment authorization - redirects to the bank page
 			$victoriaBankGateway = $this->init_vb_client();
 			$victoriaBankGateway->requestAuthorization(
 				$order_id,
 				$order_total,
-				$backRefUrl,
+				$redirect_url,
 				$order_currency,
 				$order_description,
 				$order_email,

@@ -1,19 +1,17 @@
-=== WooCommerce Victoriabank Payment Gateway ===
+=== Victoriabank Payment Gateway for WooCommerce ===
 Contributors: alexminza
 Donate link: https://www.revolut.me/alexminza
 Tags: WooCommerce, Moldova, Victoriabank, payment gateway, credit card
 Requires at least: 4.8
-Tested up to: 6.8
+Tested up to: 6.8.2
 Stable tag: trunk
 Requires PHP: 7.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-WooCommerce Payment Gateway for Victoriabank
-
 == Description ==
 
-Accept Visa and Mastercard directly on your store with the Victoriabank payment gateway for WooCommerce.
+Accept Visa and Mastercard directly on your store with the Victoriabank Payment Gateway for WooCommerce.
 
 = Features =
 
@@ -94,8 +92,11 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 
 See [wc-victoriabank project releases on GitHub](https://github.com/alexminza/wc-victoriabank/releases) for details.
 
+= 1.4.2 =
+Adjusted plugin name to comply with the [WooCommerce trademark guidelines](https://woocommerce.com/trademark-guidelines/).
+
 = 1.4.1 =
-Updated Tested up to 6.8 and WC tested up to 9.8.2
+Updated Tested up to 6.8 and WC tested up to 9.8.2.
 
 = 1.4.0 =
 Added support for WooCommerce [Cart and Checkout Blocks](https://woocommerce.com/document/cart-checkout-blocks-status/).
@@ -150,8 +151,11 @@ Initial release
 
 == Upgrade Notice ==
 
+= 1.4.2 =
+Adjusted plugin name to comply with the [WooCommerce trademark guidelines](https://woocommerce.com/trademark-guidelines/).
+
 = 1.4.1 =
-Updated Tested up to 6.8 and WC tested up to 9.8.2
+Updated Tested up to 6.8 and WC tested up to 9.8.2.
 
 = 1.4.0 =
 Added support for WooCommerce [Cart and Checkout Blocks](https://woocommerce.com/document/cart-checkout-blocks-status/).
