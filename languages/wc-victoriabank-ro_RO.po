@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Victoriabank Payment Gateway for WooCommerce package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Victoriabank Payment Gateway for WooCommerce 1.4.2\n"
+"Project-Id-Version: Victoriabank Payment Gateway for WooCommerce 1.4.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-victoriabank\n"
-"POT-Creation-Date: 2025-08-03 18:38+0300\n"
-"PO-Revision-Date: 2025-08-03 18:42+0300\n"
+"POT-Creation-Date: 2025-08-05 16:58+0300\n"
+"PO-Revision-Date: 2025-08-05 16:59+0300\n"
 "Last-Translator: Alexander Minza <alex@alexminza.com>\n"
 "Language-Team: \n"
 "Language: ro\n"
@@ -32,59 +32,59 @@ msgstr ""
 "Gateway-ul de plată Victoriabank necesită ca modulul WooCommerce să fie "
 "instalat și activ."
 
-#: wc-victoriabank.php:155
+#: wc-victoriabank.php:158
 msgid "Enable/Disable"
 msgstr "Activare/dezactivare"
 
-#: wc-victoriabank.php:157
+#: wc-victoriabank.php:160
 msgid "Enable this gateway"
 msgstr "Activează acest gateway de plată"
 
-#: wc-victoriabank.php:161
+#: wc-victoriabank.php:164
 msgid "Title"
 msgstr "Titlu"
 
-#: wc-victoriabank.php:163
+#: wc-victoriabank.php:166
 msgid "Payment method title that the customer will see during checkout."
 msgstr "Titlul metodei de plată afișat clientului în timpul plății."
 
-#: wc-victoriabank.php:167
+#: wc-victoriabank.php:170
 msgid "Description"
 msgstr "Descriere"
 
-#: wc-victoriabank.php:169
+#: wc-victoriabank.php:172
 msgid "Payment method description that the customer will see during checkout."
 msgstr "Descrierea metodei de plată afișată clientului în timpul plății."
 
-#: wc-victoriabank.php:173
+#: wc-victoriabank.php:176
 msgid "Logo"
 msgstr "Logo"
 
-#: wc-victoriabank.php:176
+#: wc-victoriabank.php:179
 msgid "Payment method logo image that the customer will see during checkout."
 msgstr "Sigla metodei de plată afișată clientului în timpul plății."
 
-#: wc-victoriabank.php:179
+#: wc-victoriabank.php:182
 msgid "Bank logo"
 msgstr "Logo bancă"
 
-#: wc-victoriabank.php:180
+#: wc-victoriabank.php:183
 msgid "Payment systems logos"
 msgstr "Logo sisteme de plăți"
 
-#: wc-victoriabank.php:181
+#: wc-victoriabank.php:184
 msgid "No logo"
 msgstr "Fără logo"
 
-#: wc-victoriabank.php:186
+#: wc-victoriabank.php:189
 msgid "Test mode"
 msgstr "Mod testare"
 
-#: wc-victoriabank.php:188
+#: wc-victoriabank.php:191
 msgid "Enabled"
 msgstr "Activat"
 
-#: wc-victoriabank.php:189
+#: wc-victoriabank.php:192
 msgid ""
 "Use Test or Live bank gateway to process the payments. Disable when ready to "
 "accept live payments."
@@ -92,19 +92,19 @@ msgstr ""
 "Conectare la mediul de Test sau Producție al băncii pentru procesarea "
 "plăților. Dezactivați atunci când sunteți gata să acceptați plăți reale."
 
-#: wc-victoriabank.php:193
+#: wc-victoriabank.php:196
 msgid "Debug mode"
 msgstr "Mod depanare"
 
-#: wc-victoriabank.php:195
+#: wc-victoriabank.php:198
 msgid "Enable logging"
 msgstr "Activează jurnalizare"
 
-#: wc-victoriabank.php:197
+#: wc-victoriabank.php:200
 msgid "View logs"
 msgstr "Vizualizați jurnalele"
 
-#: wc-victoriabank.php:198
+#: wc-victoriabank.php:201
 msgid ""
 "Save debug messages to the WooCommerce System Status logs. Note: this may "
 "log personal information. Use this for debugging purposes only and delete "
@@ -114,11 +114,11 @@ msgstr ""
 "Notă: acest lucru poate înregistra informații personale. Utilizați această "
 "opțiune numai pentru depanare și ștergeți jurnalele atunci când ați terminat."
 
-#: wc-victoriabank.php:202
+#: wc-victoriabank.php:205
 msgid "Transaction type"
 msgstr "Tip tranzacție"
 
-#: wc-victoriabank.php:205
+#: wc-victoriabank.php:208
 msgid ""
 "Select how transactions should be processed. Charge submits all transactions "
 "for settlement, Authorization simply authorizes the order total for capture "
@@ -128,19 +128,19 @@ msgstr ""
 "toate tranzacțiile la bancă pentru decontare, Authorization doar autorizează "
 "suma comenzii la bancă pentru decontare ulterioară."
 
-#: wc-victoriabank.php:208
+#: wc-victoriabank.php:211
 msgid "Charge"
 msgstr "Plată (Charge)"
 
-#: wc-victoriabank.php:209
+#: wc-victoriabank.php:212
 msgid "Authorization"
 msgstr "Autorizare (Authorization)"
 
-#: wc-victoriabank.php:213
+#: wc-victoriabank.php:216
 msgid "Order description"
 msgstr "Descriere comandă"
 
-#: wc-victoriabank.php:215
+#: wc-victoriabank.php:218
 #, php-format
 msgid ""
 "Format: <code>%1$s</code> - Order ID, <code>%2$s</code> - Order items summary"
@@ -148,46 +148,46 @@ msgstr ""
 "Format: <code>%1$s</code> - ID Comandă, <code>%2$s</code> - Sumar conținut "
 "comandă"
 
-#: wc-victoriabank.php:216
+#: wc-victoriabank.php:219
 msgid "Order description that the customer will see on the bank payment page."
 msgstr ""
 "Descrierea comenzii afișată clientului pe pagina băncii în timpul plății."
 
-#: wc-victoriabank.php:221
+#: wc-victoriabank.php:224
 msgid "Merchant Data"
 msgstr "Date comerciant"
 
-#: wc-victoriabank.php:222
+#: wc-victoriabank.php:225
 msgid ""
 "Merchant information that the customer will see on the bank payment page."
 msgstr ""
 "Informații vânzător afișate clientului pe pagina băncii în timpul plății."
 
-#: wc-victoriabank.php:226
+#: wc-victoriabank.php:229
 msgid "Merchant name"
 msgstr "Nume comerciant"
 
-#: wc-victoriabank.php:236
+#: wc-victoriabank.php:239
 msgid "Merchant URL"
 msgstr "URL comerciant"
 
-#: wc-victoriabank.php:245
+#: wc-victoriabank.php:248
 msgid "Merchant address"
 msgstr "Adresă comerciant"
 
-#: wc-victoriabank.php:254
+#: wc-victoriabank.php:257
 msgid "Card acceptor ID"
 msgstr "ID comerciant (Card acceptor ID)"
 
-#: wc-victoriabank.php:263
+#: wc-victoriabank.php:266
 msgid "Terminal ID"
 msgstr "ID terminal"
 
-#: wc-victoriabank.php:273 wc-victoriabank.php:498
+#: wc-victoriabank.php:276 wc-victoriabank.php:501
 msgid "Connection Settings"
 msgstr "Setări conexiune"
 
-#: wc-victoriabank.php:275
+#: wc-victoriabank.php:278
 msgid ""
 "Use Basic settings to upload the key files received from the bank or "
 "configure manually using Advanced settings below."
@@ -195,73 +195,73 @@ msgstr ""
 "Utilizați Setările de bază pentru a încărca fișierele cu chei primite de la "
 "bancă sau configurați manual utilizând Setările avansate de mai jos."
 
-#: wc-victoriabank.php:276
+#: wc-victoriabank.php:279
 msgid "Basic settings&raquo;"
 msgstr "Setări de bază&raquo;"
 
-#: wc-victoriabank.php:277
+#: wc-victoriabank.php:280
 msgid "Advanced settings&raquo;"
 msgstr "Setări avansate&raquo;"
 
-#: wc-victoriabank.php:281
+#: wc-victoriabank.php:284
 msgid "Public key"
 msgstr "Cheie publică"
 
-#: wc-victoriabank.php:289
+#: wc-victoriabank.php:292
 msgid "Bank public key"
 msgstr "Cheie publică bancă"
 
-#: wc-victoriabank.php:297
+#: wc-victoriabank.php:300
 msgid "Private key"
 msgstr "Cheie privată"
 
-#: wc-victoriabank.php:306 wc-victoriabank.php:503
+#: wc-victoriabank.php:309 wc-victoriabank.php:506
 msgid "Public key file"
 msgstr "Fișier cheie publică"
 
-#: wc-victoriabank.php:312 wc-victoriabank.php:509
+#: wc-victoriabank.php:315 wc-victoriabank.php:512
 msgid "Bank public key file"
 msgstr "Fișier cheie publică bancă"
 
-#: wc-victoriabank.php:318 wc-victoriabank.php:515
+#: wc-victoriabank.php:321 wc-victoriabank.php:518
 msgid "Private key file"
 msgstr "Fișier cheie privată"
 
-#: wc-victoriabank.php:324
+#: wc-victoriabank.php:327
 msgid "Private key passphrase"
 msgstr "Parolă cheie privată"
 
-#: wc-victoriabank.php:326
+#: wc-victoriabank.php:329
 msgid "Leave empty if private key is not encrypted."
 msgstr "Lăsați vid dacă cheia privată nu este criptată."
 
-#: wc-victoriabank.php:327
+#: wc-victoriabank.php:330
 msgid "Optional"
 msgstr "Opțional"
 
-#: wc-victoriabank.php:332
+#: wc-victoriabank.php:335
 msgid "Payment Notification"
 msgstr "Notificare plăți"
 
-#: wc-victoriabank.php:334
+#: wc-victoriabank.php:337
 msgid "Provide this URL to the bank to enable online payment notifications."
 msgstr ""
 "Furnizați băncii această adresă URL pentru activare notificări de plată "
 "online."
 
-#: wc-victoriabank.php:335
+#: wc-victoriabank.php:338
 msgid "Callback URL"
 msgstr "URL apel invers (Callback URL)"
 
-#: wc-victoriabank.php:337
+#: wc-victoriabank.php:340
 msgid "Advanced&raquo;"
 msgstr "Opțiuni avansate&raquo;"
 
-#: wc-victoriabank.php:341
+#: wc-victoriabank.php:344
 msgid "Process callback data"
 msgstr "Procesează date apel invers"
 
-#: wc-victoriabank.php:344
+#: wc-victoriabank.php:347
 msgid ""
 "Manually process bank transaction response callback data received by email "
 "as part of the backup procedure."
@@ -269,11 +269,11 @@ msgstr ""
 "Procesează manual datele de răspuns apel invers tranzacție primite prin "
 "email de la bancă ca parte a procedurii de siguranță."
 
-#: wc-victoriabank.php:345
+#: wc-victoriabank.php:348
 msgid "Bank transaction response callback data"
 msgstr "Date răspuns apel invers tranzacție de la bancă"
 
-#: wc-victoriabank.php:428
+#: wc-victoriabank.php:431
 msgid ""
 "Are you sure you want to process the entered bank transaction response "
 "callback data?"
@@ -281,15 +281,15 @@ msgstr ""
 "Sigur vrei să procesezi datele introduse răspuns apel invers tranzacție de "
 "la bancă?"
 
-#: wc-victoriabank.php:488
+#: wc-victoriabank.php:491
 msgid "Unsupported store currency"
 msgstr "Valuta magazinului nu este suportată"
 
-#: wc-victoriabank.php:490
+#: wc-victoriabank.php:493
 msgid "Supported currencies"
 msgstr "Valute suportate"
 
-#: wc-victoriabank.php:497
+#: wc-victoriabank.php:500
 #, php-format
 msgid ""
 "See plugin documentation for <a href=\"%1$s\" target=\"_blank\">installation "
@@ -298,11 +298,11 @@ msgstr ""
 "Consultați documentația modulului pentru <a href=\"%1$s\" "
 "target=\"_blank\">instrucțiuni de instalare</a>."
 
-#: wc-victoriabank.php:498
+#: wc-victoriabank.php:501
 msgid "Not configured"
 msgstr "Neconfigurat"
 
-#: wc-victoriabank.php:521
+#: wc-victoriabank.php:524
 msgid ""
 "Current server settings do not allow web requests to the bank payment "
 "gateway. See <a href=\"https://www.php.net/manual/en/"
@@ -314,7 +314,7 @@ msgstr ""
 "filesystem.configuration.php#ini.allow-url-fopen\" target=\"_blank\">PHP "
 "Runtime Configuration</a> pentru mai multe detalii."
 
-#: wc-victoriabank.php:530
+#: wc-victoriabank.php:533
 #, php-format
 msgid ""
 "Please review the <a href=\"%1$s\">payment method settings</a> page for log "
@@ -323,176 +323,176 @@ msgstr ""
 "Consultați pagina cu <a href=\"%1$s\">setările metodei de plată</a> pentru "
 "detaliile jurnalului și instrucțiuni de configurare."
 
-#: wc-victoriabank.php:608
+#: wc-victoriabank.php:611
 msgid "Invalid public key"
 msgstr "Cheie publică nevalidă"
 
-#: wc-victoriabank.php:612
+#: wc-victoriabank.php:615
 msgid "Could not validate public key"
 msgstr "Nu s-a putut valida cheia publică"
 
-#: wc-victoriabank.php:632
+#: wc-victoriabank.php:635
 msgid "Invalid private key or wrong private key passphrase"
 msgstr "Cheie privată nevalidă sau parolă cheie privată incorectă"
 
-#: wc-victoriabank.php:636
+#: wc-victoriabank.php:639
 msgid "Could not validate private key"
 msgstr "Nu s-a putut valida cheia privată"
 
-#: wc-victoriabank.php:643
+#: wc-victoriabank.php:646
 msgid "Invalid value"
 msgstr "Valoare nevalidă"
 
-#: wc-victoriabank.php:646
+#: wc-victoriabank.php:649
 msgid "File not found"
 msgstr "Fișierul nu a fost găsit"
 
-#: wc-victoriabank.php:649
+#: wc-victoriabank.php:652
 msgid "File not readable"
 msgstr "Fișierul nu poate fi citit"
 
-#: wc-victoriabank.php:652
+#: wc-victoriabank.php:655
 msgid "Could not validate file"
 msgstr "Nu s-a putut valida fișierul"
 
-#: wc-victoriabank.php:667
+#: wc-victoriabank.php:670
 #, php-format
 msgid "Unable to create temporary file: %1$s"
 msgstr "Nu s-a putut crea fișier temporar: %1$s"
 
-#: wc-victoriabank.php:672
+#: wc-victoriabank.php:675
 #, php-format
 msgid "Unable to save data to temporary file: %1$s"
 msgstr "Nu s-au putut salva datele in fișier temporar: %1$s"
 
-#: wc-victoriabank.php:728
+#: wc-victoriabank.php:731
 #, php-format
 msgid "%1$s is not properly configured."
 msgstr "%1$s nu este configurat corect."
 
-#: wc-victoriabank.php:776
+#: wc-victoriabank.php:779
 #, php-format
 msgid "Payment completion via %1$s failed"
 msgstr "Finalizarea plății prin %1$s a eșuat"
 
-#: wc-victoriabank.php:800
+#: wc-victoriabank.php:803
 msgid "Invalid refund amount"
 msgstr "Sumă de rambursare nevalidă"
 
-#: wc-victoriabank.php:816
+#: wc-victoriabank.php:819
 #, php-format
 msgid "Refund of %1$s %2$s via %3$s failed"
 msgstr "Rambursarea sumei de %1$s %2$s prin %3$s a eșuat"
 
-#: wc-victoriabank.php:859
+#: wc-victoriabank.php:862
 #, php-format
 msgid "Payment verification failed: Order ID not received from %1$s."
 msgstr "Verificarea plății a eșuat: Order ID nu a fost primit de la %1$s."
 
-#: wc-victoriabank.php:871 wc-victoriabank.php:964
+#: wc-victoriabank.php:874 wc-victoriabank.php:967
 #, php-format
 msgid "Order #%1$s not found as received from %2$s."
 msgstr "Comanda #%1$s nu a fost găsită conform datelor primite de la %2$s."
 
-#: wc-victoriabank.php:884
+#: wc-victoriabank.php:887
 #, php-format
 msgid "Order #%1$s paid successfully via %2$s."
 msgstr "Comanda #%1$s a fost platită cu succes prin %2$s."
 
-#: wc-victoriabank.php:892
+#: wc-victoriabank.php:895
 #, php-format
 msgid "Order #%1$s payment failed via %2$s."
 msgstr "Plata comenzii #%1$s prin %2$s a eșuat."
 
-#: wc-victoriabank.php:907
+#: wc-victoriabank.php:910
 msgid "This Callback URL works and should not be called directly."
 msgstr ""
 "Această adresă de apel invers (Callback URL) funcționează și nu trebuie "
 "apelată direct."
 
-#: wc-victoriabank.php:957
+#: wc-victoriabank.php:960
 #, php-format
 msgid "Order ID not received from %1$s."
 msgstr "Order ID nu a fost primit de la %1$s."
 
-#: wc-victoriabank.php:986
+#: wc-victoriabank.php:989
 #, php-format
 msgid "Payment authorized via %1$s: %2$s"
 msgstr "Plată autorizată prin %1$s: %2$s"
 
-#: wc-victoriabank.php:1011
+#: wc-victoriabank.php:1014
 #, php-format
 msgid "Payment completed via %1$s: %2$s"
 msgstr "Plată finalizată prin %1$s: %2$s"
 
-#: wc-victoriabank.php:1021
+#: wc-victoriabank.php:1024
 #, php-format
 msgid "Refund of %1$s %2$s via %3$s approved: %4$s"
 msgstr "Rambursarea sumei de %1$s %2$s prin %3$s a fost aprobată: %4$s"
 
-#: wc-victoriabank.php:1038
+#: wc-victoriabank.php:1041
 #, php-format
 msgid "Payment transaction check failed for order #%1$s."
 msgstr "Verificarea tranzacției a eșuat pentru comanda #%1$s."
 
-#: wc-victoriabank.php:1041
+#: wc-victoriabank.php:1044
 #, php-format
 msgid "%1$s payment transaction check failed: %2$s"
 msgstr "Verificarea tranzacției prin %1$s a eșuat: %2$s"
 
-#: wc-victoriabank.php:1074
+#: wc-victoriabank.php:1077
 msgid "Processed successfully"
 msgstr "Procesat cu succes"
 
-#: wc-victoriabank.php:1078
+#: wc-victoriabank.php:1081
 msgid "Processing error"
 msgstr "Eroare de procesare"
 
-#: wc-victoriabank.php:1083
+#: wc-victoriabank.php:1086
 #, php-format
 msgid "%1$s is not configured"
 msgstr "%1$s nu este configurat corect"
 
-#: wc-victoriabank.php:1088
+#: wc-victoriabank.php:1091
 msgid "Invalid message"
 msgstr "Mesaj nevalid"
 
-#: wc-victoriabank.php:1093
+#: wc-victoriabank.php:1096
 msgid "Empty message"
 msgstr "Mesaj vid"
 
-#: wc-victoriabank.php:1151
+#: wc-victoriabank.php:1154
 #, php-format
 msgid "Order fully refunded via %1$s."
 msgstr "Comanda a fost rambursată integral prin %1$s."
 
-#: wc-victoriabank.php:1197
+#: wc-victoriabank.php:1200
 #, php-format
 msgid "Payment initiation failed via %1$s."
 msgstr "Inițierea plății prin %1$s a eșuat."
 
-#: wc-victoriabank.php:1242
+#: wc-victoriabank.php:1245
 #, php-format
 msgid "TEST: %1$s"
 msgstr "TEST: %1$s"
 
-#: wc-victoriabank.php:1335
+#: wc-victoriabank.php:1338
 msgid "Settings"
 msgstr "Setări"
 
-#: wc-victoriabank.php:1352
+#: wc-victoriabank.php:1355
 #, php-format
 msgid "Complete %1$s transaction"
 msgstr "Finalizează tranzacția prin %1$s"
 
-#: wc-victoriabank.php:1381
+#: wc-victoriabank.php:1384
 msgid "Retrieval Reference Number (RRN)"
 msgstr "Număr referință (RRN)"
 
-#: wc-victoriabank.php:1386
+#: wc-victoriabank.php:1389
 msgid "Authorization code"
 msgstr "Cod autorizare"
 
-#: wc-victoriabank.php:1391
+#: wc-victoriabank.php:1394
 msgid "Card number"
 msgstr "Număr card"
