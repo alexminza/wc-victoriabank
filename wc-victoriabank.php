@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Victoriabank Payment Gateway for WooCommerce
- * Description: Accept Visa and Mastercard directly on your store with the Victoriabank payment gateway for WooCommerce.
+ * Plugin Name: Payment Gateway for Victoriabank for WooCommerce
+ * Description: Accept Visa and Mastercard directly on your store with the Payment Gateway for Victoriabank for WooCommerce.
  * Plugin URI: https://github.com/alexminza/wc-victoriabank
- * Version: 1.4.3
+ * Version: 1.4.4
  * Author: Alexander Minza
  * Author URI: https://profiles.wordpress.org/alexminza
  * Developer: Alexander Minza
@@ -16,7 +16,7 @@
  * Requires at least: 4.8
  * Tested up to: 6.8
  * WC requires at least: 3.3
- * WC tested up to: 10.0.4
+ * WC tested up to: 10.3.5
  * Requires Plugins: woocommerce
  */
 
@@ -35,7 +35,7 @@ use Fruitware\VictoriaBankGateway\VictoriaBank\Response;
 add_action('plugins_loaded', 'woocommerce_victoriabank_plugins_loaded', 0);
 
 function woocommerce_victoriabank_plugins_loaded() {
-	load_plugin_textdomain('wc-victoriabank', false, dirname(plugin_basename(__FILE__)) . '/languages');
+	#load_plugin_textdomain('wc-victoriabank', false, dirname(plugin_basename(__FILE__)) . '/languages');
 
 	//https://docs.woocommerce.com/document/query-whether-woocommerce-is-activated/
 	if(!class_exists('WooCommerce')) {
@@ -47,7 +47,7 @@ function woocommerce_victoriabank_plugins_loaded() {
 }
 
 function woocommerce_victoriabank_missing_wc_notice() {
-	echo sprintf('<div class="notice notice-error is-dismissible"><p>%1$s</p></div>', esc_html__('Victoriabank payment gateway requires WooCommerce to be installed and active.', 'wc-victoriabank'));
+	echo sprintf('<div class="notice notice-error is-dismissible"><p>%1$s</p></div>', esc_html__('Payment Gateway for Victoriabank requires WooCommerce to be installed and active.', 'wc-victoriabank'));
 }
 
 function woocommerce_victoriabank_init() {
@@ -92,7 +92,7 @@ function woocommerce_victoriabank_init() {
 		public function __construct() {
 			$this->id                 = self::MOD_ID;
 			$this->method_title       = self::MOD_TITLE;
-			$this->method_description = 'Victoriabank Payment Gateway for WooCommerce';
+			$this->method_description = 'Payment Gateway for Victoriabank for WooCommerce';
 			$this->has_fields         = false;
 			$this->supports           = array('products', 'refunds');
 
@@ -394,8 +394,13 @@ function woocommerce_victoriabank_init() {
 			$this->validate_settings();
 			$this->display_errors();
 
-			wc_enqueue_js('
-				jQuery(function() {
+			//https://developer.woocommerce.com/2025/11/19/deprecation-of-wc_enqueue_js-in-10-4/
+			$script_handle = self::MOD_PREFIX . 'connection_settings';
+			wp_register_script($script_handle, '', array('jquery'), false, true);
+			wp_enqueue_script($script_handle);
+
+			wp_add_inline_script($script_handle,
+				'jQuery(function() {
 					var vb_connection_basic_fields_ids      = "#woocommerce_victoriabank_vb_public_key_pem, #woocommerce_victoriabank_vb_bank_public_key_pem, #woocommerce_victoriabank_vb_private_key_pem, #woocommerce_victoriabank_vb_private_key_pass";
 					var vb_connection_advanced_fields_ids   = "#woocommerce_victoriabank_vb_public_key, #woocommerce_victoriabank_vb_bank_public_key, #woocommerce_victoriabank_vb_private_key, #woocommerce_victoriabank_vb_private_key_pass";
 					var vb_notification_advanced_fields_ids = "#woocommerce_victoriabank_vb_callback_data";
@@ -461,8 +466,8 @@ function woocommerce_victoriabank_init() {
 
 						return false;
 					});
-				});
-			');
+				});'
+			);
 
 			parent::admin_options();
 		}
@@ -601,12 +606,7 @@ function woocommerce_victoriabank_init() {
 				$keyData = file_get_contents($keyFile);
 				$publicKey = openssl_pkey_get_public($keyData);
 
-				if(false !== $publicKey) {
-					//https://php.watch/versions/8.0/OpenSSL-resource
-					//https://stackoverflow.com/questions/69559775/php-openssl-free-key-deprecated
-					if(\PHP_VERSION_ID < 80000)
-						openssl_pkey_free($publicKey);
-				} else {
+				if(false === $publicKey) {
 					$this->log_openssl_errors();
 					return __('Invalid public key', 'wc-victoriabank');
 				}
@@ -625,12 +625,7 @@ function woocommerce_victoriabank_init() {
 				$keyData = file_get_contents($keyFile);
 				$privateKey = openssl_pkey_get_private($keyData, $keyPassphrase);
 
-				if(false !== $privateKey) {
-					//https://php.watch/versions/8.0/OpenSSL-resource
-					//https://stackoverflow.com/questions/69559775/php-openssl-free-key-deprecated
-					if(\PHP_VERSION_ID < 80000)
-						openssl_pkey_free($privateKey);
-				} else {
+				if(false === $privateKey) {
 					$this->log_openssl_errors();
 					return __('Invalid private key or wrong private key passphrase', 'wc-victoriabank');
 				}
