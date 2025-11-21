@@ -7,6 +7,9 @@ jobs:
   tag:
     name: New tag
     runs-on: ubuntu-latest
+    environment:
+      name: wporg
+      url: https://wordpress.org/plugins/wc-victoriabank/
     steps:
     - uses: actions/checkout@master
     - name: WordPress Plugin Deploy

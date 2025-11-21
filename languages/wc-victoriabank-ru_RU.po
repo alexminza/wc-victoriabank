@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Victoriabank Payment Gateway for WooCommerce package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Victoriabank Payment Gateway for WooCommerce 1.4.3\n"
+"Project-Id-Version: Payment Gateway for Victoriabank for WooCommerce 1.4.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-victoriabank\n"
-"POT-Creation-Date: 2025-08-05 16:58+0300\n"
-"PO-Revision-Date: 2025-08-05 17:00+0300\n"
+"POT-Creation-Date: 2025-11-21 13:11+0200\n"
+"PO-Revision-Date: 2025-11-21 13:15+0200\n"
 "Last-Translator: Alexander Minza <alex@alexminza.com>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -14,20 +14,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.8\n"
 
 #. Description of the plugin
 #: wc-victoriabank.php
 msgid ""
-"Accept Visa and Mastercard directly on your store with the Victoriabank "
-"payment gateway for WooCommerce."
+"Accept Visa and Mastercard directly on your store with the Payment Gateway "
+"for Victoriabank for WooCommerce."
 msgstr ""
 "Принимайте оплату картами Visa и Mastercard прямо в своем магазине с помощью "
 "платежного шлюза Victoriabank для WooCommerce."
 
 #: wc-victoriabank.php:50
 msgid ""
-"Victoriabank payment gateway requires WooCommerce to be installed and active."
+"Payment Gateway for Victoriabank requires WooCommerce to be installed and "
+"active."
 msgstr ""
 "Платежный шлюз Victoriabank требует установки и активации плагина "
 "WooCommerce."
@@ -188,7 +189,7 @@ msgstr "ID мерчанта (Card acceptor ID)"
 msgid "Terminal ID"
 msgstr "ID терминала (Terminal ID)"
 
-#: wc-victoriabank.php:276 wc-victoriabank.php:501
+#: wc-victoriabank.php:276 wc-victoriabank.php:505
 msgid "Connection Settings"
 msgstr "Настройки подключения"
 
@@ -220,15 +221,15 @@ msgstr "Открытый ключ банка"
 msgid "Private key"
 msgstr "Закрытый ключ"
 
-#: wc-victoriabank.php:309 wc-victoriabank.php:506
+#: wc-victoriabank.php:309 wc-victoriabank.php:510
 msgid "Public key file"
 msgstr "Файл открытого ключа"
 
-#: wc-victoriabank.php:315 wc-victoriabank.php:512
+#: wc-victoriabank.php:315 wc-victoriabank.php:516
 msgid "Bank public key file"
 msgstr "Файл открытого ключа банка"
 
-#: wc-victoriabank.php:321 wc-victoriabank.php:518
+#: wc-victoriabank.php:321 wc-victoriabank.php:522
 msgid "Private key file"
 msgstr "Файл закрытого ключа"
 
@@ -278,7 +279,7 @@ msgstr ""
 msgid "Bank transaction response callback data"
 msgstr "Данные ответа обратного вызова банковской транзакции"
 
-#: wc-victoriabank.php:431
+#: wc-victoriabank.php:435
 msgid ""
 "Are you sure you want to process the entered bank transaction response "
 "callback data?"
@@ -286,15 +287,15 @@ msgstr ""
 "Вы уверены, что хотите обработать введенные данные ответа обратного вызова "
 "банковской транзакции?"
 
-#: wc-victoriabank.php:491
+#: wc-victoriabank.php:495
 msgid "Unsupported store currency"
 msgstr "Валюта магазина не поддерживается"
 
-#: wc-victoriabank.php:493
+#: wc-victoriabank.php:497
 msgid "Supported currencies"
 msgstr "Поддерживаемые валюты"
 
-#: wc-victoriabank.php:500
+#: wc-victoriabank.php:504
 #, php-format
 msgid ""
 "See plugin documentation for <a href=\"%1$s\" target=\"_blank\">installation "
@@ -303,11 +304,11 @@ msgstr ""
 "Перейдите на страницу документации плагина для <a href=\"%1$s\" "
 "target=\"_blank\">инструкций по установке</a>."
 
-#: wc-victoriabank.php:501
+#: wc-victoriabank.php:505
 msgid "Not configured"
 msgstr "Не настроено"
 
-#: wc-victoriabank.php:524
+#: wc-victoriabank.php:528
 msgid ""
 "Current server settings do not allow web requests to the bank payment "
 "gateway. See <a href=\"https://www.php.net/manual/en/"
@@ -319,7 +320,7 @@ msgstr ""
 "filesystem.configuration.php#ini.allow-url-fopen\" target=\"_blank\">PHP "
 "Runtime Configuration</a> для деталей."
 
-#: wc-victoriabank.php:533
+#: wc-victoriabank.php:537
 #, php-format
 msgid ""
 "Please review the <a href=\"%1$s\">payment method settings</a> page for log "
@@ -328,176 +329,176 @@ msgstr ""
 "Перейдите на страницу <a href=\"%1$s\">настройки платежного шлюза</a> для "
 "просмотра сведений журнала и инструкций по установке."
 
-#: wc-victoriabank.php:611
+#: wc-victoriabank.php:610
 msgid "Invalid public key"
 msgstr "Невалидный открытый ключ"
 
-#: wc-victoriabank.php:615
+#: wc-victoriabank.php:614
 msgid "Could not validate public key"
 msgstr "Ошибка проверки открытого ключа"
 
-#: wc-victoriabank.php:635
+#: wc-victoriabank.php:629
 msgid "Invalid private key or wrong private key passphrase"
 msgstr "Невалидный закрытый ключ или неправильный пароль закрытого ключа"
 
-#: wc-victoriabank.php:639
+#: wc-victoriabank.php:633
 msgid "Could not validate private key"
 msgstr "Ошибка проверки закрытого ключа"
 
-#: wc-victoriabank.php:646
+#: wc-victoriabank.php:640
 msgid "Invalid value"
 msgstr "Недопустимое значение"
 
-#: wc-victoriabank.php:649
+#: wc-victoriabank.php:643
 msgid "File not found"
 msgstr "Файл не найден"
 
-#: wc-victoriabank.php:652
+#: wc-victoriabank.php:646
 msgid "File not readable"
 msgstr "Ошибка чтения файла"
 
-#: wc-victoriabank.php:655
+#: wc-victoriabank.php:649
 msgid "Could not validate file"
 msgstr "Ошибка проверки файла"
 
-#: wc-victoriabank.php:670
+#: wc-victoriabank.php:664
 #, php-format
 msgid "Unable to create temporary file: %1$s"
 msgstr "Ошибка создания временного файла: %1$s"
 
-#: wc-victoriabank.php:675
+#: wc-victoriabank.php:669
 #, php-format
 msgid "Unable to save data to temporary file: %1$s"
 msgstr "Ошибка записи данных во временный файл: %1$s"
 
-#: wc-victoriabank.php:731
+#: wc-victoriabank.php:725
 #, php-format
 msgid "%1$s is not properly configured."
 msgstr "%1$s неправильно настроен."
 
-#: wc-victoriabank.php:779
+#: wc-victoriabank.php:773
 #, php-format
 msgid "Payment completion via %1$s failed"
 msgstr "Ошибка проведения платежа через %1$s"
 
-#: wc-victoriabank.php:803
+#: wc-victoriabank.php:797
 msgid "Invalid refund amount"
 msgstr "Неверная сумма возврата"
 
-#: wc-victoriabank.php:819
+#: wc-victoriabank.php:813
 #, php-format
 msgid "Refund of %1$s %2$s via %3$s failed"
 msgstr "Ошибка возврата %1$s %2$s через %3$s"
 
-#: wc-victoriabank.php:862
+#: wc-victoriabank.php:856
 #, php-format
 msgid "Payment verification failed: Order ID not received from %1$s."
 msgstr "Ошибка проверки платежа: номер заказа (Order ID) не получен от %1$s."
 
-#: wc-victoriabank.php:874 wc-victoriabank.php:967
+#: wc-victoriabank.php:868 wc-victoriabank.php:961
 #, php-format
 msgid "Order #%1$s not found as received from %2$s."
 msgstr "Заказ #%1$s не найден по данным полученным от %2$s."
 
-#: wc-victoriabank.php:887
+#: wc-victoriabank.php:881
 #, php-format
 msgid "Order #%1$s paid successfully via %2$s."
 msgstr "Заказ #%1$s успешно оплачен через %2$s."
 
-#: wc-victoriabank.php:895
+#: wc-victoriabank.php:889
 #, php-format
 msgid "Order #%1$s payment failed via %2$s."
 msgstr "Ошибка оплаты заказа #%1$s через %2$s."
 
-#: wc-victoriabank.php:910
+#: wc-victoriabank.php:904
 msgid "This Callback URL works and should not be called directly."
 msgstr ""
 "Этот URL обратного вызова (Callback URL) работает и не должен вызываться "
 "напрямую."
 
-#: wc-victoriabank.php:960
+#: wc-victoriabank.php:954
 #, php-format
 msgid "Order ID not received from %1$s."
 msgstr "Номер заказа (Order ID) не получен от %1$s."
 
-#: wc-victoriabank.php:989
+#: wc-victoriabank.php:983
 #, php-format
 msgid "Payment authorized via %1$s: %2$s"
 msgstr "Платеж авторизован через %1$s: %2$s"
 
-#: wc-victoriabank.php:1014
+#: wc-victoriabank.php:1008
 #, php-format
 msgid "Payment completed via %1$s: %2$s"
 msgstr "Платеж проведен через %1$s: %2$s"
 
-#: wc-victoriabank.php:1024
+#: wc-victoriabank.php:1018
 #, php-format
 msgid "Refund of %1$s %2$s via %3$s approved: %4$s"
 msgstr "Возврат %1$s %2$s через %3$s подтвержден: %4$s"
 
-#: wc-victoriabank.php:1041
+#: wc-victoriabank.php:1035
 #, php-format
 msgid "Payment transaction check failed for order #%1$s."
 msgstr "Ошибка проверки платежа для заказа #%1$s."
 
-#: wc-victoriabank.php:1044
+#: wc-victoriabank.php:1038
 #, php-format
 msgid "%1$s payment transaction check failed: %2$s"
 msgstr "Проверка платежа через %1$s не удалась: %2$s"
 
-#: wc-victoriabank.php:1077
+#: wc-victoriabank.php:1071
 msgid "Processed successfully"
 msgstr "Обработано успешно"
 
-#: wc-victoriabank.php:1081
+#: wc-victoriabank.php:1075
 msgid "Processing error"
 msgstr "Ошибка обработки"
 
-#: wc-victoriabank.php:1086
+#: wc-victoriabank.php:1080
 #, php-format
 msgid "%1$s is not configured"
 msgstr "%1$s неправильно настроен"
 
-#: wc-victoriabank.php:1091
+#: wc-victoriabank.php:1085
 msgid "Invalid message"
 msgstr "Неверное сообщение"
 
-#: wc-victoriabank.php:1096
+#: wc-victoriabank.php:1090
 msgid "Empty message"
 msgstr "Пустое сообщение"
 
-#: wc-victoriabank.php:1154
+#: wc-victoriabank.php:1148
 #, php-format
 msgid "Order fully refunded via %1$s."
 msgstr "Оплата заказа полностью возвращена через %1$s."
 
-#: wc-victoriabank.php:1200
+#: wc-victoriabank.php:1194
 #, php-format
 msgid "Payment initiation failed via %1$s."
 msgstr "Ошибка инициирования платежа через %1$s."
 
-#: wc-victoriabank.php:1245
+#: wc-victoriabank.php:1239
 #, php-format
 msgid "TEST: %1$s"
 msgstr "ТЕСТ: %1$s"
 
-#: wc-victoriabank.php:1338
+#: wc-victoriabank.php:1332
 msgid "Settings"
 msgstr "Настройки"
 
-#: wc-victoriabank.php:1355
+#: wc-victoriabank.php:1349
 #, php-format
 msgid "Complete %1$s transaction"
 msgstr "Провести платеж через %1$s"
 
-#: wc-victoriabank.php:1384
+#: wc-victoriabank.php:1378
 msgid "Retrieval Reference Number (RRN)"
 msgstr "Номер транзакции (RRN)"
 
-#: wc-victoriabank.php:1389
+#: wc-victoriabank.php:1383
 msgid "Authorization code"
 msgstr "Код авторизации"
 
-#: wc-victoriabank.php:1394
+#: wc-victoriabank.php:1388
 msgid "Card number"
 msgstr "Номер карты"
