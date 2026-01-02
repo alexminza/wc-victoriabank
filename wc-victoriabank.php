@@ -789,7 +789,14 @@ function victoriabank_init()
 
         public function complete_transaction($order_id, $order)
         {
-            $this->log(sprintf('%s: order_id=%s', __FUNCTION__, $order_id));
+            $this->log(
+                __FUNCTION__,
+                WC_Log_Levels::DEBUG,
+                array(
+                    'order_id' => $order_id,
+                    'backtrace' => true,
+                )
+            );
 
             $rrn = $order->get_meta(strtolower(self::VB_RRN), true);
             $int_ref = $order->get_meta(strtolower(self::VB_INT_REF), true);
@@ -820,7 +827,15 @@ function victoriabank_init()
 
         public function refund_transaction(int $order_id, \WC_Order $order, float $amount = null)
         {
-            $this->log(sprintf('%s: order_id=%s amount=%s', __FUNCTION__, $order_id, $amount));
+            $this->log(
+                __FUNCTION__,
+                WC_Log_Levels::DEBUG,
+                array(
+                    'order_id' => $order_id,
+                    'amount' => $amount,
+                    'backtrace' => true,
+                )
+            );
 
             $rrn = $order->get_meta(strtolower(self::VB_RRN), true);
             $int_ref = $order->get_meta(strtolower(self::VB_INT_REF), true);
@@ -966,9 +981,16 @@ function victoriabank_init()
             return $this->process_response_data($_POST);
         }
 
-        public function process_response_data($vbdata)
+        public function process_response_data(array $vbdata)
         {
-            $this->log(sprintf('%1$s: %2$s', __FUNCTION__, self::print_var($vbdata)));
+            $this->log(
+                __FUNCTION__,
+                WC_Log_Levels::DEBUG,
+                array(
+                    'vbdata' => self::print_var($vbdata),
+                    'backtrace' => true,
+                )
+            );
 
             try {
                 $victoriabank_gateway = $this->init_vb_client();
@@ -1160,7 +1182,14 @@ function victoriabank_init()
 
         protected function validate_response_form($vbresponse)
         {
-            $this->log(sprintf('%1$s: %2$s', __FUNCTION__, self::print_var($vbresponse)));
+            $this->log(
+                __FUNCTION__,
+                WC_Log_Levels::DEBUG,
+                array(
+                    'vbresponse' => self::print_var($vbresponse),
+                    'backtrace' => true,
+                )
+            );
 
             if (false === $vbresponse) {
                 $error = error_get_last();
@@ -1184,7 +1213,14 @@ function victoriabank_init()
 
         protected function process_response_form(string $vbresponse)
         {
-            $this->log(sprintf('%1$s: %2$s', __FUNCTION__, self::print_var($vbresponse)));
+            $this->log(
+                __FUNCTION__,
+                WC_Log_Levels::DEBUG,
+                array(
+                    'vbresponse' => self::print_var($vbresponse),
+                    'backtrace' => true,
+                )
+            );
 
             $vbform = self::parse_response_form($vbresponse);
             if (empty($vbform)) {
@@ -1247,16 +1283,17 @@ function victoriabank_init()
             $redirect_url = add_query_arg(self::VB_ORDER_ID, rawurlencode($order_id), $this->get_redirect_url());
 
             $this->log(
-                sprintf(
-                    '%s: order_id=%s, order_total=%s, redirect_url=%s, order_currency=%s, order_description=%s, order_email=%s, language=%s',
-                    __FUNCTION__,
-                    $order_id,
-                    $order_total,
-                    $redirect_url,
-                    $order_currency,
-                    $order_description,
-                    $order_email,
-                    $language
+                __FUNCTION__,
+                WC_Log_Levels::DEBUG,
+                array(
+                    'order_id' => $order_id,
+                    'order_total' => $order_total,
+                    'redirect_url' => $redirect_url,
+                    'order_currency' => $order_currency,
+                    'order_description' => $order_description,
+                    'order_email' => $order_email,
+                    'language' => $language,
+                    'backtrace' => true,
                 )
             );
 
