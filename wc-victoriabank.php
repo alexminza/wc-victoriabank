@@ -1419,10 +1419,10 @@ function victoriabank_init()
             );
         }
 
-        protected static function print_var($var)
+        protected static function print_var($expression)
         {
             //https://docs.woocommerce.com/wc-apidocs/function-wc_print_r.html
-            return wc_print_r($var, true);
+            return wc_print_r($expression, true);
         }
         //endregion
 
