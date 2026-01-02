@@ -132,6 +132,7 @@ function victoriabank_init()
 
             if (is_admin()) {
                 add_action("woocommerce_update_options_payment_gateways_{$this->id}", array($this, 'process_admin_options'));
+                add_action('wp_ajax_victoriabank_callback_data_process', array($this, 'callback_data_process'));
             }
 
             add_action("woocommerce_receipt_{$this->id}", array($this, 'receipt_page'));
@@ -1092,9 +1093,9 @@ function victoriabank_init()
             return false;
         }
 
-        public static function callback_data_process()
+        public function callback_data_process()
         {
-            self::static_log_request(__FUNCTION__);
+            $this->log_request(__FUNCTION__);
 
             //https://codex.wordpress.org/AJAX_in_Plugins
             //https://developer.wordpress.org/plugins/javascript/ajax/
@@ -1105,7 +1106,7 @@ function victoriabank_init()
             if (!self::is_wc_admin()) {
                 //https://developer.wordpress.org/reference/functions/wp_die/
                 $message = get_status_header_desc(WP_Http::FORBIDDEN);
-                self::static_log($message, WC_Log_Levels::ERROR);
+                $this->log($message, WC_Log_Levels::ERROR);
                 wp_die($message, WP_Http::FORBIDDEN);
                 return;
             }
@@ -1115,32 +1116,31 @@ function victoriabank_init()
                 $vbdata = self::parse_response_post($callback_data);
 
                 if (!empty($vbdata)) {
-                    $plugin = new self();
-                    if ($plugin->is_available() && $plugin->enabled) {
-                        $response = $plugin->process_response_data($vbdata);
+                    if ($this->is_available() && $this->enabled) {
+                        $response = $this->process_response_data($vbdata);
 
                         if ($response) {
                             $message = sprintf(__('Processed successfully', 'wc-victoriabank'), self::MOD_TITLE);
-                            self::static_log($message, WC_Log_Levels::INFO);
+                            $this->log($message, WC_Log_Levels::INFO);
                             wp_send_json_success($message);
                         } else {
                             $message = sprintf(__('Processing error', 'wc-victoriabank'), self::MOD_TITLE);
-                            self::static_log($message, WC_Log_Levels::ERROR);
+                            $this->log($message, WC_Log_Levels::ERROR);
                             wp_send_json_error($message);
                         }
                     } else {
                         $message = sprintf(__('%1$s is not configured', 'wc-victoriabank'), self::MOD_TITLE);
-                        self::static_log($message, WC_Log_Levels::ERROR);
+                        $this->log($message, WC_Log_Levels::ERROR);
                         wp_send_json_error($message);
                     }
                 } else {
                     $message = sprintf(__('Invalid message', 'wc-victoriabank'), self::MOD_TITLE);
-                    self::static_log($message, WC_Log_Levels::ERROR);
+                    $this->log($message, WC_Log_Levels::ERROR);
                     wp_send_json_error($message);
                 }
             } else {
                 $message = sprintf(__('Empty message', 'wc-victoriabank'), self::MOD_TITLE);
-                self::static_log($message, WC_Log_Levels::ERROR);
+                $this->log($message, WC_Log_Levels::ERROR);
                 wp_send_json_error($message);
             }
 
@@ -1502,8 +1502,6 @@ function victoriabank_init()
         //Add WooCommerce order actions
         add_filter('woocommerce_order_actions', array(WC_Gateway_Victoriabank::class, 'order_actions'));
         add_action('woocommerce_order_action_victoriabank_complete_transaction', array(WC_Gateway_Victoriabank::class, 'action_complete_transaction'));
-
-        add_action('wp_ajax_victoriabank_callback_data_process', array(WC_Gateway_Victoriabank::class, 'callback_data_process'));
     }
     //endregion
 
