@@ -683,6 +683,8 @@ function victoriabank_init()
 
         protected function log_openssl_errors()
         {
+            // https://www.php.net/manual/en/function.openssl-error-string.php
+            // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition -- Established openssl_error_string code pattern.
             while ($openssl_error = openssl_error_string()) {
                 $this->log($openssl_error, WC_Log_Levels::ERROR);
             }
