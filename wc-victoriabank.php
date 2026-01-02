@@ -891,13 +891,14 @@ function victoriabank_init()
             $this->log_request(__FUNCTION__);
 
             // Received payment data from VB here instead of CallbackURL?
-            if ('POST' === $_SERVER['REQUEST_METHOD']) {
+            $request_method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
+            if ('POST' === $request_method) {
+                // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verification is done via bank signature in process_response_data
                 $this->process_response_data($_POST);
             }
 
-            $order_id = $_REQUEST[self::VB_ORDER_ID];
-            $order_id = wc_clean($order_id);
-
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Verification is done via order existence check.
+            $order_id = isset($_REQUEST[self::VB_ORDER_ID]) ? wc_clean(wp_unslash($_REQUEST[self::VB_ORDER_ID])) : 0;
             if (empty($order_id)) {
                 /* translators: 1: Payment method title */
                 $message = esc_html(sprintf(__('Payment verification failed: Order ID not received from %1$s.', 'wc-victoriabank'), $this->get_method_title()));
@@ -951,7 +952,8 @@ function victoriabank_init()
         {
             $this->log_request(__FUNCTION__);
 
-            if ('GET' === $_SERVER['REQUEST_METHOD']) {
+            $request_method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
+            if ('GET' === $request_method) {
                 $message = __('This Callback URL works and should not be called directly.', 'wc-victoriabank');
 
                 wc_add_notice($message, 'notice');
@@ -960,6 +962,7 @@ function victoriabank_init()
                 return false;
             }
 
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verification is done via bank signature in process_response_data
             return $this->process_response_data($_POST);
         }
 
