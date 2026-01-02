@@ -818,7 +818,7 @@ function victoriabank_init()
             return $validate_result;
         }
 
-        public function refund_transaction($order_id, $order, $amount = null)
+        public function refund_transaction(int $order_id, \WC_Order $order, float $amount = null)
         {
             $this->log(sprintf('%s: order_id=%s amount=%s', __FUNCTION__, $order_id, $amount));
 
@@ -1166,7 +1166,7 @@ function victoriabank_init()
             return true;
         }
 
-        protected function process_response_form($vbresponse)
+        protected function process_response_form(string $vbresponse)
         {
             $this->log(sprintf('%1$s: %2$s', __FUNCTION__, self::print_var($vbresponse)));
 
@@ -1178,17 +1178,17 @@ function victoriabank_init()
             return $this->process_response_data($vbform);
         }
 
-        protected function parse_response_form($vbformhtml)
+        protected function parse_response_form(string $vbformhtml)
         {
             return self::parse_response_regex($vbformhtml, '/<input.+name="(\w+)".+value="(.*)"/i');
         }
 
-        protected static function parse_response_post($vbpost)
+        protected static function parse_response_post(string $vbpost)
         {
             return self::parse_response_regex($vbpost, '/^(\w+)=(.*)$/im');
         }
 
-        protected static function parse_response_regex($vbresponse, $regex)
+        protected static function parse_response_regex(string $vbresponse, string $regex)
         {
             $match_result = preg_match_all($regex, $vbresponse, $matches, PREG_SET_ORDER);
             if (empty($match_result)) {
@@ -1205,8 +1205,9 @@ function victoriabank_init()
             return $vbdata;
         }
 
-        protected function mark_order_refunded($order)
+        protected function mark_order_refunded(\WC_Order $order)
         {
+            /* translators: 1: Payment method title */
             $message = esc_html(sprintf(__('Order fully refunded via %1$s.', 'wc-victoriabank'), $this->get_method_title()));
             $message = $this->get_test_message($message);
 
@@ -1218,7 +1219,7 @@ function victoriabank_init()
             }
         }
 
-        protected function generate_form($order)
+        protected function generate_form(\WC_Order $order)
         {
             $order_id = $order->get_id();
             $order_total = $order->get_total();
@@ -1227,7 +1228,7 @@ function victoriabank_init()
             $order_email = $order->get_billing_email();
             $language = $this->get_language();
 
-            $redirect_url = add_query_arg(self::VB_ORDER_ID, urlencode($order_id), $this->get_redirect_url());
+            $redirect_url = add_query_arg(self::VB_ORDER_ID, rawurlencode($order_id), $this->get_redirect_url());
 
             $this->log(
                 sprintf(
@@ -1256,7 +1257,7 @@ function victoriabank_init()
             );
         }
 
-        public function receipt_page($order_id)
+        public function receipt_page(int $order_id)
         {
             try {
                 $order = wc_get_order($order_id);
@@ -1275,6 +1276,11 @@ function victoriabank_init()
             }
         }
 
+        /**
+         * @param  int    $order_id
+         * @param  float  $amount
+         * @param  string $reason
+         */
         public function process_refund($order_id, $amount = null, $reason = '')
         {
             $order = wc_get_order($order_id);
@@ -1283,7 +1289,7 @@ function victoriabank_init()
         //endregion
 
         //region Order
-        protected static function get_order_net_total($order)
+        protected static function get_order_net_total(\WC_Order $order)
         {
             //https://github.com/woocommerce/woocommerce/issues/17795
             //https://github.com/woocommerce/woocommerce/pull/18196
