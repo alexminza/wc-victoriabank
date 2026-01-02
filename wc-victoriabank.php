@@ -557,7 +557,9 @@ function victoriabank_init()
         protected function process_pem_setting($pem_field_id, $pem_option_value, $pem_target_field_id, $pem_type)
         {
             try {
+                // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled by WooCommerce.
                 if (array_key_exists($pem_field_id, $_FILES)) {
+                    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing -- File validation is performed via is_uploaded_file and error check. Nonce verification is handled by WooCommerce.
                     $pem_file = $_FILES[$pem_field_id];
                     $tmp_name = $pem_file['tmp_name'];
 
@@ -583,6 +585,7 @@ function victoriabank_init()
             }
 
             //Preserve existing value
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled by WooCommerce.
             $_POST[$pem_field_id] = $pem_option_value;
         }
 
