@@ -757,7 +757,7 @@ function victoriabank_init()
 
             if (!$this->check_settings()) {
                 /* translators: 1: Payment method title */
-                $message = sprintf(esc_html__('%1$s is not properly configured.', 'wc-victoriabank'), esc_html($this->get_method_title()));
+                $message = esc_html(sprintf(__('%1$s is not properly configured.', 'wc-victoriabank'), $this->get_method_title()));
 
                 // https://github.com/woocommerce/woocommerce/issues/48687#issuecomment-2186475264
                 if ($is_store_api_request) {
@@ -807,7 +807,7 @@ function victoriabank_init()
 
             if (!$validate_result) {
                 /* translators: 1: Payment method title */
-                $message = sprintf(esc_html__('Payment completion via %1$s failed', 'wc-victoriabank'), esc_html($this->get_method_title()));
+                $message = esc_html(sprintf(__('Payment completion via %1$s failed', 'wc-victoriabank'), $this->get_method_title()));
                 $message = $this->get_test_message($message);
                 $order->add_order_note($message);
 
@@ -848,7 +848,7 @@ function victoriabank_init()
             }
 
             if (!$validate_result) {
-                $message = sprintf(esc_html__('Refund of %1$s %2$s via %3$s failed', 'wc-victoriabank'), esc_html($amount), esc_html($order_currency), esc_html($this->get_method_title()));
+                $message = esc_html(sprintf(__('Refund of %1$s %2$s via %3$s failed', 'wc-victoriabank'), $amount, $order_currency, $this->get_method_title()));
                 $message = $this->get_test_message($message);
                 $order->add_order_note($message);
 
@@ -898,7 +898,7 @@ function victoriabank_init()
 
             if (self::string_empty($order_id)) {
                 /* translators: 1: Payment method title */
-                $message = sprintf(esc_html__('Payment verification failed: Order ID not received from %1$s.', 'wc-victoriabank'), esc_html($this->get_method_title()));
+                $message = esc_html(sprintf(__('Payment verification failed: Order ID not received from %1$s.', 'wc-victoriabank'), $this->get_method_title()));
                 $this->log($message, WC_Log_Levels::ERROR);
 
                 wc_add_notice($message, 'error');
@@ -911,7 +911,7 @@ function victoriabank_init()
             $order = wc_get_order($order_id);
             if (!$order) {
                 /* translators: 1: Order ID, 2: Payment method title */
-                $message = sprintf(esc_html__('Order #%1$s not found as received from %2$s.', 'wc-victoriabank'), esc_html($order_id), esc_html($this->get_method_title()));
+                $message = esc_html(sprintf(__('Order #%1$s not found as received from %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
                 $this->log($message, WC_Log_Levels::ERROR);
 
                 wc_add_notice($message, 'error');
@@ -925,7 +925,7 @@ function victoriabank_init()
                 WC()->cart->empty_cart();
 
                 /* translators: 1: Order ID, 2: Payment method title */
-                $message = sprintf(esc_html__('Order #%1$s paid successfully via %2$s.', 'wc-victoriabank'), esc_html($order_id), esc_html($this->get_method_title()));
+                $message = esc_html(sprintf(__('Order #%1$s paid successfully via %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
                 $this->log($message, WC_Log_Levels::INFO);
 
                 wc_add_notice($message, 'success');
@@ -934,7 +934,7 @@ function victoriabank_init()
                 return true;
             } else {
                 /* translators: 1: Order ID, 2: Payment method title */
-                $message = sprintf(esc_html__('Order #%1$s payment failed via %2$s.', 'wc-victoriabank'), esc_html($order_id), esc_html($this->get_method_title()));
+                $message = esc_html(sprintf(__('Order #%1$s payment failed via %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
                 $this->log($message, WC_Log_Levels::ERROR);
 
                 wc_add_notice($message, 'error');
@@ -1002,14 +1002,14 @@ function victoriabank_init()
             //region Validate order
             if (self::string_empty($order_id)) {
                 /* translators: 1: Payment method title */
-                $message = sprintf(esc_html__('Order ID not received from %1$s.', 'wc-victoriabank'), esc_html($this->get_method_title()));
+                $message = esc_html(sprintf(__('Order ID not received from %1$s.', 'wc-victoriabank'), $this->get_method_title()));
                 $this->log($message, WC_Log_Levels::ERROR);
                 return false;
             }
 
             $order = wc_get_order($order_id);
             if (!$order) {
-                $message = sprintf(esc_html__('Order #%1$s not found as received from %2$s.', 'wc-victoriabank'), esc_html($order_id), esc_html($this->get_method_title()));
+                $message = esc_html(sprintf(__('Order #%1$s not found as received from %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
                 $this->log($message, WC_Log_Levels::ERROR);
                 return false;
             }
@@ -1057,7 +1057,7 @@ function victoriabank_init()
 
                     case VictoriaBankGateway::TRX_TYPE_COMPLETION:
                         // Funds successfully transferred on bank side
-                        $message = sprintf(esc_html__('Payment completed via %1$s: %2$s', 'wc-victoriabank'), esc_html($this->get_method_title()), esc_html(http_build_query($bank_params)));
+                        $message = esc_html(sprintf(__('Payment completed via %1$s: %2$s', 'wc-victoriabank'), $this->get_method_title(), http_build_query($bank_params)));
                         $message = $this->get_test_message($message);
                         $this->log($message, WC_Log_Levels::INFO);
                         $order->add_order_note($message);
@@ -1066,7 +1066,7 @@ function victoriabank_init()
 
                     case VictoriaBankGateway::TRX_TYPE_REVERSAL:
                         // Reversal successfully applied on bank side
-                        $message = sprintf(esc_html__('Refund of %1$s %2$s via %3$s approved: %4$s', 'wc-victoriabank'), esc_html($amount), esc_html($currency), esc_html($this->get_method_title()), esc_html(http_build_query($bank_params)));
+                        $message = esc_html(sprintf(__('Refund of %1$s %2$s via %3$s approved: %4$s', 'wc-victoriabank'), $amount, $currency, $this->get_method_title(), http_build_query($bank_params)));
                         $message = $this->get_test_message($message);
                         $this->log($message, WC_Log_Levels::INFO);
                         $order->add_order_note($message);
@@ -1086,7 +1086,7 @@ function victoriabank_init()
             $this->log(sprintf(__('Payment transaction check failed for order #%1$s.', 'wc-victoriabank'), $order_id), WC_Log_Levels::ERROR);
             $this->log(self::print_var($bank_response), WC_Log_Levels::ERROR);
 
-            $message = sprintf(esc_html__('%1$s payment transaction check failed: %2$s', 'wc-victoriabank'), esc_html($this->get_method_title()), esc_html(join('; ', $bank_response->getErrors()) . ' ' . http_build_query($bank_params)));
+            $message = esc_html(sprintf(__('%1$s payment transaction check failed: %2$s', 'wc-victoriabank'), $this->get_method_title(), join('; ', $bank_response->getErrors()) . ' ' . http_build_query($bank_params)));
             $message = $this->get_test_message($message);
             $order->add_order_note($message);
             return false;
@@ -1129,7 +1129,7 @@ function victoriabank_init()
                             wp_send_json_error($message);
                         }
                     } else {
-                        $message = sprintf(esc_html__('%1$s is not configured', 'wc-victoriabank'), esc_html(self::MOD_TITLE));
+                        $message = sprintf(__('%1$s is not configured', 'wc-victoriabank'), self::MOD_TITLE);
                         self::static_log($message, WC_Log_Levels::ERROR);
                         wp_send_json_error($message);
                     }
@@ -1207,7 +1207,7 @@ function victoriabank_init()
 
         protected function mark_order_refunded($order)
         {
-            $message = sprintf(esc_html__('Order fully refunded via %1$s.', 'wc-victoriabank'), esc_html($this->get_method_title()));
+            $message = esc_html(sprintf(__('Order fully refunded via %1$s.', 'wc-victoriabank'), $this->get_method_title()));
             $message = $this->get_test_message($message);
 
             //Mark order as refunded if not already set
@@ -1269,7 +1269,7 @@ function victoriabank_init()
                 $this->log($ex, WC_Log_Levels::ERROR);
 
                 /* translators: 1: Payment method title */
-                $message = sprintf(esc_html__('Payment initiation failed via %1$s.', 'wc-victoriabank'), esc_html($this->get_method_title()));
+                $message = esc_html(sprintf(__('Payment initiation failed via %1$s.', 'wc-victoriabank'), $this->get_method_title()));
                 wc_add_notice($message, 'error');
                 $this->settings_admin_notice();
             }
@@ -1307,11 +1307,11 @@ function victoriabank_init()
         //endregion
 
         //region Utility
-        protected function get_test_message($message)
+        protected function get_test_message(string $message)
         {
             if ($this->testmode) {
                 /* translators: 1: Original message */
-                $message = sprintf(esc_html__('TEST: %1$s', 'wc-victoriabank'), esc_html($message));
+                $message = esc_html(sprintf(__('TEST: %1$s', 'wc-victoriabank'), $message));
             }
 
             return $message;
