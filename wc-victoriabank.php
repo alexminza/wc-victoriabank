@@ -487,9 +487,9 @@ function victoriabank_init()
 
         protected function check_settings()
         {
-            return !self::string_empty($this->vb_public_key)
-                && !self::string_empty($this->vb_bank_public_key)
-                && !self::string_empty($this->vb_private_key);
+            return !empty($this->vb_public_key)
+                && !empty($this->vb_bank_public_key)
+                && !empty($this->vb_private_key);
         }
 
         protected function validate_settings()
@@ -517,19 +517,19 @@ function victoriabank_init()
                 $validate_result = false;
             } else {
                 $result = $this->validate_public_key($this->vb_public_key);
-                if (!self::string_empty($result)) {
+                if (!empty($result)) {
                     $this->add_error(sprintf('<strong>%1$s</strong>: %2$s', esc_html__('Public key file', 'wc-victoriabank'), esc_html($result)));
                     $validate_result = false;
                 }
 
                 $result = $this->validate_public_key($this->vb_bank_public_key);
-                if (!self::string_empty($result)) {
+                if (!empty($result)) {
                     $this->add_error(sprintf('<strong>%1$s</strong>: %2$s', esc_html__('Bank public key file', 'wc-victoriabank'), esc_html($result)));
                     $validate_result = false;
                 }
 
                 $result = $this->validate_private_key($this->vb_private_key, $this->vb_private_key_pass);
-                if (!self::string_empty($result)) {
+                if (!empty($result)) {
                     $this->add_error(sprintf('<strong>%1$s</strong>: %2$s', esc_html__('Private key file', 'wc-victoriabank'), esc_html($result)));
                     $validate_result = false;
                 }
@@ -566,7 +566,7 @@ function victoriabank_init()
                         if (false !== $pem_data) {
                             $result = self::save_temp_file($pem_data, $pem_type);
 
-                            if (!self::string_empty($result)) {
+                            if (!empty($result)) {
                                 //Overwrite advanced setting value
                                 $_POST[$pem_target_field_id] = $result;
                                 //Save uploaded file to settings
@@ -597,10 +597,10 @@ function victoriabank_init()
             try {
                 if (!is_readable($pem_file)) {
                     if (self::is_overwritable($pem_file)) {
-                        if (!self::string_empty($pem_data)) {
+                        if (!empty($pem_data)) {
                             $result = self::save_temp_file($pem_data, $pem_type);
 
-                            if (!self::string_empty($result)) {
+                            if (!empty($result)) {
                                 $this->update_option($pem_option_name, $result);
                                 $pem_file = $result;
                             }
@@ -616,7 +616,7 @@ function victoriabank_init()
         {
             try {
                 $validate_result = $this->validate_file($key_file);
-                if (!self::string_empty($validate_result)) {
+                if (!empty($validate_result)) {
                     return $validate_result;
                 }
 
@@ -637,7 +637,7 @@ function victoriabank_init()
         {
             try {
                 $validate_result = $this->validate_file($key_file);
-                if (!self::string_empty($validate_result)) {
+                if (!empty($validate_result)) {
                     return $validate_result;
                 }
 
@@ -657,7 +657,7 @@ function victoriabank_init()
         protected function validate_file($file)
         {
             try {
-                if (self::string_empty($file)) {
+                if (empty($file)) {
                     return __('Invalid value', 'wc-victoriabank');
                 }
 
@@ -710,7 +710,7 @@ function victoriabank_init()
 
         protected static function is_overwritable($file_name)
         {
-            return self::string_empty($file_name) || self::is_temp_file($file_name);
+            return empty($file_name) || self::is_temp_file($file_name);
         }
         //endregion
 
@@ -896,7 +896,7 @@ function victoriabank_init()
             $order_id = $_REQUEST[self::VB_ORDER_ID];
             $order_id = wc_clean($order_id);
 
-            if (self::string_empty($order_id)) {
+            if (empty($order_id)) {
                 /* translators: 1: Payment method title */
                 $message = esc_html(sprintf(__('Payment verification failed: Order ID not received from %1$s.', 'wc-victoriabank'), $this->get_method_title()));
                 $this->log($message, WC_Log_Levels::ERROR);
@@ -1000,7 +1000,7 @@ function victoriabank_init()
             //endregion
 
             //region Validate order
-            if (self::string_empty($order_id)) {
+            if (empty($order_id)) {
                 /* translators: 1: Payment method title */
                 $message = esc_html(sprintf(__('Order ID not received from %1$s.', 'wc-victoriabank'), $this->get_method_title()));
                 $this->log($message, WC_Log_Levels::ERROR);
@@ -1111,7 +1111,7 @@ function victoriabank_init()
             }
 
             $callback_data = $_POST['callback_data'];
-            if (!self::string_empty($callback_data)) {
+            if (!empty($callback_data)) {
                 $vbdata = self::parse_response_post($callback_data);
 
                 if (!empty($vbdata)) {
@@ -1407,11 +1407,6 @@ function victoriabank_init()
         {
             //https://docs.woocommerce.com/wc-apidocs/function-wc_print_r.html
             return wc_print_r($var, true);
-        }
-
-        protected static function string_empty($string)
-        {
-            return is_null($string) || strlen($string) === 0;
         }
         //endregion
 
