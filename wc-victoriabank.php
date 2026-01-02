@@ -42,7 +42,7 @@ function victoriabank_init() {
     }
 
 	class WC_Gateway_Victoriabank extends WC_Payment_Gateway {
-		#region Constants
+		//region Constants
 		const MOD_ID          = 'victoriabank';
 		const MOD_PREFIX      = 'vb_';
 		const MOD_TITLE       = 'Victoriabank';
@@ -57,7 +57,7 @@ function victoriabank_init() {
 
 		const MOD_TRANSACTION_TYPE = self::MOD_PREFIX . 'transaction_type';
 
-		const SUPPORTED_CURRENCIES = ['MDL', 'EUR', 'USD'];
+		const SUPPORTED_CURRENCIES = array('MDL', 'EUR', 'USD');
 		const ORDER_TEMPLATE       = 'Order #%1$s';
 
 		const VB_ORDER    = 'ORDER';
@@ -74,7 +74,7 @@ function victoriabank_init() {
 		const VB_SIGNATURE_FIRST   = '0001';
 		const VB_SIGNATURE_PREFIX  = '3020300C06082A864886F70D020505000410';
 		const VB_SIGNATURE_PADDING = '00';
-		#endregion
+		//endregion
 
 		protected $logo_type, $testmode, $debug, $logger, $transaction_type, $order_template;
 		protected $vb_merchant_id, $vb_merchant_terminal, $vb_merchant_name, $vb_merchant_url, $vb_merchant_address;
@@ -87,20 +87,24 @@ function victoriabank_init() {
 			$this->has_fields         = false;
 			$this->supports           = array('products', 'refunds');
 
-			#region Initialize user set variables
-			$this->enabled            = $this->get_option('enabled', 'no');
-			$this->title              = $this->get_option('title', $this->method_title);
-			$this->description        = $this->get_option('description');
+			//region Initialize settings
+			$this->init_form_fields();
+			$this->init_settings();
 
-			$this->logo_type          = $this->get_option('logo_type', self::LOGO_TYPE_BANK);
-			$this->icon               = apply_filters('woocommerce_victoriabank_icon', self::get_logo_icon($this->logo_type));
+			$this->enabled     = $this->get_option('enabled', 'no');
+			$this->title       = $this->get_option('title', $this->get_method_title());
+			$this->description = $this->get_option('description');
 
-			$this->testmode           = wc_string_to_bool($this->get_option('testmode', 'no'));
-			$this->debug              = wc_string_to_bool($this->get_option('debug', 'no'));
-			$this->logger             = new WC_Logger(null, $this->debug ? WC_Log_Levels::DEBUG : WC_Log_Levels::INFO);
+			$this->logo_type   = $this->get_option('logo_type', self::LOGO_TYPE_BANK);
+			$this->icon        = apply_filters('woocommerce_victoriabank_icon', self::get_logo_icon($this->logo_type));
 
-			if($this->testmode)
+			$this->testmode    = wc_string_to_bool($this->get_option('testmode', 'no'));
+			$this->debug       = wc_string_to_bool($this->get_option('debug', 'no'));
+			$this->logger      = new WC_Logger(null, $this->debug ? WC_Log_Levels::DEBUG : WC_Log_Levels::INFO);
+
+			if ($this->testmode) {
 				$this->description = $this->get_test_message($this->description);
+			}
 
 			$this->transaction_type       = $this->get_option('transaction_type', self::TRANSACTION_TYPE_CHARGE);
 			$this->order_template         = $this->get_option('order_template', self::ORDER_TEMPLATE);
@@ -120,23 +124,16 @@ function victoriabank_init() {
 			$this->vb_private_key         = $this->get_option('vb_private_key');
 			$this->vb_bank_public_key     = $this->get_option('vb_bank_public_key');
 
-			$this->init_form_fields();
-			$this->init_settings();
-
 			$this->initialize_keys();
-			#endregion
+			//endregion
 
-			if(is_admin()) {
-				//Save options
+			if (is_admin()) {
 				add_action("woocommerce_update_options_payment_gateways_{$this->id}", array($this, 'process_admin_options'));
 			}
 
 			add_action("woocommerce_receipt_{$this->id}", array($this, 'receipt_page'));
-
-			#region Payment listener/API hook
 			add_action("woocommerce_api_wc_{$this->id}", array($this, 'check_response'));
 			add_action("woocommerce_api_wc_{$this->id}_redirect", array($this, 'check_redirect'));
-			#endregion
 		}
 
 		public function init_form_fields() {
@@ -531,7 +528,7 @@ function victoriabank_init() {
 			}
 		}
 
-		#region Keys
+		//region Keys
 		protected function process_pem_setting($pemFieldId, $pemOptionValue, $pemTargetFieldId, $pemType) {
 			try {
 				if(array_key_exists($pemFieldId, $_FILES)) {
@@ -673,9 +670,9 @@ function victoriabank_init() {
 		protected static function is_overwritable($fileName) {
 			return self::string_empty($fileName) || self::is_temp_file($fileName);
 		}
-		#endregion
+		//endregion
 
-		#region Payment
+		//region Payment
 		protected function init_vb_client() {
 			$victoriaBankGateway = new VictoriaBankGateway();
 
@@ -714,7 +711,7 @@ function victoriabank_init() {
 			$is_store_api_request = method_exists(WC(), 'is_store_api_request') && WC()->is_store_api_request();
 
 			if(!$this->check_settings()) {
-				$message = sprintf(esc_html__('%1$s is not properly configured.', 'wc-victoriabank'), esc_html($this->method_title));
+				$message = sprintf(esc_html__('%1$s is not properly configured.', 'wc-victoriabank'), esc_html($this->get_method_title()));
 
 				//https://github.com/woocommerce/woocommerce/issues/48687#issuecomment-2186475264
 				if($is_store_api_request) {
@@ -762,7 +759,7 @@ function victoriabank_init() {
 			}
 
 			if(!$validate_result) {
-				$message = sprintf(esc_html__('Payment completion via %1$s failed', 'wc-victoriabank'), esc_html($this->method_title));
+				$message = sprintf(esc_html__('Payment completion via %1$s failed', 'wc-victoriabank'), esc_html($this->get_method_title()));
 				$message = $this->get_test_message($message);
 				$order->add_order_note($message);
 
@@ -802,7 +799,7 @@ function victoriabank_init() {
 			}
 
 			if(!$validate_result) {
-				$message = sprintf(esc_html__('Refund of %1$s %2$s via %3$s failed', 'wc-victoriabank'), esc_html($amount), esc_html($order_currency), esc_html($this->method_title));
+				$message = sprintf(esc_html__('Refund of %1$s %2$s via %3$s failed', 'wc-victoriabank'), esc_html($amount), esc_html($order_currency), esc_html($this->get_method_title()));
 				$message = $this->get_test_message($message);
 				$order->add_order_note($message);
 
@@ -845,7 +842,7 @@ function victoriabank_init() {
 			$order_id = wc_clean($order_id);
 
 			if(self::string_empty($order_id)) {
-				$message = sprintf(esc_html__('Payment verification failed: Order ID not received from %1$s.', 'wc-victoriabank'), esc_html($this->method_title));
+				$message = sprintf(esc_html__('Payment verification failed: Order ID not received from %1$s.', 'wc-victoriabank'), esc_html($this->get_method_title()));
 				$this->log($message, WC_Log_Levels::ERROR);
 
 				wc_add_notice($message, 'error');
@@ -857,7 +854,7 @@ function victoriabank_init() {
 
 			$order = wc_get_order($order_id);
 			if(!$order) {
-				$message = sprintf(esc_html__('Order #%1$s not found as received from %2$s.', 'wc-victoriabank'), esc_html($order_id), esc_html($this->method_title));
+				$message = sprintf(esc_html__('Order #%1$s not found as received from %2$s.', 'wc-victoriabank'), esc_html($order_id), esc_html($this->get_method_title()));
 				$this->log($message, WC_Log_Levels::ERROR);
 
 				wc_add_notice($message, 'error');
@@ -870,7 +867,7 @@ function victoriabank_init() {
 			if($order->is_paid()) {
 				WC()->cart->empty_cart();
 
-				$message = sprintf(esc_html__('Order #%1$s paid successfully via %2$s.', 'wc-victoriabank'), esc_html($order_id), esc_html($this->method_title));
+				$message = sprintf(esc_html__('Order #%1$s paid successfully via %2$s.', 'wc-victoriabank'), esc_html($order_id), esc_html($this->get_method_title()));
 				$this->log($message, WC_Log_Levels::INFO);
 
 				wc_add_notice($message, 'success');
@@ -878,7 +875,7 @@ function victoriabank_init() {
 				wp_safe_redirect($this->get_return_url($order));
 				return true;
 			} else {
-				$message = sprintf(esc_html__('Order #%1$s payment failed via %2$s.', 'wc-victoriabank'), esc_html($order_id), esc_html($this->method_title));
+				$message = sprintf(esc_html__('Order #%1$s payment failed via %2$s.', 'wc-victoriabank'), esc_html($order_id), esc_html($this->get_method_title()));
 				$this->log($message, WC_Log_Levels::ERROR);
 
 				wc_add_notice($message, 'error');
@@ -915,7 +912,7 @@ function victoriabank_init() {
 				$this->log($ex, WC_Log_Levels::ERROR);
 			}
 
-			#region Extract bank response params
+			//region Extract bank response params
 			$order_id  = VictoriaBankGateway::deNormalizeOrderId($bankResponse->{Response::ORDER});
 			$amount    = $bankResponse->{Response::AMOUNT};
 			$currency  = $bankResponse->{Response::CURRENCY};
@@ -939,22 +936,22 @@ function victoriabank_init() {
 				'BIN'       => $bin,
 				'CARD'      => $card
 			);
-			#endregion
+			//endregion
 
-			#region Validate order
+			//region Validate order
 			if(self::string_empty($order_id)) {
-				$message = sprintf(esc_html__('Order ID not received from %1$s.', 'wc-victoriabank'), esc_html($this->method_title));
+				$message = sprintf(esc_html__('Order ID not received from %1$s.', 'wc-victoriabank'), esc_html($this->get_method_title()));
 				$this->log($message, WC_Log_Levels::ERROR);
 				return false;
 			}
 
 			$order = wc_get_order($order_id);
 			if(!$order) {
-				$message = sprintf(esc_html__('Order #%1$s not found as received from %2$s.', 'wc-victoriabank'), esc_html($order_id), esc_html($this->method_title));
+				$message = sprintf(esc_html__('Order #%1$s not found as received from %2$s.', 'wc-victoriabank'), esc_html($order_id), esc_html($this->get_method_title()));
 				$this->log($message, WC_Log_Levels::ERROR);
 				return false;
 			}
-			#endregion
+			//endregion
 
 			if($check_result && $this->check_transaction($order, $bankResponse)) {
 				switch($bankResponse::TRX_TYPE) {
@@ -962,7 +959,7 @@ function victoriabank_init() {
 						if($order->is_paid())
 							return true; //Duplicate callback notification from the bank
 
-						#region Update order payment metadata
+						//region Update order payment metadata
 						//https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book
 						$order->add_meta_data(self::MOD_TRANSACTION_TYPE, $this->transaction_type, true);
 
@@ -970,9 +967,9 @@ function victoriabank_init() {
 							$order->add_meta_data(strtolower(self::MOD_PREFIX . $key), $value, true);
 
 						$order->save();
-						#endregion
+						//endregion
 
-						$message = sprintf(esc_html__('Payment authorized via %1$s: %2$s', 'wc-victoriabank'), esc_html($this->method_title), esc_html(http_build_query($bankParams)));
+						$message = sprintf(esc_html__('Payment authorized via %1$s: %2$s', 'wc-victoriabank'), esc_html($this->get_method_title()), esc_html(http_build_query($bankParams)));
 						$message = $this->get_test_message($message);
 						$this->log($message, WC_Log_Levels::INFO);
 						$order->add_order_note($message);
@@ -997,7 +994,7 @@ function victoriabank_init() {
 
 					case VictoriaBankGateway::TRX_TYPE_COMPLETION:
 						//Funds successfully transferred on bank side
-						$message = sprintf(esc_html__('Payment completed via %1$s: %2$s', 'wc-victoriabank'), esc_html($this->method_title), esc_html(http_build_query($bankParams)));
+						$message = sprintf(esc_html__('Payment completed via %1$s: %2$s', 'wc-victoriabank'), esc_html($this->get_method_title()), esc_html(http_build_query($bankParams)));
 						$message = $this->get_test_message($message);
 						$this->log($message, WC_Log_Levels::INFO);
 						$order->add_order_note($message);
@@ -1007,7 +1004,7 @@ function victoriabank_init() {
 
 					case VictoriaBankGateway::TRX_TYPE_REVERSAL:
 						//Reversal successfully applied on bank side
-						$message = sprintf(esc_html__('Refund of %1$s %2$s via %3$s approved: %4$s', 'wc-victoriabank'), esc_html($amount), esc_html($currency), esc_html($this->method_title), esc_html(http_build_query($bankParams)));
+						$message = sprintf(esc_html__('Refund of %1$s %2$s via %3$s approved: %4$s', 'wc-victoriabank'), esc_html($amount), esc_html($currency), esc_html($this->get_method_title()), esc_html(http_build_query($bankParams)));
 						$message = $this->get_test_message($message);
 						$this->log($message, WC_Log_Levels::INFO);
 						$order->add_order_note($message);
@@ -1027,7 +1024,7 @@ function victoriabank_init() {
 			$this->log(sprintf(__('Payment transaction check failed for order #%1$s.', 'wc-victoriabank'), $order_id), WC_Log_Levels::ERROR);
 			$this->log(self::print_var($bankResponse), WC_Log_Levels::ERROR);
 
-			$message = sprintf(esc_html__('%1$s payment transaction check failed: %2$s', 'wc-victoriabank'), esc_html($this->method_title), esc_html(join('; ', $bankResponse->getErrors()) . ' ' . http_build_query($bankParams)));
+			$message = sprintf(esc_html__('%1$s payment transaction check failed: %2$s', 'wc-victoriabank'), esc_html($this->get_method_title()), esc_html(join('; ', $bankResponse->getErrors()) . ' ' . http_build_query($bankParams)));
 			$message = $this->get_test_message($message);
 			$order->add_order_note($message);
 			return false;
@@ -1137,7 +1134,7 @@ function victoriabank_init() {
 		}
 
 		protected function mark_order_refunded($order) {
-			$message = sprintf(esc_html__('Order fully refunded via %1$s.', 'wc-victoriabank'), esc_html($this->method_title));
+			$message = sprintf(esc_html__('Order fully refunded via %1$s.', 'wc-victoriabank'), esc_html($this->get_method_title()));
 			$message = $this->get_test_message($message);
 
 			//Mark order as refunded if not already set
@@ -1183,7 +1180,7 @@ function victoriabank_init() {
 			} catch(Exception $ex) {
 				$this->log($ex, WC_Log_Levels::ERROR);
 
-				$message = sprintf(esc_html__('Payment initiation failed via %1$s.', 'wc-victoriabank'), esc_html($this->method_title));
+				$message = sprintf(esc_html__('Payment initiation failed via %1$s.', 'wc-victoriabank'), esc_html($this->get_method_title()));
 				wc_add_notice($message, 'error');
 				$this->settings_admin_notice();
 			}
@@ -1193,9 +1190,9 @@ function victoriabank_init() {
 			$order = wc_get_order($order_id);
 			return $this->refund_transaction($order_id, $order, $amount);
 		}
-		#endregion
+		//endregion
 
-		#region Order
+		//region Order
 		protected static function get_order_net_total($order) {
 			//https://github.com/woocommerce/woocommerce/issues/17795
 			//https://github.com/woocommerce/woocommerce/pull/18196
@@ -1223,9 +1220,9 @@ function victoriabank_init() {
 
 			return join(', ', $items_names);
 		}
-		#endregion
+		//endregion
 
-		#region Utility
+		//region Utility
 		protected function get_test_message($message) {
 			if($this->testmode)
 				$message = sprintf(esc_html__('TEST: %1$s', 'wc-victoriabank'), esc_html($message));
@@ -1316,9 +1313,9 @@ function victoriabank_init() {
 		protected static function string_empty($string) {
 			return is_null($string) || strlen($string) === 0;
 		}
-		#endregion
+		//endregion
 
-		#region Admin
+		//region Admin
 		public static function plugin_links($links) {
 			$plugin_links = array(
 				sprintf('<a href="%1$s">%2$s</a>', esc_url(self::get_settings_url()), esc_html__('Settings', 'wc-victoriabank'))
@@ -1348,9 +1345,9 @@ function victoriabank_init() {
 			$plugin = new self();
 			return $plugin->complete_transaction($order_id, $order);
 		}
-		#endregion
+		//endregion
 
-		#region WooCommerce
+		//region WooCommerce
 		public static function add_gateway($methods) {
 			$methods[] = self::class;
 			return $methods;
@@ -1383,13 +1380,13 @@ function victoriabank_init() {
 
 			return $fields;
 		}
-		#endregion
+		//endregion
 	}
 
 	//Add gateway to WooCommerce
 	add_filter('woocommerce_payment_gateways', array(WC_Gateway_Victoriabank::class, 'add_gateway'));
 
-	#region Admin init
+	//region Admin init
 	if(is_admin()) {
 		add_filter('plugin_action_links_' . plugin_basename(__FILE__), array(WC_Gateway_Victoriabank::class, 'plugin_links'));
 
@@ -1399,13 +1396,13 @@ function victoriabank_init() {
 
 		add_action('wp_ajax_victoriabank_callback_data_process', array(WC_Gateway_Victoriabank::class, 'callback_data_process'));
 	}
-	#endregion
+	//endregion
 
 	//Add WooCommerce email templates actions
 	add_filter('woocommerce_email_order_meta_fields', array(WC_Gateway_Victoriabank::class, 'email_order_meta_fields'), 10, 3);
 }
 
-#region Declare WooCommerce compatibility
+//region Declare WooCommerce compatibility
 add_action('before_woocommerce_init', function() {
 	if(class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
 		//WooCommerce HPOS compatibility
@@ -1417,9 +1414,9 @@ add_action('before_woocommerce_init', function() {
 		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('cart_checkout_blocks', __FILE__, true);
 	}
 });
-#endregion
+//endregion
 
-#region Register WooCommerce Blocks payment method type
+//region Register WooCommerce Blocks payment method type
 add_action('woocommerce_blocks_loaded', function() {
 	if(class_exists(\Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType::class)) {
 		require_once plugin_dir_path(__FILE__) . 'wc-victoriabank-wbc.php';
@@ -1431,4 +1428,4 @@ add_action('woocommerce_blocks_loaded', function() {
 		);
 	}
 });
-#endregion
+//endregion
