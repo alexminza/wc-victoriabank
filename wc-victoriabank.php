@@ -564,6 +564,7 @@ function victoriabank_init()
                     $tmp_name = $pem_file['tmp_name'];
 
                     if (UPLOAD_ERR_OK === $pem_file['error'] && is_uploaded_file($tmp_name)) {
+                        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local file read.
                         $pem_data = file_get_contents($tmp_name);
 
                         if (false !== $pem_data) {
@@ -624,6 +625,7 @@ function victoriabank_init()
                     return $validate_result;
                 }
 
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local file read.
                 $key_data = file_get_contents($key_file);
                 $public_key = openssl_pkey_get_public($key_data);
 
@@ -645,6 +647,7 @@ function victoriabank_init()
                     return $validate_result;
                 }
 
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local file read.
                 $key_data = file_get_contents($key_file);
                 $private_key = openssl_pkey_get_private($key_data, $key_passphrase);
 
