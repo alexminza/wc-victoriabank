@@ -546,6 +546,7 @@ function victoriabank_init()
         protected function settings_admin_notice()
         {
             if (self::is_wc_admin()) {
+                /* translators: 1: Plugin settings URL */
                 $message = sprintf(wp_kses_post(__('Please review the <a href="%1$s">payment method settings</a> page for log details and setup instructions.', 'wc-victoriabank')), esc_url(self::get_settings_url()));
                 wc_add_notice($message, 'error');
             }
@@ -559,7 +560,7 @@ function victoriabank_init()
                     $pem_file = $_FILES[$pem_field_id];
                     $tmp_name = $pem_file['tmp_name'];
 
-                    if ($pem_file['error'] === UPLOAD_ERR_OK && is_uploaded_file($tmp_name)) {
+                    if (UPLOAD_ERR_OK === $pem_file['error'] && is_uploaded_file($tmp_name)) {
                         $pem_data = file_get_contents($tmp_name);
 
                         if (false !== $pem_data) {
@@ -760,7 +761,7 @@ function victoriabank_init()
 
                 // https://github.com/woocommerce/woocommerce/issues/48687#issuecomment-2186475264
                 if ($is_store_api_request) {
-                    throw new Exception($message);
+                    throw new Exception(esc_html($message));
                 }
 
                 wc_add_notice($message, 'error');
@@ -1032,7 +1033,7 @@ function victoriabank_init()
                         $order->save();
                         //endregion
 
-                        $message = sprintf(esc_html__('Payment authorized via %1$s: %2$s', 'wc-victoriabank'), esc_html($this->get_method_title()), esc_html(http_build_query($bank_params)));
+                        $message = esc_html(sprintf(__('Payment authorized via %1$s: %2$s', 'wc-victoriabank'), $this->get_method_title(), http_build_query($bank_params)));
                         $message = $this->get_test_message($message);
                         $this->log($message, WC_Log_Levels::INFO);
                         $order->add_order_note($message);
@@ -1415,33 +1416,36 @@ function victoriabank_init()
         //endregion
 
         //region Admin
-        public static function plugin_links($links)
+        public static function plugin_links(array $links)
         {
             $plugin_links = array(
-                sprintf('<a href="%1$s">%2$s</a>', esc_url(self::get_settings_url()), esc_html__('Settings', 'wc-victoriabank')),
+                sprintf(
+                    '<a href="%1$s">%2$s</a>',
+                    esc_url(self::get_settings_url()),
+                    esc_html__('Settings', 'wc-victoriabank')
+                ),
             );
 
             return array_merge($plugin_links, $links);
         }
 
-        public static function order_actions($actions)
+        public static function order_actions(array $actions, \WC_Order $order)
         {
-            global $theorder;
-            if (!$theorder->is_paid() || $theorder->get_payment_method() !== self::MOD_ID) {
+            if (!$order->is_paid() || $order->get_payment_method() !== self::MOD_ID) {
                 return $actions;
             }
 
-            $transaction_type = $theorder->get_meta(self::MOD_TRANSACTION_TYPE, true);
+            $transaction_type = strval($order->get_meta(self::MOD_TRANSACTION_TYPE, true));
             if (self::TRANSACTION_TYPE_AUTHORIZATION !== $transaction_type) {
                 return $actions;
             }
 
             /* translators: 1: Payment method title */
-            $actions['victoriabank_complete_transaction'] = sprintf(esc_html__('Complete %1$s transaction', 'wc-victoriabank'), esc_html(self::MOD_TITLE));
+            $actions['victoriabank_complete_transaction'] = esc_html(sprintf(__('Complete %1$s transaction', 'wc-victoriabank'), self::MOD_TITLE));
             return $actions;
         }
 
-        public static function action_complete_transaction($order)
+        public static function action_complete_transaction(\WC_Order $order)
         {
             $order_id = $order->get_id();
 
@@ -1451,7 +1455,7 @@ function victoriabank_init()
         //endregion
 
         //region WooCommerce
-        public static function add_gateway($methods)
+        public static function add_gateway(array $methods)
         {
             $methods[] = self::class;
             return $methods;
@@ -1463,7 +1467,7 @@ function victoriabank_init()
             return current_user_can('manage_woocommerce');
         }
 
-        public static function email_order_meta_fields($fields, $sent_to_admin, $order)
+        public static function email_order_meta_fields(array $fields, bool $sent_to_admin, \WC_Order $order)
         {
             if (!$order->is_paid() || $order->get_payment_method() !== self::MOD_ID) {
                 return $fields;
