@@ -5,6 +5,8 @@
 [![WordPress Plugin Active Installs](https://img.shields.io/wordpress/plugin/installs/wc-victoriabank?logo=wordpress)](https://wordpress.org/plugins/wc-victoriabank/advanced/)
 [![WordPress Plugin Stars](https://img.shields.io/wordpress/plugin/stars/wc-victoriabank?logo=wordpress)](https://wordpress.org/support/plugin/wc-victoriabank/reviews/)
 
+![Victoriabank](./.wordpress-org/banner-1544x500.png)
+
 _Accept Visa and Mastercard directly on your store with the Payment Gateway for Victoriabank for WooCommerce._
 
 WordPress plugin: https://wordpress.org/plugins/wc-victoriabank/
@@ -15,11 +17,12 @@ WordPress plugin: https://wordpress.org/plugins/wc-victoriabank/
 * Reverse transactions – partial or complete refunds
 * Admin order actions – complete authorized transaction
 * Order confirmation email with card transaction details
-* Supports WooCommerce [block-based checkout experience](https://woo.com/checkout-blocks/)
+* Supports WooCommerce [block-based checkout experience](https://woocommerce.com/checkout-blocks/)
 * Free to use – [Open-source GPL-3.0 license on GitHub](https://github.com/alexminza/wc-victoriabank)
 
 ## Getting Started
 
+* [Victoriabank E-commerce](https://www.victoriabank.md/en/carduri-pj/e-commerce)
 * [Installation Instructions](https://wordpress.org/plugins/wc-victoriabank/installation/)
 * [Frequently Asked Questions](https://wordpress.org/plugins/wc-victoriabank/faq/)
 
