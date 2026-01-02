@@ -207,7 +207,8 @@ function victoriabank_init()
                 'order_template'  => array(
                     'title'       => __('Order description', 'wc-victoriabank'),
                     'type'        => 'text',
-                    'description' => __('Format: <code>%1$s</code> - Order ID, <code>%2$s</code> - Order items summary', 'wc-victoriabank'),
+                    /* translators: 1: Example placeholder shown to user, represents Order ID */
+                    'description' => __('Format: <code>%1$s</code> - Order ID', 'wc-victoriabank'),
                     'desc_tip'    => __('Order description that the customer will see on the bank payment page.', 'wc-victoriabank'),
                     'default'     => self::ORDER_TEMPLATE,
                 ),
@@ -1286,26 +1287,10 @@ function victoriabank_init()
             return $order_total - $total_refunded;
         }
 
-        protected function get_order_description($order)
+        protected function get_order_description(\WC_Order $order)
         {
-            return sprintf(
-                esc_html($this->order_template),
-                $order->get_id(),
-                esc_html($this->get_order_items_summary($order))
-            );
-        }
-
-        protected function get_order_items_summary($order)
-        {
-            $items = $order->get_items();
-            $items_names = array_map(
-                function ($item) {
-                    return $item->get_name();
-                },
-                $items
-            );
-
-            return join(', ', $items_names);
+            $description = sprintf($this->order_template, $order->get_id());
+            return apply_filters('victoriabank_order_description', $description, $order);
         }
         //endregion
 
