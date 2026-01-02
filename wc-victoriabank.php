@@ -565,7 +565,7 @@ function victoriabank_init()
                         $pem_data = file_get_contents($tmp_name);
 
                         if (false !== $pem_data) {
-                            $result = self::save_temp_file($pem_data, $pem_type);
+                            $result = $this->save_temp_file($pem_data, $pem_type);
 
                             if (!empty($result)) {
                                 //Overwrite advanced setting value
@@ -599,7 +599,7 @@ function victoriabank_init()
                 if (!is_readable($pem_file)) {
                     if (self::is_overwritable($pem_file)) {
                         if (!empty($pem_data)) {
-                            $result = self::save_temp_file($pem_data, $pem_type);
+                            $result = $this->save_temp_file($pem_data, $pem_type);
 
                             if (!empty($result)) {
                                 $this->update_option($pem_option_name, $result);
@@ -682,7 +682,7 @@ function victoriabank_init()
             }
         }
 
-        protected static function save_temp_file($file_data, $file_suffix = '')
+        protected function save_temp_file($file_data, $file_suffix = '')
         {
             //http://www.pathname.com/fhs/pub/fhs-2.3.html#TMPTEMPORARYFILES
             $temp_file_name = sprintf('%1$s%2$s_', self::MOD_PREFIX, $file_suffix);
@@ -690,13 +690,13 @@ function victoriabank_init()
 
             if (!$temp_file) {
                 /* translators: 1: Temporary file name */
-                self::static_log(sprintf(__('Unable to create temporary file: %1$s', 'wc-victoriabank'), $temp_file), WC_Log_Levels::ERROR);
+                $this->log(sprintf(__('Unable to create temporary file: %1$s', 'wc-victoriabank'), $temp_file), WC_Log_Levels::ERROR);
                 return null;
             }
 
             if (false === file_put_contents($temp_file, $file_data)) {
                 /* translators: 1: Temporary file name */
-                self::static_log(sprintf(__('Unable to save data to temporary file: %1$s', 'wc-victoriabank'), $temp_file), WC_Log_Levels::ERROR);
+                $this->log(sprintf(__('Unable to save data to temporary file: %1$s', 'wc-victoriabank'), $temp_file), WC_Log_Levels::ERROR);
                 return null;
             }
 
@@ -1390,21 +1390,9 @@ function victoriabank_init()
             $this->logger->log($level, $message, $log_context);
         }
 
-        protected static function static_log($message, $level = WC_Log_Levels::DEBUG)
-        {
-            $logger = wc_get_logger();
-            $log_context = array('source' => self::MOD_ID);
-            $logger->log($level, $message, $log_context);
-        }
-
         protected function log_request($source)
         {
             $this->log(sprintf('%1$s: %2$s %3$s %4$s', $source, self::get_client_ip(), $_SERVER['REQUEST_METHOD'], self::print_var($_REQUEST)));
-        }
-
-        protected static function static_log_request($source)
-        {
-            self::static_log(sprintf('%1$s: %2$s %3$s %4$s', $source, self::get_client_ip(), $_SERVER['REQUEST_METHOD'], self::print_var($_REQUEST)));
         }
 
         protected static function print_var($var)
