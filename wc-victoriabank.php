@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: Payment Gateway for Victoriabank for WooCommerce
  * Description: Accept Visa and Mastercard directly on your store with the Payment Gateway for Victoriabank for WooCommerce.
@@ -20,10 +21,10 @@
  * Requires Plugins: woocommerce
  */
 
-//Looking to contribute code to this plugin? Go ahead and fork the repository over at GitHub https://github.com/alexminza/wc-victoriabank
-//This plugin is based on VictoriaBankGateway by Fruitware https://github.com/Fruitware/VictoriaBankGateway (https://packagist.org/packages/fruitware/victoria-bank-gateway)
+// Looking to contribute code to this plugin? Go ahead and fork the repository over at GitHub https://github.com/alexminza/wc-victoriabank
+// This plugin is based on VictoriaBankGateway by Fruitware https://github.com/Fruitware/VictoriaBankGateway (https://packagist.org/packages/fruitware/victoria-bank-gateway)
 
-if(!defined('ABSPATH')) {
+if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
@@ -32,25 +33,14 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Fruitware\VictoriaBankGateway\VictoriaBankGateway;
 use Fruitware\VictoriaBankGateway\VictoriaBank\Response;
 
-add_action('plugins_loaded', 'woocommerce_victoriabank_plugins_loaded', 0);
+add_action('plugins_loaded', 'victoriabank_init', 0);
 
-function woocommerce_victoriabank_plugins_loaded() {
-	#load_plugin_textdomain('wc-victoriabank', false, dirname(plugin_basename(__FILE__)) . '/languages');
+function victoriabank_init() {
+	// https://developer.woocommerce.com/docs/features/payments/payment-gateway-plugin-base/
+    if (!class_exists('WC_Payment_Gateway')) {
+        return;
+    }
 
-	//https://docs.woocommerce.com/document/query-whether-woocommerce-is-activated/
-	if(!class_exists('WooCommerce')) {
-		add_action('admin_notices', 'woocommerce_victoriabank_missing_wc_notice');
-		return;
-	}
-
-	woocommerce_victoriabank_init();
-}
-
-function woocommerce_victoriabank_missing_wc_notice() {
-	echo sprintf('<div class="notice notice-error is-dismissible"><p>%1$s</p></div>', esc_html__('Payment Gateway for Victoriabank requires WooCommerce to be installed and active.', 'wc-victoriabank'));
-}
-
-function woocommerce_victoriabank_init() {
 	class WC_Gateway_Victoriabank extends WC_Payment_Gateway {
 		#region Constants
 		const MOD_ID          = 'victoriabank';
