@@ -849,6 +849,7 @@ function victoriabank_init()
             }
 
             if (!$validate_result) {
+                /* translators: 1: Refund amount, 2: Currency code, 3: Payment method title */
                 $message = esc_html(sprintf(__('Refund of %1$s %2$s via %3$s failed', 'wc-victoriabank'), $amount, $order_currency, $this->get_method_title()));
                 $message = $this->get_test_message($message);
                 $order->add_order_note($message);
@@ -1010,6 +1011,7 @@ function victoriabank_init()
 
             $order = wc_get_order($order_id);
             if (!$order) {
+                /* translators: 1: Order ID, 2: Payment method title */
                 $message = esc_html(sprintf(__('Order #%1$s not found as received from %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
                 $this->log($message, WC_Log_Levels::ERROR);
                 return false;
@@ -1034,6 +1036,7 @@ function victoriabank_init()
                         $order->save();
                         //endregion
 
+                        /* translators: 1: Payment method title, 2: Payment gateway response */
                         $message = esc_html(sprintf(__('Payment authorized via %1$s: %2$s', 'wc-victoriabank'), $this->get_method_title(), http_build_query($bank_params)));
                         $message = $this->get_test_message($message);
                         $this->log($message, WC_Log_Levels::INFO);
@@ -1058,6 +1061,7 @@ function victoriabank_init()
 
                     case VictoriaBankGateway::TRX_TYPE_COMPLETION:
                         // Funds successfully transferred on bank side
+                        /* translators: 1: Payment method title, 2: Payment gateway response */
                         $message = esc_html(sprintf(__('Payment completed via %1$s: %2$s', 'wc-victoriabank'), $this->get_method_title(), http_build_query($bank_params)));
                         $message = $this->get_test_message($message);
                         $this->log($message, WC_Log_Levels::INFO);
@@ -1067,6 +1071,7 @@ function victoriabank_init()
 
                     case VictoriaBankGateway::TRX_TYPE_REVERSAL:
                         // Reversal successfully applied on bank side
+                        /* translators: 1: Refund amount, 2: Currency code, 3: Payment method title, 4: Payment gateway response */
                         $message = esc_html(sprintf(__('Refund of %1$s %2$s via %3$s approved: %4$s', 'wc-victoriabank'), $amount, $currency, $this->get_method_title(), http_build_query($bank_params)));
                         $message = $this->get_test_message($message);
                         $this->log($message, WC_Log_Levels::INFO);
@@ -1084,9 +1089,11 @@ function victoriabank_init()
                 }
             }
 
+            /* translators: 1: Order ID */
             $this->log(sprintf(__('Payment transaction check failed for order #%1$s.', 'wc-victoriabank'), $order_id), WC_Log_Levels::ERROR);
             $this->log(self::print_var($bank_response), WC_Log_Levels::ERROR);
 
+            /* translators: 1: Order ID, 2: Payment gateway response */
             $message = esc_html(sprintf(__('%1$s payment transaction check failed: %2$s', 'wc-victoriabank'), $this->get_method_title(), join('; ', $bank_response->getErrors()) . ' ' . http_build_query($bank_params)));
             $message = $this->get_test_message($message);
             $order->add_order_note($message);
