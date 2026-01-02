@@ -803,7 +803,7 @@ function victoriabank_init()
             $order_total = self::get_order_net_total($order);
             $order_currency = $order->get_currency();
 
-            //Funds locked on bank side - transfer the product/service to the customer and request completion
+            // Funds locked on bank side - transfer the product/service to the customer and request completion
             $validate_result = false;
             try {
                 $victoriabank_gateway = $this->init_vb_client();
@@ -1129,21 +1129,22 @@ function victoriabank_init()
         {
             $this->log_request(__FUNCTION__);
 
-            //https://codex.wordpress.org/AJAX_in_Plugins
-            //https://developer.wordpress.org/plugins/javascript/ajax/
+            // https://codex.wordpress.org/AJAX_in_Plugins
+            // https://developer.wordpress.org/plugins/javascript/ajax/
 
-            //https://developer.wordpress.org/reference/functions/check_ajax_referer/
+            // https://developer.wordpress.org/reference/functions/check_ajax_referer/
             check_ajax_referer('callback_data_process');
 
             if (!self::is_wc_admin()) {
-                //https://developer.wordpress.org/reference/functions/wp_die/
+                // https://developer.wordpress.org/reference/functions/wp_die/
                 $message = get_status_header_desc(WP_Http::FORBIDDEN);
                 $this->log($message, WC_Log_Levels::ERROR);
-                wp_die($message, WP_Http::FORBIDDEN);
+                wp_send_json_error($message, WP_Http::FORBIDDEN);
+                wp_die();
                 return;
             }
 
-            $callback_data = $_POST['callback_data'];
+            $callback_data = isset($_POST['callback_data']) ? sanitize_textarea_field(wp_unslash($_POST['callback_data'])) : '';
             if (!empty($callback_data)) {
                 $vbdata = self::parse_response_post($callback_data);
 
