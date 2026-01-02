@@ -1167,8 +1167,13 @@ function victoriabank_init()
                 if ($error) {
                     $message = $error['message'];
 
-                    $this->log($message, WC_Log_Levels::ERROR);
-                    $this->log(self::print_var($error));
+                    $this->log(
+                        $message,
+                        WC_Log_Levels::ERROR,
+                        array(
+                            'error' => self::print_var($error),
+                        )
+                    );
                 }
 
                 return false;
