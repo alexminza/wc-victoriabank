@@ -1378,11 +1378,15 @@ function victoriabank_init()
             );
         }
 
-        protected function log($message, $level = WC_Log_Levels::DEBUG)
+        protected function log(string $message, string $level = WC_Log_Levels::DEBUG, ?array $additional_context = null)
         {
-            //https://woocommerce.wordpress.com/2017/01/26/improved-logging-in-woocommerce-2-7/
-            //https://stackoverflow.com/questions/1423157/print-php-call-stack
-            $log_context = array('source' => self::MOD_ID);
+            // https://developer.woocommerce.com/docs/best-practices/data-management/logging/
+            // https://stackoverflow.com/questions/1423157/print-php-call-stack
+            $log_context = array('source' => $this->id);
+            if (!empty($additional_context)) {
+                $log_context = array_merge($log_context, $additional_context);
+            }
+
             $this->logger->log($level, $message, $log_context);
         }
 
