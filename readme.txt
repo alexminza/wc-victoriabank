@@ -2,9 +2,9 @@
 Contributors: alexminza
 Tags: WooCommerce, Moldova, Victoriabank, payment gateway, credit card
 Requires at least: 4.8
-Tested up to: 6.8
-Stable tag: 1.4.4
-Requires PHP: 7.0
+Tested up to: 6.9
+Stable tag: 1.5.0
+Requires PHP: 7.2.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
