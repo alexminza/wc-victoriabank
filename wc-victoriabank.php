@@ -27,7 +27,7 @@ if(!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-require_once(__DIR__ . '/vendor/autoload.php');
+require_once __DIR__ . '/vendor/autoload.php';
 
 use Fruitware\VictoriaBankGateway\VictoriaBankGateway;
 use Fruitware\VictoriaBankGateway\VictoriaBank\Response;
@@ -51,11 +51,12 @@ function woocommerce_victoriabank_missing_wc_notice() {
 }
 
 function woocommerce_victoriabank_init() {
-	class WC_VictoriaBank extends WC_Payment_Gateway {
+	class WC_Gateway_Victoriabank extends WC_Payment_Gateway {
 		#region Constants
 		const MOD_ID          = 'victoriabank';
-		const MOD_TITLE       = 'Victoriabank';
 		const MOD_PREFIX      = 'vb_';
+		const MOD_TITLE       = 'Victoriabank';
+		const MOD_VERSION     = '1.5.0';
 
 		const TRANSACTION_TYPE_CHARGE = 'charge';
 		const TRANSACTION_TYPE_AUTHORIZATION = 'authorization';
@@ -1396,22 +1397,22 @@ function woocommerce_victoriabank_init() {
 	}
 
 	//Add gateway to WooCommerce
-	add_filter('woocommerce_payment_gateways', array(WC_VictoriaBank::class, 'add_gateway'));
+	add_filter('woocommerce_payment_gateways', array(WC_Gateway_Victoriabank::class, 'add_gateway'));
 
 	#region Admin init
 	if(is_admin()) {
-		add_filter('plugin_action_links_' . plugin_basename(__FILE__), array(WC_VictoriaBank::class, 'plugin_links'));
+		add_filter('plugin_action_links_' . plugin_basename(__FILE__), array(WC_Gateway_Victoriabank::class, 'plugin_links'));
 
 		//Add WooCommerce order actions
-		add_filter('woocommerce_order_actions', array(WC_VictoriaBank::class, 'order_actions'));
-		add_action('woocommerce_order_action_victoriabank_complete_transaction', array(WC_VictoriaBank::class, 'action_complete_transaction'));
+		add_filter('woocommerce_order_actions', array(WC_Gateway_Victoriabank::class, 'order_actions'));
+		add_action('woocommerce_order_action_victoriabank_complete_transaction', array(WC_Gateway_Victoriabank::class, 'action_complete_transaction'));
 
-		add_action('wp_ajax_victoriabank_callback_data_process', array(WC_VictoriaBank::class, 'callback_data_process'));
+		add_action('wp_ajax_victoriabank_callback_data_process', array(WC_Gateway_Victoriabank::class, 'callback_data_process'));
 	}
 	#endregion
 
 	//Add WooCommerce email templates actions
-	add_filter('woocommerce_email_order_meta_fields', array(WC_VictoriaBank::class, 'email_order_meta_fields'), 10, 3);
+	add_filter('woocommerce_email_order_meta_fields', array(WC_Gateway_Victoriabank::class, 'email_order_meta_fields'), 10, 3);
 }
 
 #region Declare WooCommerce compatibility
@@ -1435,7 +1436,7 @@ add_action('woocommerce_blocks_loaded', function() {
 
 		add_action('woocommerce_blocks_payment_method_type_registration',
 			function(\Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry) {
-				$payment_method_registry->register(new WC_VictoriaBank_WBC());
+				$payment_method_registry->register(new WC_Gateway_Victoriabank_WBC());
 			}
 		);
 	}
