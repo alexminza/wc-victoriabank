@@ -1120,26 +1120,27 @@ function victoriabank_init()
                         $response = $this->process_response_data($vbdata);
 
                         if ($response) {
-                            $message = sprintf(__('Processed successfully', 'wc-victoriabank'), self::MOD_TITLE);
+                            $message = __('Processed successfully', 'wc-victoriabank');
                             $this->log($message, WC_Log_Levels::INFO);
                             wp_send_json_success($message);
                         } else {
-                            $message = sprintf(__('Processing error', 'wc-victoriabank'), self::MOD_TITLE);
+                            $message = __('Processing error', 'wc-victoriabank');
                             $this->log($message, WC_Log_Levels::ERROR);
                             wp_send_json_error($message);
                         }
                     } else {
-                        $message = sprintf(__('%1$s is not configured', 'wc-victoriabank'), self::MOD_TITLE);
+                        /* translators: 1: Payment method title */
+                        $message = sprintf(__('%1$s is not configured', 'wc-victoriabank'), $this->get_method_title());
                         $this->log($message, WC_Log_Levels::ERROR);
                         wp_send_json_error($message);
                     }
                 } else {
-                    $message = sprintf(__('Invalid message', 'wc-victoriabank'), self::MOD_TITLE);
+                    $message = __('Invalid message', 'wc-victoriabank');
                     $this->log($message, WC_Log_Levels::ERROR);
                     wp_send_json_error($message);
                 }
             } else {
-                $message = sprintf(__('Empty message', 'wc-victoriabank'), self::MOD_TITLE);
+                $message = __('Empty message', 'wc-victoriabank');
                 $this->log($message, WC_Log_Levels::ERROR);
                 wp_send_json_error($message);
             }
