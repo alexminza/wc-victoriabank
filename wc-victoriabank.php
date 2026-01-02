@@ -1355,11 +1355,6 @@ function victoriabank_init()
             return $wc_countries->get_formatted_address($address, ', ');
         }
 
-        protected static function get_client_ip()
-        {
-            return WC_Geolocation::get_ip_address();
-        }
-
         protected function get_callback_url()
         {
             //https://developer.woo.com/docs/woocommerce-plugin-api-callbacks/
@@ -1409,7 +1404,19 @@ function victoriabank_init()
 
         protected function log_request($source)
         {
-            $this->log(sprintf('%1$s: %2$s %3$s %4$s', $source, self::get_client_ip(), $_SERVER['REQUEST_METHOD'], self::print_var($_REQUEST)));
+            $method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
+
+            $this->log(
+                $source,
+                WC_Log_Levels::DEBUG,
+                array(
+                    'ip' => WC_Geolocation::get_ip_address(),
+                    'method' => $method,
+                    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Logging request data for debugging purposes.
+                    'request' => self::print_var($_REQUEST),
+                    'backtrace' => true,
+                )
+            );
         }
 
         protected static function print_var($var)
