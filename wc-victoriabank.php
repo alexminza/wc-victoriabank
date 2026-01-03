@@ -628,8 +628,9 @@ function victoriabank_init()
                 $public_key = openssl_pkey_get_public($key_data);
 
                 if (false === $public_key) {
-                    $this->log_openssl_errors();
-                    return __('Invalid public key', 'wc-victoriabank');
+                    $message = __('Invalid public key', 'wc-victoriabank');
+                    $this->log_openssl_errors($message);
+                    return $message;
                 }
             } catch (Exception $ex) {
                 $this->log($ex, WC_Log_Levels::ERROR);
@@ -650,8 +651,9 @@ function victoriabank_init()
                 $private_key = openssl_pkey_get_private($key_data, $key_passphrase);
 
                 if (false === $private_key) {
-                    $this->log_openssl_errors();
-                    return __('Invalid private key or wrong private key passphrase', 'wc-victoriabank');
+                    $message = __('Invalid private key or wrong private key passphrase', 'wc-victoriabank');
+                    $this->log_openssl_errors($message);
+                    return $message;
                 }
             } catch (Exception $ex) {
                 $this->log($ex, WC_Log_Levels::ERROR);
@@ -679,13 +681,24 @@ function victoriabank_init()
             }
         }
 
-        protected function log_openssl_errors()
+        protected function log_openssl_errors(string $message)
         {
+            $openssl_errors = array();
+
             // https://www.php.net/manual/en/function.openssl-error-string.php
             // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition -- Common openssl_error_string code pattern.
-            while ($openssl_error = openssl_error_string()) {
-                $this->log($openssl_error, WC_Log_Levels::ERROR);
+            while ($error = openssl_error_string()) {
+                $openssl_errors[] = $error;
             }
+
+            $this->log(
+                $message,
+                WC_Log_Levels::ERROR,
+                array(
+                    'openssl_errors' => $openssl_errors,
+                    'backtrace' => true,
+                )
+            );
         }
 
         /**
