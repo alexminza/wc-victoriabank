@@ -1083,7 +1083,7 @@ function victoriabank_init()
                 __FUNCTION__,
                 WC_Log_Levels::DEBUG,
                 array(
-                    'vbdata' => wp_json_encode($vbdata),
+                    'vbdata' => $vbdata,
                     'backtrace' => true,
                 )
             );
@@ -1167,7 +1167,13 @@ function victoriabank_init()
                         /* translators: 1: Payment method title, 2: Payment gateway response */
                         $message = esc_html(sprintf(__('Payment authorized via %1$s: %2$s', 'wc-victoriabank'), $this->get_method_title(), http_build_query($bank_params)));
                         $message = $this->get_test_message($message);
-                        $this->log($message, WC_Log_Levels::INFO);
+                        $this->log(
+                            $message,
+                            WC_Log_Levels::INFO,
+                            array(
+                                'bank_params' => $bank_params,
+                            )
+                        );
                         $order->add_order_note($message);
 
                         $order->payment_complete($rrn);
@@ -1192,7 +1198,13 @@ function victoriabank_init()
                         /* translators: 1: Payment method title, 2: Payment gateway response */
                         $message = esc_html(sprintf(__('Payment completed via %1$s: %2$s', 'wc-victoriabank'), $this->get_method_title(), http_build_query($bank_params)));
                         $message = $this->get_test_message($message);
-                        $this->log($message, WC_Log_Levels::INFO);
+                        $this->log(
+                            $message,
+                            WC_Log_Levels::INFO,
+                            array(
+                                'bank_params' => $bank_params,
+                            )
+                        );
                         $order->add_order_note($message);
 
                         return true;
@@ -1202,7 +1214,13 @@ function victoriabank_init()
                         /* translators: 1: Refund amount, 2: Currency code, 3: Payment method title, 4: Payment gateway response */
                         $message = esc_html(sprintf(__('Refund of %1$s %2$s via %3$s approved: %4$s', 'wc-victoriabank'), $amount, $currency, $this->get_method_title(), http_build_query($bank_params)));
                         $message = $this->get_test_message($message);
-                        $this->log($message, WC_Log_Levels::INFO);
+                        $this->log(
+                            $message,
+                            WC_Log_Levels::INFO,
+                            array(
+                                'bank_params' => $bank_params,
+                            )
+                        );
                         $order->add_order_note($message);
 
                         if ($order->get_total() === $order->get_total_refunded()) {
@@ -1223,6 +1241,7 @@ function victoriabank_init()
                 WC_Log_Levels::ERROR,
                 array(
                     'bank_response' => self::print_var($bank_response),
+                    'bank_params' => $bank_params,
                 )
             );
 
@@ -1309,7 +1328,7 @@ function victoriabank_init()
                         $message,
                         WC_Log_Levels::ERROR,
                         array(
-                            'error' => wp_json_encode($error),
+                            'error' => $error,
                         )
                     );
                 }
@@ -1580,7 +1599,7 @@ function victoriabank_init()
                     'ip' => WC_Geolocation::get_ip_address(),
                     'method' => $method,
                     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Logging request data for debugging purposes.
-                    'request' => wp_json_encode($_REQUEST),
+                    'request' => $_REQUEST,
                     'backtrace' => true,
                 )
             );
