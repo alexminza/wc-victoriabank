@@ -86,7 +86,7 @@ function victoriabank_init()
         {
             $this->id                 = self::MOD_ID;
             $this->method_title       = self::MOD_TITLE;
-            $this->method_description = 'Payment Gateway for Victoriabank for WooCommerce';
+            $this->method_description = __('Payment Gateway for Victoriabank', 'wc-victoriabank');
             $this->has_fields         = false;
             $this->supports           = array('products', 'refunds');
 
@@ -813,9 +813,9 @@ function victoriabank_init()
                 ->setMerchantAddress($this->vb_merchant_address)
                 ->setTimezone(wc_timezone_string())
                 ->setDefaultLanguage($this->get_language());
-                // ->setCountryCode(WC()->countries->get_base_country())
-                // ->setDefaultCurrency(get_woocommerce_currency())
-                // ->setDebug($this->debug)
+            // ->setCountryCode(WC()->countries->get_base_country())
+            // ->setDefaultCurrency(get_woocommerce_currency())
+            // ->setDebug($this->debug)
 
             // Set security options - provided by the bank
             $victoriabank_gateway->setSecurityOptions(
