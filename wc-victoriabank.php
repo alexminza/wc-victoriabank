@@ -1027,7 +1027,7 @@ function victoriabank_plugins_loaded_init()
             }
 
             $order = wc_get_order($order_id);
-            if (!$order) {
+            if (empty($order)) {
                 /* translators: 1: Order ID, 2: Payment method title */
                 $message = esc_html(sprintf(__('Order #%1$s not found as received from %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
                 $this->log($message, WC_Log_Levels::ERROR);
