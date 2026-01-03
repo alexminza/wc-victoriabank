@@ -70,9 +70,9 @@ function victoriabank_init()
         const VB_APPROVAL = self::MOD_PREFIX . 'APPROVAL';
         const VB_CARD     = self::MOD_PREFIX . 'CARD';
 
-        //e-Commerce Gateway merchant interface (CGI/WWW forms version)
-        //Appendix A: P_SIGN creation/verification in the Merchant System
-        //https://github.com/Fruitware/VictoriaBankGateway/blob/master/doc/e-Gateway_Merchant_CGI_2.1.pdf
+        // e-Commerce Gateway merchant interface (CGI/WWW forms version)
+        // Appendix A: P_SIGN creation/verification in the Merchant System
+        // https://github.com/Fruitware/VictoriaBankGateway/blob/master/doc/e-Gateway_Merchant_CGI_2.1.pdf
         const VB_SIGNATURE_FIRST   = '0001';
         const VB_SIGNATURE_PREFIX  = '3020300C06082A864886F70D020505000410';
         const VB_SIGNATURE_PADDING = '00';
@@ -394,7 +394,7 @@ function victoriabank_init()
             $this->validate_settings();
             $this->display_errors();
 
-            //https://developer.woocommerce.com/2025/11/19/deprecation-of-wc_enqueue_js-in-10-4/
+            // https://developer.woocommerce.com/2025/11/19/deprecation-of-wc_enqueue_js-in-10-4/
             $script_handle = self::MOD_PREFIX . 'connection_settings';
             wp_register_script($script_handle, '', array('jquery'), self::MOD_VERSION, true);
             wp_enqueue_script($script_handle);
@@ -768,7 +768,6 @@ function victoriabank_init()
 
         protected function save_temp_file(string $file_data, string $file_suffix = '')
         {
-            //http://www.pathname.com/fhs/pub/fhs-2.3.html#TMPTEMPORARYFILES
             $temp_file_name = sprintf('%1$s%2$s_', self::MOD_PREFIX, $file_suffix);
             $temp_file = wp_tempnam($temp_file_name);
 
@@ -1492,8 +1491,8 @@ function victoriabank_init()
         //region Order
         protected static function get_order_net_total(\WC_Order $order)
         {
-            //https://github.com/woocommerce/woocommerce/issues/17795
-            //https://github.com/woocommerce/woocommerce/pull/18196
+            // https://github.com/woocommerce/woocommerce/issues/17795
+            // https://github.com/woocommerce/woocommerce/pull/18196
             $total_refunded = 0;
             $order_refunds = $order->get_refunds();
             foreach ($order_refunds as $refund) {
@@ -1547,7 +1546,7 @@ function victoriabank_init()
 
         protected function get_callback_url()
         {
-            //https://developer.woo.com/docs/woocommerce-plugin-api-callbacks/
+            // https://developer.woo.com/docs/woocommerce-plugin-api-callbacks/
             $callback_url = WC()->api_request_url("wc_{$this->id}");
             return apply_filters('victoriabank_callback_url', $callback_url);
         }
@@ -1613,7 +1612,7 @@ function victoriabank_init()
 
         protected static function print_var($expression)
         {
-            //https://docs.woocommerce.com/wc-apidocs/function-wc_print_r.html
+            // https://docs.woocommerce.com/wc-apidocs/function-wc_print_r.html
             return wc_print_r($expression, true);
         }
         //endregion
@@ -1666,7 +1665,7 @@ function victoriabank_init()
 
         public static function is_wc_admin()
         {
-            //https://developer.wordpress.org/reference/functions/current_user_can/
+            // https://developer.wordpress.org/reference/functions/current_user_can/
             return current_user_can('manage_woocommerce');
         }
 
