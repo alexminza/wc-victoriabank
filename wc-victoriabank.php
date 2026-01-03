@@ -99,7 +99,7 @@ function victoriabank_init()
             $this->description = $this->get_option('description');
 
             $this->logo_type   = $this->get_option('logo_type', self::LOGO_TYPE_BANK);
-            $this->icon        = apply_filters('woocommerce_victoriabank_icon', self::get_logo_icon($this->logo_type));
+            $this->icon        = self::get_logo_icon($this->logo_type);
 
             $this->testmode    = wc_string_to_bool($this->get_option('testmode', 'no'));
             $this->debug       = wc_string_to_bool($this->get_option('debug', 'no'));
@@ -350,13 +350,11 @@ function victoriabank_init()
 
         protected static function get_logo_icon($logo_type)
         {
-            $plugin_dir = plugin_dir_url(__FILE__);
-
             switch ($logo_type) {
                 case self::LOGO_TYPE_BANK:
-                    return "{$plugin_dir}assets/img/victoriabank.png";
+                    return plugins_url('/assets/img/victoriabank.png', __FILE__);
                 case self::LOGO_TYPE_SYSTEMS:
-                    return "{$plugin_dir}assets/img/paymentsystems.png";
+                    return plugins_url('assets/img/paymentsystems.png', __FILE__);
                 case self::LOGO_TYPE_NONE:
                     return '';
             }
