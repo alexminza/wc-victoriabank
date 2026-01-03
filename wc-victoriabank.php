@@ -1427,12 +1427,14 @@ function victoriabank_init()
         protected function get_callback_url()
         {
             //https://developer.woo.com/docs/woocommerce-plugin-api-callbacks/
-            return WC()->api_request_url("wc_{$this->id}");
+            $callback_url = WC()->api_request_url("wc_{$this->id}");
+            return apply_filters('victoriabank_callback_url', $callback_url);
         }
 
         protected function get_redirect_url()
         {
-            return WC()->api_request_url("wc_{$this->id}_redirect");
+            $redirect_url = WC()->api_request_url("wc_{$this->id}_redirect");
+            return apply_filters('victoriabank_redirect_url', $redirect_url);
         }
 
         protected static function get_logs_url()
