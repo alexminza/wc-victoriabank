@@ -831,6 +831,9 @@ function victoriabank_init()
             return $victoriabank_gateway;
         }
 
+        /**
+         * @param int $order_id
+         */
         public function process_payment($order_id)
         {
             $is_store_api_request = method_exists(WC(), 'is_store_api_request') && WC()->is_store_api_request();
@@ -973,9 +976,9 @@ function victoriabank_init()
 
         protected function check_transaction(\WC_Order $order, \Fruitware\VictoriaBankGateway\VictoriaBank\ResponseInterface $bank_response)
         {
-            $amount   = $bank_response->{Response::AMOUNT};
-            $currency = $bank_response->{Response::CURRENCY};
-            $trx_type  = $bank_response::TRX_TYPE;
+            $amount   = floatval($bank_response->{Response::AMOUNT});
+            $currency = strval($bank_response->{Response::CURRENCY});
+            $trx_type = $bank_response::TRX_TYPE;
 
             $order_total = $order->get_total();
             $order_currency = $order->get_currency();
@@ -1105,15 +1108,15 @@ function victoriabank_init()
 
             //region Extract bank response params
             $order_id  = VictoriaBankGateway::deNormalizeOrderId($bank_response->{Response::ORDER});
-            $amount    = $bank_response->{Response::AMOUNT};
-            $currency  = $bank_response->{Response::CURRENCY};
-            $approval  = $bank_response->{Response::APPROVAL};
-            $rrn       = $bank_response->{Response::RRN};
-            $int_ref   = $bank_response->{Response::INT_REF};
-            $timestamp = $bank_response->{Response::TIMESTAMP};
-            $text      = $bank_response->{Response::TEXT};
-            $bin       = $bank_response->{Response::BIN};
-            $card      = $bank_response->{Response::CARD};
+            $amount    = floatval($bank_response->{Response::AMOUNT});
+            $currency  = strval($bank_response->{Response::CURRENCY});
+            $approval  = strval($bank_response->{Response::APPROVAL});
+            $rrn       = strval($bank_response->{Response::RRN});
+            $int_ref   = strval($bank_response->{Response::INT_REF});
+            $timestamp = strval($bank_response->{Response::TIMESTAMP});
+            $text      = strval($bank_response->{Response::TEXT});
+            $bin       = strval($bank_response->{Response::BIN});
+            $card      = strval($bank_response->{Response::CARD});
 
             $bank_params = array(
                 'ORDER'     => $order_id,
