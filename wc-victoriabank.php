@@ -1421,6 +1421,12 @@ function victoriabank_init()
                 $payment_method = $order->get_payment_method();
 
                 if (self::MOD_ID === $payment_method) {
+                    /* translators: 1: Order ID, 2: Payment method title */
+                    $message = esc_html(sprintf(__('Order #%1$s payment initiated via %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
+                    $message = $this->get_test_message($message);
+                    $this->log($message, WC_Log_Levels::INFO);
+                    $order->add_order_note($message);
+
                     $this->generate_form($order);
                 }
             } catch (Exception $ex) {
