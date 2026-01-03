@@ -552,7 +552,7 @@ function victoriabank_init()
         }
 
         //region Keys
-        protected function process_pem_setting($pem_field_id, $pem_option_value, $pem_target_field_id, $pem_type)
+        protected function process_pem_setting(string $pem_field_id, string $pem_option_value, string $pem_target_field_id, string $pem_type)
         {
             try {
                 // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled by WooCommerce.
@@ -580,7 +580,17 @@ function victoriabank_init()
                     }
                 }
             } catch (Exception $ex) {
-                $this->log($ex, WC_Log_Levels::ERROR);
+                $this->log(
+                    $ex->getMessage(),
+                    WC_Log_Levels::ERROR,
+                    array(
+                        'pem_field_id' => $pem_field_id,
+                        'pem_target_field_id' => $pem_target_field_id,
+                        'pem_type' => $pem_type,
+                        'exception' => (string) $ex,
+                        'backtrace' => true,
+                    )
+                );
             }
 
             //Preserve existing value
@@ -595,7 +605,7 @@ function victoriabank_init()
             $this->initialize_key($this->vb_private_key, $this->vb_private_key_pem, 'vb_private_key', 'key.pem');
         }
 
-        protected function initialize_key(&$pem_file, $pem_data, $pem_option_name, $pem_type)
+        protected function initialize_key(string &$pem_file, string $pem_data, string $pem_option_name, string $pem_type)
         {
             try {
                 if (!is_readable($pem_file)) {
@@ -611,11 +621,21 @@ function victoriabank_init()
                     }
                 }
             } catch (Exception $ex) {
-                $this->log($ex, WC_Log_Levels::ERROR);
+                $this->log(
+                    $ex->getMessage(),
+                    WC_Log_Levels::ERROR,
+                    array(
+                        'pem_file' => $pem_file,
+                        'pem_option_name' => $pem_option_name,
+                        'pem_type' => $pem_type,
+                        'exception' => (string) $ex,
+                        'backtrace' => true,
+                    )
+                );
             }
         }
 
-        protected function validate_public_key($key_file)
+        protected function validate_public_key(string $key_file)
         {
             try {
                 $validate_result = $this->validate_file($key_file);
@@ -633,12 +653,21 @@ function victoriabank_init()
                     return $message;
                 }
             } catch (Exception $ex) {
-                $this->log($ex, WC_Log_Levels::ERROR);
+                $this->log(
+                    $ex->getMessage(),
+                    WC_Log_Levels::ERROR,
+                    array(
+                        'key_file' => $key_file,
+                        'exception' => (string) $ex,
+                        'backtrace' => true,
+                    )
+                );
+
                 return __('Could not validate public key', 'wc-victoriabank');
             }
         }
 
-        protected function validate_private_key($key_file, $key_passphrase)
+        protected function validate_private_key(string $key_file, string $key_passphrase)
         {
             try {
                 $validate_result = $this->validate_file($key_file);
@@ -656,12 +685,21 @@ function victoriabank_init()
                     return $message;
                 }
             } catch (Exception $ex) {
-                $this->log($ex, WC_Log_Levels::ERROR);
+                $this->log(
+                    $ex->getMessage(),
+                    WC_Log_Levels::ERROR,
+                    array(
+                        'key_file' => $key_file,
+                        'exception' => (string) $ex,
+                        'backtrace' => true,
+                    )
+                );
+
                 return __('Could not validate private key', 'wc-victoriabank');
             }
         }
 
-        protected function validate_file($file)
+        protected function validate_file(string $file)
         {
             try {
                 if (empty($file)) {
@@ -676,7 +714,16 @@ function victoriabank_init()
                     return __('File not readable', 'wc-victoriabank');
                 }
             } catch (Exception $ex) {
-                $this->log($ex, WC_Log_Levels::ERROR);
+                $this->log(
+                    $ex->getMessage(),
+                    WC_Log_Levels::ERROR,
+                    array(
+                        'file' => $file,
+                        'exception' => (string) $ex,
+                        'backtrace' => true,
+                    )
+                );
+
                 return __('Could not validate file', 'wc-victoriabank');
             }
         }
@@ -726,8 +773,7 @@ function victoriabank_init()
             $temp_file = wp_tempnam($temp_file_name);
 
             $wp_filesystem = self::get_wp_filesystem();
-            $write_result = $wp_filesystem->put_contents($temp_file, $file_data, FS_CHMOD_FILE);
-            if (false === $write_result) {
+            if (!$wp_filesystem->put_contents($temp_file, $file_data, FS_CHMOD_FILE)) {
                 /* translators: 1: Temporary file name */
                 $this->log(sprintf(__('Unable to save data to temporary file: %1$s', 'wc-victoriabank'), $temp_file), WC_Log_Levels::ERROR);
                 return null;
@@ -820,7 +866,7 @@ function victoriabank_init()
             $this->receipt_page($order_id);
         }
 
-        public function complete_transaction($order_id, $order)
+        public function complete_transaction(int $order_id, \WC_Order $order)
         {
             $this->log(
                 __FUNCTION__,
@@ -831,8 +877,8 @@ function victoriabank_init()
                 )
             );
 
-            $rrn = $order->get_meta(strtolower(self::VB_RRN), true);
-            $int_ref = $order->get_meta(strtolower(self::VB_INT_REF), true);
+            $rrn = strval($order->get_meta(strtolower(self::VB_RRN), true));
+            $int_ref = strval($order->get_meta(strtolower(self::VB_INT_REF), true));
             $order_total = self::get_order_net_total($order);
             $order_currency = $order->get_currency();
 
@@ -843,7 +889,15 @@ function victoriabank_init()
                 $completion_result = $victoriabank_gateway->requestCompletion($order_id, $order_total, $rrn, $int_ref, $order_currency);
                 $validate_result = self::validate_response_form($completion_result);
             } catch (Exception $ex) {
-                $this->log($ex, WC_Log_Levels::ERROR);
+                $this->log(
+                    $ex->getMessage(),
+                    WC_Log_Levels::ERROR,
+                    array(
+                        'order_id' => $order_id,
+                        'exception' => (string) $ex,
+                        'backtrace' => true,
+                    )
+                );
             }
 
             if (!$validate_result) {
@@ -870,8 +924,8 @@ function victoriabank_init()
                 )
             );
 
-            $rrn = $order->get_meta(strtolower(self::VB_RRN), true);
-            $int_ref = $order->get_meta(strtolower(self::VB_INT_REF), true);
+            $rrn = strval($order->get_meta(strtolower(self::VB_RRN), true));
+            $int_ref = strval($order->get_meta(strtolower(self::VB_INT_REF), true));
             $order_total = $order->get_total();
             $order_currency = $order->get_currency();
 
@@ -893,7 +947,16 @@ function victoriabank_init()
                 $reversal_result = $victoriabank_gateway->requestReversal($order_id, $amount, $rrn, $int_ref, $order_currency);
                 $validate_result = self::validate_response_form($reversal_result);
             } catch (Exception $ex) {
-                $this->log($ex, WC_Log_Levels::ERROR);
+                $this->log(
+                    $ex->getMessage(),
+                    WC_Log_Levels::ERROR,
+                    array(
+                        'order_id' => $order_id,
+                        'amount' => $amount,
+                        'exception' => (string) $ex,
+                        'backtrace' => true,
+                    )
+                );
             }
 
             if (!$validate_result) {
@@ -908,7 +971,7 @@ function victoriabank_init()
             return $validate_result;
         }
 
-        protected function check_transaction(WC_Order $order, $bank_response)
+        protected function check_transaction(\WC_Order $order, $bank_response)
         {
             $amount   = $bank_response->{Response::AMOUNT};
             $currency = $bank_response->{Response::CURRENCY};
@@ -1030,7 +1093,14 @@ function victoriabank_init()
                 $bank_response = $victoriabank_gateway->getResponseObject($vbdata);
                 $check_result = $bank_response->isValid();
             } catch (Exception $ex) {
-                $this->log($ex, WC_Log_Levels::ERROR);
+                $this->log(
+                    $ex->getMessage(),
+                    WC_Log_Levels::ERROR,
+                    array(
+                        'exception' => (string) $ex,
+                        'backtrace' => true,
+                    )
+                );
             }
 
             //region Extract bank response params
@@ -1354,7 +1424,15 @@ function victoriabank_init()
                     $this->generate_form($order);
                 }
             } catch (Exception $ex) {
-                $this->log($ex, WC_Log_Levels::ERROR);
+                $this->log(
+                    $ex->getMessage(),
+                    WC_Log_Levels::ERROR,
+                    array(
+                        'order_id' => $order_id,
+                        'exception' => (string) $ex,
+                        'backtrace' => true,
+                    )
+                );
 
                 /* translators: 1: Payment method title */
                 $message = esc_html(sprintf(__('Payment initiation failed via %1$s.', 'wc-victoriabank'), $this->get_method_title()));
@@ -1564,17 +1642,17 @@ function victoriabank_init()
 
             $fields[self::VB_RRN] = array(
                 'label' => __('Retrieval Reference Number (RRN)', 'wc-victoriabank'),
-                'value' => $order->get_meta(strtolower(self::VB_RRN), true),
+                'value' => strval($order->get_meta(strtolower(self::VB_RRN), true)),
             );
 
             $fields[self::VB_APPROVAL] = array(
                 'label' => __('Authorization code', 'wc-victoriabank'),
-                'value' => $order->get_meta(strtolower(self::VB_APPROVAL), true),
+                'value' => strval($order->get_meta(strtolower(self::VB_APPROVAL), true)),
             );
 
             $fields[self::VB_CARD] = array(
                 'label' => __('Card number', 'wc-victoriabank'),
-                'value' => $order->get_meta(strtolower(self::VB_CARD), true),
+                'value' => strval($order->get_meta(strtolower(self::VB_CARD), true)),
             );
 
             return $fields;
