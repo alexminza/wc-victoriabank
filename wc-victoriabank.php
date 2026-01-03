@@ -941,7 +941,7 @@ function victoriabank_init()
             }
 
             // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Verification is done via order existence check.
-            $order_id = isset($_REQUEST[self::VB_ORDER_ID]) ? wc_clean(wp_unslash($_REQUEST[self::VB_ORDER_ID])) : 0;
+            $order_id = isset($_REQUEST[self::VB_ORDER_ID]) ? absint(wp_unslash($_REQUEST[self::VB_ORDER_ID])) : 0;
             if (empty($order_id)) {
                 /* translators: 1: Payment method title */
                 $message = esc_html(sprintf(__('Payment verification failed: Order ID not received from %1$s.', 'wc-victoriabank'), $this->get_method_title()));
