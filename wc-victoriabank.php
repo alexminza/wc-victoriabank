@@ -33,9 +33,9 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Fruitware\VictoriaBankGateway\VictoriaBankGateway;
 use Fruitware\VictoriaBankGateway\VictoriaBank\Response;
 
-add_action('plugins_loaded', 'victoriabank_init', 0);
+add_action('plugins_loaded', 'victoriabank_plugins_loaded_init', 0);
 
-function victoriabank_init()
+function victoriabank_plugins_loaded_init()
 {
     // https://developer.woocommerce.com/docs/features/payments/payment-gateway-plugin-base/
     if (!class_exists('WC_Payment_Gateway')) {
@@ -569,9 +569,9 @@ function victoriabank_init()
                             $result = $this->save_temp_file($pem_data, $pem_type);
 
                             if (!empty($result)) {
-                                //Overwrite advanced setting value
+                                // Overwrite advanced setting value
                                 $_POST[$pem_target_field_id] = $result;
-                                //Save uploaded file to settings
+                                // Save uploaded file to settings
                                 $_POST[$pem_field_id] = $pem_data;
 
                                 return;
@@ -593,7 +593,7 @@ function victoriabank_init()
                 );
             }
 
-            //Preserve existing value
+            // Preserve existing value
             // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled by WooCommerce.
             $_POST[$pem_field_id] = $pem_option_value;
         }
@@ -835,7 +835,7 @@ function victoriabank_init()
          */
         public function process_payment($order_id)
         {
-            $is_store_api_request = method_exists(WC(), 'is_store_api_request') && WC()->is_store_api_request();
+            $is_store_api_request = WC()->is_store_api_request();
 
             if (!$this->check_settings()) {
                 /* translators: 1: Payment method title */
@@ -868,8 +868,10 @@ function victoriabank_init()
             $this->receipt_page($order_id);
         }
 
-        public function complete_transaction(int $order_id, \WC_Order $order)
+        public function complete_transaction(\WC_Order $order)
         {
+            $order_id = $order->get_id();
+
             $this->log(
                 __FUNCTION__,
                 WC_Log_Levels::DEBUG,
@@ -1140,7 +1142,7 @@ function victoriabank_init()
             }
 
             $order = wc_get_order($order_id);
-            if (!$order) {
+            if (empty($order)) {
                 /* translators: 1: Order ID, 2: Payment method title */
                 $message = esc_html(sprintf(__('Order #%1$s not found as received from %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
                 $this->log($message, WC_Log_Levels::ERROR);
@@ -1182,7 +1184,7 @@ function victoriabank_init()
 
                         switch ($this->transaction_type) {
                             case self::TRANSACTION_TYPE_CHARGE:
-                                $this->complete_transaction($order_id, $order);
+                                $this->complete_transaction($order);
                                 break;
 
                             case self::TRANSACTION_TYPE_AUTHORIZATION:
@@ -1546,7 +1548,7 @@ function victoriabank_init()
 
         protected function get_callback_url()
         {
-            // https://developer.woo.com/docs/woocommerce-plugin-api-callbacks/
+            // https://developer.woocommerce.com/docs/extensions/core-concepts/woocommerce-plugin-api-callback/
             $callback_url = WC()->api_request_url("wc_{$this->id}");
             return apply_filters('victoriabank_callback_url', $callback_url);
         }
@@ -1649,10 +1651,8 @@ function victoriabank_init()
 
         public static function action_complete_transaction(\WC_Order $order)
         {
-            $order_id = $order->get_id();
-
             $plugin = new self();
-            return $plugin->complete_transaction($order_id, $order);
+            return $plugin->complete_transaction($order);
         }
         //endregion
 
