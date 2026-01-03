@@ -86,7 +86,7 @@ function victoriabank_init()
         {
             $this->id                 = self::MOD_ID;
             $this->method_title       = self::MOD_TITLE;
-            $this->method_description = __('Payment Gateway for Victoriabank', 'wc-victoriabank');
+            $this->method_description = __('Accept Visa and Mastercard through Victoriabank.', 'wc-victoriabank');
             $this->has_fields         = false;
             $this->supports           = array('products', 'refunds');
 
