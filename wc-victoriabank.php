@@ -555,7 +555,7 @@ function victoriabank_init()
 
         //region Keys
         /**
-         * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+         * @global WP_Filesystem_Base $wp_filesystem
          */
         protected function process_pem_setting($pem_field_id, $pem_option_value, $pem_target_field_id, $pem_type)
         {
@@ -624,7 +624,7 @@ function victoriabank_init()
         }
 
         /**
-         * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+         * @global WP_Filesystem_Base $wp_filesystem
          */
         protected function validate_public_key($key_file)
         {
@@ -652,7 +652,7 @@ function victoriabank_init()
         }
 
         /**
-         * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+         * @global WP_Filesystem_Base $wp_filesystem
          */
         protected function validate_private_key($key_file, $key_passphrase)
         {
@@ -702,14 +702,14 @@ function victoriabank_init()
         protected function log_openssl_errors()
         {
             // https://www.php.net/manual/en/function.openssl-error-string.php
-            // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition -- Established openssl_error_string code pattern.
+            // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition -- Common openssl_error_string code pattern.
             while ($openssl_error = openssl_error_string()) {
                 $this->log($openssl_error, WC_Log_Levels::ERROR);
             }
         }
 
         /**
-         * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+         * @global WP_Filesystem_Base $wp_filesystem
          */
         protected function save_temp_file($file_data, $file_suffix = '')
         {
@@ -936,7 +936,7 @@ function victoriabank_init()
             // Received payment data from VB here instead of CallbackURL?
             $request_method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
             if ('POST' === $request_method) {
-                // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verification is done via bank signature in process_response_data
+                // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verification is done via bank signature in process_response_data.
                 $this->process_response_data($_POST);
             }
 
