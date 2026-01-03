@@ -694,15 +694,15 @@ function victoriabank_init()
         {
             //http://www.pathname.com/fhs/pub/fhs-2.3.html#TMPTEMPORARYFILES
             $temp_file_name = sprintf('%1$s%2$s_', self::MOD_PREFIX, $file_suffix);
-            $temp_file = tempnam(get_temp_dir(), $temp_file_name);
+            $temp_file = wp_tempnam($temp_file_name);
 
-            if (!$temp_file) {
-                /* translators: 1: Temporary file name */
-                $this->log(sprintf(__('Unable to create temporary file: %1$s', 'wc-victoriabank'), $temp_file), WC_Log_Levels::ERROR);
-                return null;
+            global $wp_filesystem;
+            if (empty($wp_filesystem)) {
+                WP_Filesystem();
             }
 
-            if (false === file_put_contents($temp_file, $file_data)) {
+            $write_result = $wp_filesystem->put_contents($temp_file, $file_data, FS_CHMOD_FILE);
+            if (false === $write_result) {
                 /* translators: 1: Temporary file name */
                 $this->log(sprintf(__('Unable to save data to temporary file: %1$s', 'wc-victoriabank'), $temp_file), WC_Log_Levels::ERROR);
                 return null;
