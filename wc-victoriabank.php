@@ -364,7 +364,7 @@ function victoriabank_init()
 
         public function is_valid_for_use()
         {
-            if (!in_array(get_option('woocommerce_currency'), self::SUPPORTED_CURRENCIES, true)) {
+            if (!in_array(get_woocommerce_currency(), self::SUPPORTED_CURRENCIES, true)) {
                 return false;
             }
 
