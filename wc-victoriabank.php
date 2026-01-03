@@ -554,6 +554,9 @@ function victoriabank_init()
         }
 
         //region Keys
+        /**
+         * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+         */
         protected function process_pem_setting($pem_field_id, $pem_option_value, $pem_target_field_id, $pem_type)
         {
             try {
@@ -564,8 +567,11 @@ function victoriabank_init()
                     $tmp_name = $pem_file['tmp_name'];
 
                     if (UPLOAD_ERR_OK === $pem_file['error'] && is_uploaded_file($tmp_name)) {
-                        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local file read.
-                        $pem_data = file_get_contents($tmp_name);
+                        /**
+                         * @var WP_Filesystem_Base
+                         */
+                        global $wp_filesystem;
+                        $pem_data = $wp_filesystem->get_contents($tmp_name);
 
                         if (false !== $pem_data) {
                             $result = $this->save_temp_file($pem_data, $pem_type);
@@ -617,6 +623,9 @@ function victoriabank_init()
             }
         }
 
+        /**
+         * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+         */
         protected function validate_public_key($key_file)
         {
             try {
@@ -625,8 +634,11 @@ function victoriabank_init()
                     return $validate_result;
                 }
 
-                // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local file read.
-                $key_data = file_get_contents($key_file);
+                /**
+                 * @var WP_Filesystem_Base
+                 */
+                global $wp_filesystem;
+                $key_data = $wp_filesystem->get_contents($key_file);
                 $public_key = openssl_pkey_get_public($key_data);
 
                 if (false === $public_key) {
@@ -639,6 +651,9 @@ function victoriabank_init()
             }
         }
 
+        /**
+         * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+         */
         protected function validate_private_key($key_file, $key_passphrase)
         {
             try {
@@ -647,8 +662,11 @@ function victoriabank_init()
                     return $validate_result;
                 }
 
-                // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local file read.
-                $key_data = file_get_contents($key_file);
+                /**
+                 * @var WP_Filesystem_Base
+                 */
+                global $wp_filesystem;
+                $key_data = $wp_filesystem->get_contents($key_file);
                 $private_key = openssl_pkey_get_private($key_data, $key_passphrase);
 
                 if (false === $private_key) {
@@ -690,17 +708,19 @@ function victoriabank_init()
             }
         }
 
+        /**
+         * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+         */
         protected function save_temp_file($file_data, $file_suffix = '')
         {
             //http://www.pathname.com/fhs/pub/fhs-2.3.html#TMPTEMPORARYFILES
             $temp_file_name = sprintf('%1$s%2$s_', self::MOD_PREFIX, $file_suffix);
             $temp_file = wp_tempnam($temp_file_name);
 
+            /**
+             * @var WP_Filesystem_Base
+             */
             global $wp_filesystem;
-            if (empty($wp_filesystem)) {
-                WP_Filesystem();
-            }
-
             $write_result = $wp_filesystem->put_contents($temp_file, $file_data, FS_CHMOD_FILE);
             if (false === $write_result) {
                 /* translators: 1: Temporary file name */
