@@ -1261,7 +1261,7 @@ function victoriabank_init()
 
         protected function parse_response_form(string $vbformhtml)
         {
-            return self::parse_response_regex($vbformhtml, '/<input.+name="(\w+)".+value="(.*)"/i');
+            return self::parse_response_regex($vbformhtml, '/<input.+name="(\w+)".+value="(.*?)"/i');
         }
 
         protected static function parse_response_post(string $vbpost)
