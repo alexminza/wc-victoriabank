@@ -536,7 +536,7 @@ function victoriabank_init()
                 }
             }
 
-            if (ini_get('allow_url_fopen') !== 1) {
+            if (!ini_get('allow_url_fopen')) {
                 $this->add_error(sprintf('<strong>PHP %1$s</strong>: %2$s', 'allow_url_fopen', wp_kses_post(__('Current server settings do not allow web requests to the bank payment gateway. See <a href="https://www.php.net/manual/en/filesystem.configuration.php#ini.allow-url-fopen" target="_blank">PHP Runtime Configuration</a> for details.', 'wc-victoriabank'))));
                 $validate_result = false;
             }
