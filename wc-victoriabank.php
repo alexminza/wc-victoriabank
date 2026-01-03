@@ -1083,7 +1083,7 @@ function victoriabank_init()
                 __FUNCTION__,
                 WC_Log_Levels::DEBUG,
                 array(
-                    'vbdata' => self::print_var($vbdata),
+                    'vbdata' => wp_json_encode($vbdata),
                     'backtrace' => true,
                 )
             );
@@ -1217,9 +1217,14 @@ function victoriabank_init()
                 }
             }
 
-            /* translators: 1: Order ID */
-            $this->log(sprintf(__('Payment transaction check failed for order #%1$s.', 'wc-victoriabank'), $order_id), WC_Log_Levels::ERROR);
-            $this->log(self::print_var($bank_response), WC_Log_Levels::ERROR);
+            $this->log(
+                /* translators: 1: Order ID */
+                sprintf(__('Payment transaction check failed for order #%1$s.', 'wc-victoriabank'), $order_id),
+                WC_Log_Levels::ERROR,
+                array(
+                    'bank_response' => self::print_var($bank_response),
+                )
+            );
 
             /* translators: 1: Order ID, 2: Payment gateway response */
             $message = esc_html(sprintf(__('%1$s payment transaction check failed: %2$s', 'wc-victoriabank'), $this->get_method_title(), join('; ', $bank_response->getErrors()) . ' ' . http_build_query($bank_params)));
@@ -1304,7 +1309,7 @@ function victoriabank_init()
                         $message,
                         WC_Log_Levels::ERROR,
                         array(
-                            'error' => self::print_var($error),
+                            'error' => wp_json_encode($error),
                         )
                     );
                 }
@@ -1575,7 +1580,7 @@ function victoriabank_init()
                     'ip' => WC_Geolocation::get_ip_address(),
                     'method' => $method,
                     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Logging request data for debugging purposes.
-                    'request' => self::print_var($_REQUEST),
+                    'request' => wp_json_encode($_REQUEST),
                     'backtrace' => true,
                 )
             );
