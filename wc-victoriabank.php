@@ -348,7 +348,7 @@ function victoriabank_init()
             );
         }
 
-        protected static function get_logo_icon($logo_type)
+        protected static function get_logo_icon(string $logo_type)
         {
             switch ($logo_type) {
                 case self::LOGO_TYPE_BANK:
@@ -766,7 +766,7 @@ function victoriabank_init()
             return $wp_filesystem;
         }
 
-        protected function save_temp_file($file_data, $file_suffix = '')
+        protected function save_temp_file(string $file_data, string $file_suffix = '')
         {
             //http://www.pathname.com/fhs/pub/fhs-2.3.html#TMPTEMPORARYFILES
             $temp_file_name = sprintf('%1$s%2$s_', self::MOD_PREFIX, $file_suffix);
@@ -782,13 +782,13 @@ function victoriabank_init()
             return $temp_file;
         }
 
-        protected static function is_temp_file($file_name)
+        protected static function is_temp_file(string $file_name)
         {
             $temp_dir = get_temp_dir();
             return strncmp($file_name, $temp_dir, strlen($temp_dir)) === 0;
         }
 
-        protected static function is_overwritable($file_name)
+        protected static function is_overwritable(string $file_name)
         {
             return empty($file_name) || self::is_temp_file($file_name);
         }
@@ -971,7 +971,7 @@ function victoriabank_init()
             return $validate_result;
         }
 
-        protected function check_transaction(\WC_Order $order, $bank_response)
+        protected function check_transaction(\WC_Order $order, \Fruitware\VictoriaBankGateway\VictoriaBank\ResponseInterface $bank_response)
         {
             $amount   = $bank_response->{Response::AMOUNT};
             $currency = $bank_response->{Response::CURRENCY};
@@ -1308,6 +1308,9 @@ function victoriabank_init()
             wp_die();
         }
 
+        /**
+         * @param string|false $vbresponse
+         */
         protected function validate_response_form($vbresponse)
         {
             $this->log(
@@ -1588,7 +1591,7 @@ function victoriabank_init()
             $this->logger->log($level, $message, $log_context);
         }
 
-        protected function log_request($source)
+        protected function log_request(string $source)
         {
             $method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
 
