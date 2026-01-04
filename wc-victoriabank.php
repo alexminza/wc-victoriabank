@@ -899,11 +899,9 @@ function victoriabank_plugins_loaded_init()
 
             // Funds locked on bank side - transfer the product/service to the customer and request completion
             $completion_result = null;
-            $validate_result = null;
             try {
                 $victoriabank_gateway = $this->init_vb_client();
                 $completion_result = $victoriabank_gateway->requestCompletion($order_id, $order_total, $rrn, $int_ref, $order_currency);
-                $validate_result = self::validate_response_form($completion_result);
             } catch (Exception $ex) {
                 $this->log(
                     $ex->getMessage(),
@@ -911,15 +909,14 @@ function victoriabank_plugins_loaded_init()
                     array(
                         'order_id' => $order_id,
                         'order_total' => $order_total,
-                        'completion_result' => $completion_result,
-                        'validate_result' => $validate_result,
+                        'completion_result' => wp_json_encode($completion_result),
                         'exception' => (string) $ex,
                         'backtrace' => true,
                     )
                 );
             }
 
-            if (!$validate_result) {
+            if (empty($completion_result)) {
                 /* translators: 1: Order ID, 2: Payment method title */
                 $message = esc_html(sprintf(__('Order #%1$s payment completion via %2$s failed.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
                 $message = $this->get_test_message($message);
@@ -929,8 +926,7 @@ function victoriabank_plugins_loaded_init()
                     array(
                         'order_id' => $order_id,
                         'order_total' => $order_total,
-                        'completion_result' => $completion_result,
-                        'validate_result' => $validate_result,
+                        'completion_result' => wp_json_encode($completion_result),
                     )
                 );
 
@@ -938,7 +934,7 @@ function victoriabank_plugins_loaded_init()
                 return new WP_Error('complete_transaction', $message);
             }
 
-            return $validate_result;
+            return true;
         }
 
         protected function check_transaction(\WC_Order $order, \Fruitware\VictoriaBankGateway\VictoriaBank\ResponseInterface $bank_response)
@@ -1284,40 +1280,6 @@ function victoriabank_plugins_loaded_init()
             wp_die();
         }
 
-        /**
-         * @param string|false $vbresponse
-         */
-        protected function validate_response_form($vbresponse)
-        {
-            $this->log(
-                __FUNCTION__,
-                WC_Log_Levels::DEBUG,
-                array(
-                    'vbresponse' => $vbresponse,
-                    'backtrace' => true,
-                )
-            );
-
-            if (false === $vbresponse) {
-                $error = error_get_last();
-                if ($error) {
-                    $message = $error['message'];
-
-                    $this->log(
-                        $message,
-                        WC_Log_Levels::ERROR,
-                        array(
-                            'error' => $error,
-                        )
-                    );
-                }
-
-                return false;
-            }
-
-            return true;
-        }
-
         protected function process_response_form(string $vbresponse)
         {
             $this->log(
@@ -1485,11 +1447,9 @@ function victoriabank_plugins_loaded_init()
             }
 
             $reversal_result = null;
-            $validate_result = null;
             try {
                 $victoriabank_gateway = $this->init_vb_client();
                 $reversal_result = $victoriabank_gateway->requestReversal($order_id, $amount, $rrn, $int_ref, $order_currency);
-                $validate_result = self::validate_response_form($reversal_result);
             } catch (Exception $ex) {
                 $this->log(
                     $ex->getMessage(),
@@ -1498,15 +1458,14 @@ function victoriabank_plugins_loaded_init()
                         'order_id' => $order_id,
                         'amount' => $amount,
                         'reason' => $reason,
-                        'reversal_result' => $reversal_result,
-                        'validate_result' => $validate_result,
+                        'reversal_result' => wp_json_encode($reversal_result),
                         'exception' => (string) $ex,
                         'backtrace' => true,
                     )
                 );
             }
 
-            if (!$validate_result) {
+            if (empty($reversal_result)) {
                 /* translators: 1: Order ID, 2: Refund amount, 3: Payment method title */
                 $message = esc_html(sprintf(__('Order #%1$s refund of %2$s via %3$s failed.', 'wc-victoriabank'), $order_id, $this->format_price($amount, $order_currency), $this->get_method_title()));
                 $message = $this->get_test_message($message);
@@ -1517,8 +1476,7 @@ function victoriabank_plugins_loaded_init()
                         'order_id' => $order_id,
                         'amount' => $amount,
                         'reason' => $reason,
-                        'reversal_result' => $reversal_result,
-                        'validate_result' => $validate_result,
+                        'reversal_result' => wp_json_encode($reversal_result),
                     )
                 );
 
@@ -1526,7 +1484,7 @@ function victoriabank_plugins_loaded_init()
                 return new WP_Error('process_refund', $message);
             }
 
-            return $validate_result;
+            return true;
         }
         //endregion
 
