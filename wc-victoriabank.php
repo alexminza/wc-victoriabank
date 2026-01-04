@@ -1358,7 +1358,7 @@ function victoriabank_plugins_loaded_init()
                 __FUNCTION__,
                 WC_Log_Levels::DEBUG,
                 array(
-                    'vbresponse' => self::print_var($vbresponse),
+                    'vbresponse' => $vbresponse,
                     'backtrace' => true,
                 )
             );
@@ -1626,12 +1626,6 @@ function victoriabank_plugins_loaded_init()
                     'backtrace' => true,
                 )
             );
-        }
-
-        protected static function print_var($expression)
-        {
-            // https://docs.woocommerce.com/wc-apidocs/function-wc_print_r.html
-            return wc_print_r($expression, true);
         }
         //endregion
 
