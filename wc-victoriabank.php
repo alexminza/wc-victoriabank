@@ -881,13 +881,25 @@ function victoriabank_plugins_loaded_init()
                 )
             );
 
-            $rrn = strval($order->get_meta(strtolower(self::VB_RRN), true));
-            $int_ref = strval($order->get_meta(strtolower(self::VB_INT_REF), true));
             $order_total = self::get_order_net_total($order);
             $order_currency = $order->get_currency();
 
+            $rrn = strval($order->get_meta(strtolower(self::VB_RRN), true));
+            $int_ref = strval($order->get_meta(strtolower(self::VB_INT_REF), true));
+            if (empty($rrn)) {
+                /* translators: 1: Order ID, 2: Meta field key */
+                $message = esc_html(sprintf(__('Order #%1$s missing meta field %2$s.', 'wc-victoriabank'), $order_id, self::VB_RRN));
+                return new WP_Error('order_rrn', $message);
+            }
+            if (empty($int_ref)) {
+                /* translators: 1: Order ID, 2: Meta field key */
+                $message = esc_html(sprintf(__('Order #%1$s missing meta field %2$s.', 'wc-victoriabank'), $order_id, self::VB_INT_REF));
+                return new WP_Error('order_int_ref', $message);
+            }
+
             // Funds locked on bank side - transfer the product/service to the customer and request completion
-            $validate_result = false;
+            $completion_result = null;
+            $validate_result = null;
             try {
                 $victoriabank_gateway = $this->init_vb_client();
                 $completion_result = $victoriabank_gateway->requestCompletion($order_id, $order_total, $rrn, $int_ref, $order_currency);
@@ -905,12 +917,22 @@ function victoriabank_plugins_loaded_init()
             }
 
             if (!$validate_result) {
-                /* translators: 1: Payment method title */
-                $message = esc_html(sprintf(__('Payment completion via %1$s failed', 'wc-victoriabank'), $this->get_method_title()));
+                /* translators: 1: Order ID, 2: Payment method title */
+                $message = esc_html(sprintf(__('Order #%1$s payment completion via %2$s failed.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
                 $message = $this->get_test_message($message);
-                $order->add_order_note($message);
+                $this->log(
+                    $message,
+                    WC_Log_Levels::ERROR,
+                    array(
+                        'order_id' => $order_id,
+                        'order_total' => $order_total,
+                        'completion_result' => $completion_result,
+                        'validate_result' => $validate_result,
+                    )
+                );
 
-                return new WP_Error('error', $message);
+                $order->add_order_note($message);
+                return new WP_Error('complete_transaction', $message);
             }
 
             return $validate_result;
