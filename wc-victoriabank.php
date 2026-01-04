@@ -910,6 +910,9 @@ function victoriabank_plugins_loaded_init()
                     WC_Log_Levels::ERROR,
                     array(
                         'order_id' => $order_id,
+                        'order_total' => $order_total,
+                        'completion_result' => $completion_result,
+                        'validate_result' => $validate_result,
                         'exception' => (string) $ex,
                         'backtrace' => true,
                     )
