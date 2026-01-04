@@ -977,28 +977,31 @@ function victoriabank_plugins_loaded_init()
 
         protected function check_transaction(\WC_Order $order, \Fruitware\VictoriaBankGateway\VictoriaBank\ResponseInterface $bank_response)
         {
-            $amount   = floatval($bank_response->{Response::AMOUNT});
-            $currency = strval($bank_response->{Response::CURRENCY});
-            $trx_type = $bank_response::TRX_TYPE;
+            $payment_data_order_id = intval(VictoriaBankGateway::deNormalizeOrderId($bank_response->{Response::ORDER}));
+            $payment_data_amount   = floatval($bank_response->{Response::AMOUNT});
+            $payment_data_currency = strval($bank_response->{Response::CURRENCY});
 
+            $order_id = $order->get_id();
             $order_total = $order->get_total();
             $order_currency = $order->get_currency();
 
-            //Validate currency
-            if (strtolower($currency) !== strtolower($order_currency)) {
+            $order_price = $this->format_price($order_total, $order_currency);
+            $payment_data_price = $this->format_price($payment_data_amount, $payment_data_currency);
+
+            if ($order_id !== $payment_data_order_id || $order_price !== $payment_data_price) {
+                /* translators: 1: Payment data order ID, 2: Payment data price, 3: Order ID, 4: Order total price */
+                $message = sprintf(__('Order payment data mismatch: Payment: #%1$s %2$s, Order: #%3$s %4$s.', 'wc-victoriabank'), $payment_data_order_id, $payment_data_price, $order_id, $order_price);
+                $this->log($message, WC_Log_Levels::ERROR);
+
                 return false;
             }
 
-            //Validate amount
-            if ($amount <= 0) {
-                return false;
-            }
-
+            $trx_type = $bank_response::TRX_TYPE;
             if (VictoriaBankGateway::TRX_TYPE_REVERSAL === $trx_type) {
-                return $amount <= $order_total;
+                return $payment_data_amount <= $order_total;
             }
 
-            return $amount === $order_total;
+            return true;
         }
 
         public function check_redirect()
@@ -1150,7 +1153,8 @@ function victoriabank_plugins_loaded_init()
             }
             //endregion
 
-            if ($check_result && $this->check_transaction($order, $bank_response)) {
+            $check_transaction = $this->check_transaction($order, $bank_response);
+            if ($check_result && $check_transaction) {
                 switch ($bank_response::TRX_TYPE) {
                     case VictoriaBankGateway::TRX_TYPE_AUTHORIZATION:
                         if ($order->is_paid()) {
@@ -1244,8 +1248,10 @@ function victoriabank_plugins_loaded_init()
                 sprintf(__('Payment transaction check failed for order #%1$s.', 'wc-victoriabank'), $order_id),
                 WC_Log_Levels::ERROR,
                 array(
-                    'bank_response' => self::print_var($bank_response),
+                    'bank_response' => $bank_response,
                     'bank_params' => $bank_params,
+                    'check_result' => $check_result,
+                    'check_transaction' => $check_transaction,
                 )
             );
 
@@ -1315,13 +1321,13 @@ function victoriabank_plugins_loaded_init()
         /**
          * @param string|false $vbresponse
          */
-        protected function validate_response_form($vbresponse)
+        protected function validate_response_form(string $vbresponse)
         {
             $this->log(
                 __FUNCTION__,
                 WC_Log_Levels::DEBUG,
                 array(
-                    'vbresponse' => self::print_var($vbresponse),
+                    'vbresponse' => $vbresponse,
                     'backtrace' => true,
                 )
             );
@@ -1505,6 +1511,16 @@ function victoriabank_plugins_loaded_init()
 
             $order_total = $order->get_total();
             return $order_total - $total_refunded;
+        }
+
+        protected function format_price(float $price, string $currency)
+        {
+            $args = array(
+                'currency' => $currency,
+                'in_span' => false,
+            );
+
+            return html_entity_decode(wc_price($price, $args));
         }
 
         protected function get_order_description(\WC_Order $order)
