@@ -916,65 +916,6 @@ function victoriabank_plugins_loaded_init()
             return $validate_result;
         }
 
-        public function refund_transaction(int $order_id, \WC_Order $order, float $amount = null)
-        {
-            $this->log(
-                __FUNCTION__,
-                WC_Log_Levels::DEBUG,
-                array(
-                    'order_id' => $order_id,
-                    'amount' => $amount,
-                    'backtrace' => true,
-                )
-            );
-
-            $rrn = strval($order->get_meta(strtolower(self::VB_RRN), true));
-            $int_ref = strval($order->get_meta(strtolower(self::VB_INT_REF), true));
-            $order_total = $order->get_total();
-            $order_currency = $order->get_currency();
-
-            if (!isset($amount)) {
-                //Refund entirely if no amount is specified
-                $amount = $order_total;
-            }
-
-            if ($amount <= 0 || $amount > $order_total) {
-                $message = esc_html__('Invalid refund amount', 'wc-victoriabank');
-                $this->log($message, WC_Log_Levels::ERROR);
-
-                return new WP_Error('error', $message);
-            }
-
-            $validate_result = false;
-            try {
-                $victoriabank_gateway = $this->init_vb_client();
-                $reversal_result = $victoriabank_gateway->requestReversal($order_id, $amount, $rrn, $int_ref, $order_currency);
-                $validate_result = self::validate_response_form($reversal_result);
-            } catch (Exception $ex) {
-                $this->log(
-                    $ex->getMessage(),
-                    WC_Log_Levels::ERROR,
-                    array(
-                        'order_id' => $order_id,
-                        'amount' => $amount,
-                        'exception' => (string) $ex,
-                        'backtrace' => true,
-                    )
-                );
-            }
-
-            if (!$validate_result) {
-                /* translators: 1: Refund amount, 2: Currency code, 3: Payment method title */
-                $message = esc_html(sprintf(__('Refund of %1$s %2$s via %3$s failed', 'wc-victoriabank'), $amount, $order_currency, $this->get_method_title()));
-                $message = $this->get_test_message($message);
-                $order->add_order_note($message);
-
-                return new WP_Error('error', $message);
-            }
-
-            return $validate_result;
-        }
-
         protected function check_transaction(\WC_Order $order, \Fruitware\VictoriaBankGateway\VictoriaBank\ResponseInterface $bank_response)
         {
             $payment_data_order_id = intval(VictoriaBankGateway::deNormalizeOrderId($bank_response->{Response::ORDER}));
@@ -1321,7 +1262,7 @@ function victoriabank_plugins_loaded_init()
         /**
          * @param string|false $vbresponse
          */
-        protected function validate_response_form(string $vbresponse)
+        protected function validate_response_form($vbresponse)
         {
             $this->log(
                 __FUNCTION__,
@@ -1491,8 +1432,76 @@ function victoriabank_plugins_loaded_init()
          */
         public function process_refund($order_id, $amount = null, $reason = '')
         {
+            $this->log(
+                __FUNCTION__,
+                WC_Log_Levels::DEBUG,
+                array(
+                    'order_id' => $order_id,
+                    'amount' => $amount,
+                    'reason' => $reason,
+                    'backtrace' => true,
+                )
+            );
+
             $order = wc_get_order($order_id);
-            return $this->refund_transaction($order_id, $order, $amount);
+            $order_currency = $order->get_currency();
+
+            $rrn = strval($order->get_meta(strtolower(self::VB_RRN), true));
+            $int_ref = strval($order->get_meta(strtolower(self::VB_INT_REF), true));
+            if (empty($rrn)) {
+                /* translators: 1: Order ID, 2: Meta field key */
+                $message = esc_html(sprintf(__('Order #%1$s missing meta field %2$s.', 'wc-victoriabank'), $order_id, self::VB_RRN));
+                return new WP_Error('order_rrn', $message);
+            }
+            if (empty($int_ref)) {
+                /* translators: 1: Order ID, 2: Meta field key */
+                $message = esc_html(sprintf(__('Order #%1$s missing meta field %2$s.', 'wc-victoriabank'), $order_id, self::VB_INT_REF));
+                return new WP_Error('order_int_ref', $message);
+            }
+
+            $reversal_result = null;
+            $validate_result = null;
+            try {
+                $victoriabank_gateway = $this->init_vb_client();
+                $reversal_result = $victoriabank_gateway->requestReversal($order_id, $amount, $rrn, $int_ref, $order_currency);
+                $validate_result = self::validate_response_form($reversal_result);
+            } catch (Exception $ex) {
+                $this->log(
+                    $ex->getMessage(),
+                    WC_Log_Levels::ERROR,
+                    array(
+                        'order_id' => $order_id,
+                        'amount' => $amount,
+                        'reason' => $reason,
+                        'reversal_result' => $reversal_result,
+                        'validate_result' => $validate_result,
+                        'exception' => (string) $ex,
+                        'backtrace' => true,
+                    )
+                );
+            }
+
+            if (!$validate_result) {
+                /* translators: 1: Order ID, 2: Refund amount, 3: Payment method title */
+                $message = esc_html(sprintf(__('Order #%1$s refund of %2$s via %3$s failed.', 'wc-victoriabank'), $order_id, $this->format_price($amount, $order_currency), $this->get_method_title()));
+                $message = $this->get_test_message($message);
+                $this->log(
+                    $message,
+                    WC_Log_Levels::ERROR,
+                    array(
+                        'order_id' => $order_id,
+                        'amount' => $amount,
+                        'reason' => $reason,
+                        'reversal_result' => $reversal_result,
+                        'validate_result' => $validate_result,
+                    )
+                );
+
+                $order->add_order_note($message);
+                return new WP_Error('process_refund', $message);
+            }
+
+            return $validate_result;
         }
         //endregion
 
