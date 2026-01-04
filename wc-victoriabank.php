@@ -1057,6 +1057,8 @@ function victoriabank_plugins_loaded_init()
                 )
             );
 
+            $bank_response = null;
+            $check_result = null;
             try {
                 $victoriabank_gateway = $this->init_vb_client();
                 $bank_response = $victoriabank_gateway->getResponseObject($vbdata);
@@ -1066,6 +1068,10 @@ function victoriabank_plugins_loaded_init()
                     $ex->getMessage(),
                     WC_Log_Levels::ERROR,
                     array(
+                        'vbdata' => $vbdata,
+                        'bank_response' => $bank_response,
+                        'check_result' => $check_result,
+                        'bank_response_errors' => $bank_response ? $bank_response->getErrors() : null,
                         'exception' => (string) $ex,
                         'backtrace' => true,
                     )
@@ -1119,10 +1125,6 @@ function victoriabank_plugins_loaded_init()
             if ($check_result && $check_transaction) {
                 switch ($bank_response::TRX_TYPE) {
                     case VictoriaBankGateway::TRX_TYPE_AUTHORIZATION:
-                        if ($order->is_paid()) {
-                            return true; // Duplicate callback notification from the bank
-                        }
-
                         //region Update order payment metadata
                         // https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book
                         $order->add_meta_data(self::MOD_TRANSACTION_TYPE, $this->transaction_type, true);
@@ -1134,18 +1136,22 @@ function victoriabank_plugins_loaded_init()
                         $order->save();
                         //endregion
 
-                        /* translators: 1: Payment method title, 2: Payment gateway response */
-                        $message = esc_html(sprintf(__('Payment authorized via %1$s: %2$s', 'wc-victoriabank'), $this->get_method_title(), http_build_query($bank_params)));
+                        /* translators: 1: Order ID, 2: Payment method title, 3: Payment data */
+                        $message = esc_html(sprintf(__('Order #%1$s payment completed via %2$s: %3$s', 'wc-victoriabank'), $this->get_method_title(), $rrn));
                         $message = $this->get_test_message($message);
                         $this->log(
                             $message,
                             WC_Log_Levels::INFO,
                             array(
+                                'bank_response' => $bank_response,
                                 'bank_params' => $bank_params,
+                                'vbdata' => $vbdata,
+                                'check_result' => $check_result,
+                                'check_transaction' => $check_transaction,
                             )
                         );
-                        $order->add_order_note($message);
 
+                        $order->add_order_note($message);
                         $order->payment_complete($rrn);
 
                         switch ($this->transaction_type) {
@@ -1157,69 +1163,72 @@ function victoriabank_plugins_loaded_init()
                                 break;
 
                             default:
-                                $this->log(sprintf('Unknown transaction type: %1$s Order ID: %2$s', $this->transaction_type, $order_id), WC_Log_Levels::ERROR);
+                                $this->log(sprintf('Unknown order #%1$s transaction type: %2$s', $order_id, $this->transaction_type), WC_Log_Levels::ERROR);
                                 break;
                         }
 
                         return true;
 
                     case VictoriaBankGateway::TRX_TYPE_COMPLETION:
-                        // Funds successfully transferred on bank side
-                        /* translators: 1: Payment method title, 2: Payment gateway response */
-                        $message = esc_html(sprintf(__('Payment completed via %1$s: %2$s', 'wc-victoriabank'), $this->get_method_title(), http_build_query($bank_params)));
+                        /* translators: 1: Order ID, 2: Payment method title, 3: Payment data */
+                        $message = esc_html(sprintf(__('Order #%1$s payment completed via %2$s: %3$s', 'wc-victoriabank'), $this->get_method_title(), $rrn));
                         $message = $this->get_test_message($message);
                         $this->log(
                             $message,
                             WC_Log_Levels::INFO,
                             array(
+                                'bank_response' => $bank_response,
                                 'bank_params' => $bank_params,
+                                'vbdata' => $vbdata,
+                                'check_result' => $check_result,
+                                'check_transaction' => $check_transaction,
                             )
                         );
-                        $order->add_order_note($message);
 
+                        $order->add_order_note($message);
                         return true;
 
                     case VictoriaBankGateway::TRX_TYPE_REVERSAL:
-                        // Reversal successfully applied on bank side
-                        /* translators: 1: Refund amount, 2: Currency code, 3: Payment method title, 4: Payment gateway response */
-                        $message = esc_html(sprintf(__('Refund of %1$s %2$s via %3$s approved: %4$s', 'wc-victoriabank'), $amount, $currency, $this->get_method_title(), http_build_query($bank_params)));
+                        /* translators: 1: Order ID, 2: Refund amount, 3: Payment method title */
+                        $message = esc_html(sprintf(__('Order #%1$s refund of %2$s via %3$s approved.', 'wc-victoriabank'), $this->format_price($amount, $currency), $this->get_method_title()));
                         $message = $this->get_test_message($message);
                         $this->log(
                             $message,
                             WC_Log_Levels::INFO,
                             array(
+                                'bank_response' => $bank_response,
                                 'bank_params' => $bank_params,
+                                'vbdata' => $vbdata,
+                                'check_result' => $check_result,
+                                'check_transaction' => $check_transaction,
                             )
                         );
+
                         $order->add_order_note($message);
-
-                        if ($order->get_total() === $order->get_total_refunded()) {
-                            $this->mark_order_refunded($order);
-                        }
-
                         return true;
 
                     default:
-                        $this->log(sprintf('Unknown bank response TRX_TYPE: %1$s Order ID: %2$s', $bank_response::TRX_TYPE, $order_id), WC_Log_Levels::ERROR);
+                        $this->log(sprintf('Order #%1$s unknown bank response TRX_TYPE: %2$s', $order_id, $bank_response::TRX_TYPE), WC_Log_Levels::ERROR);
                         break;
                 }
             }
 
+            /* translators: 1: Order ID, 2: Payment method title */
+            $message = esc_html(sprintf(__('Order #%1$s payment transaction check failed via %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
+            $message = $this->get_test_message($message);
             $this->log(
-                /* translators: 1: Order ID */
-                sprintf(__('Payment transaction check failed for order #%1$s.', 'wc-victoriabank'), $order_id),
+                $message,
                 WC_Log_Levels::ERROR,
                 array(
                     'bank_response' => $bank_response,
                     'bank_params' => $bank_params,
+                    'vbdata' => $vbdata,
                     'check_result' => $check_result,
                     'check_transaction' => $check_transaction,
+                    'bank_response_errors' => $bank_response->getErrors(),
                 )
             );
 
-            /* translators: 1: Order ID, 2: Payment gateway response */
-            $message = esc_html(sprintf(__('%1$s payment transaction check failed: %2$s', 'wc-victoriabank'), $this->get_method_title(), join('; ', $bank_response->getErrors()) . ' ' . http_build_query($bank_params)));
-            $message = $this->get_test_message($message);
             $order->add_order_note($message);
             return false;
         }
