@@ -33,7 +33,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Fruitware\VictoriaBankGateway\VictoriaBankGateway;
 use Fruitware\VictoriaBankGateway\VictoriaBank\Response;
 
-add_action('plugins_loaded', 'victoriabank_plugins_loaded_init', 0);
+add_action('plugins_loaded', 'victoriabank_plugins_loaded_init');
 
 function victoriabank_plugins_loaded_init()
 {
@@ -1137,7 +1137,7 @@ function victoriabank_plugins_loaded_init()
                         //endregion
 
                         /* translators: 1: Order ID, 2: Payment method title, 3: Payment data */
-                        $message = esc_html(sprintf(__('Order #%1$s payment authorized via %2$s: %3$s', 'wc-victoriabank'), $this->get_method_title(), $rrn));
+                        $message = esc_html(sprintf(__('Order #%1$s payment authorized via %2$s: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $rrn));
                         $message = $this->get_test_message($message);
                         $this->log(
                             $message,
@@ -1171,7 +1171,7 @@ function victoriabank_plugins_loaded_init()
 
                     case VictoriaBankGateway::TRX_TYPE_COMPLETION:
                         /* translators: 1: Order ID, 2: Payment method title, 3: Payment data */
-                        $message = esc_html(sprintf(__('Order #%1$s payment completed via %2$s: %3$s', 'wc-victoriabank'), $this->get_method_title(), $rrn));
+                        $message = esc_html(sprintf(__('Order #%1$s payment completed via %2$s: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $rrn));
                         $message = $this->get_test_message($message);
                         $this->log(
                             $message,
@@ -1190,7 +1190,7 @@ function victoriabank_plugins_loaded_init()
 
                     case VictoriaBankGateway::TRX_TYPE_REVERSAL:
                         /* translators: 1: Order ID, 2: Refund amount, 3: Payment method title */
-                        $message = esc_html(sprintf(__('Order #%1$s refund of %2$s via %3$s approved.', 'wc-victoriabank'), $this->format_price($amount, $currency), $this->get_method_title()));
+                        $message = esc_html(sprintf(__('Order #%1$s refund of %2$s via %3$s approved.', 'wc-victoriabank'), $order_id, $this->format_price($amount, $currency), $this->get_method_title()));
                         $message = $this->get_test_message($message);
                         $this->log(
                             $message,
