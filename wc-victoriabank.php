@@ -1137,7 +1137,7 @@ function victoriabank_plugins_loaded_init()
                         //endregion
 
                         /* translators: 1: Order ID, 2: Payment method title, 3: Payment data */
-                        $message = esc_html(sprintf(__('Order #%1$s payment completed via %2$s: %3$s', 'wc-victoriabank'), $this->get_method_title(), $rrn));
+                        $message = esc_html(sprintf(__('Order #%1$s payment authorized via %2$s: %3$s', 'wc-victoriabank'), $this->get_method_title(), $rrn));
                         $message = $this->get_test_message($message);
                         $this->log(
                             $message,
