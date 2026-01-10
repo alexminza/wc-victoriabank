@@ -1125,6 +1125,14 @@ function victoriabank_plugins_loaded_init()
             if ($check_result && $check_transaction) {
                 switch ($bank_response::TRX_TYPE) {
                     case VictoriaBankGateway::TRX_TYPE_AUTHORIZATION:
+                        if ($order->is_paid()) {
+                            /* translators: 1: Order ID */
+                            $message = sprintf(__('Order #%1$s already fully paid.', 'wc-victoriabank'), $order_id);
+                            $this->log($message, WC_Log_Levels::ERROR);
+
+                            return true;
+                        }
+
                         //region Update order payment metadata
                         // https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book
                         $order->add_meta_data(self::MOD_TRANSACTION_TYPE, $this->transaction_type, true);
