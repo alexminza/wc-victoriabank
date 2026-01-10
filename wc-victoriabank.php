@@ -1624,6 +1624,7 @@ function victoriabank_plugins_loaded_init()
                     'method' => $method,
                     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Logging request data for debugging purposes.
                     'request' => $_REQUEST,
+                    'server' => $_SERVER,
                     'backtrace' => true,
                 )
             );
