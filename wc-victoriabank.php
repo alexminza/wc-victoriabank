@@ -1622,14 +1622,11 @@ function victoriabank_plugins_loaded_init()
 
         protected function log_request(string $source)
         {
-            $method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
-
             $this->log(
                 $source,
                 WC_Log_Levels::DEBUG,
                 array(
                     'ip' => WC_Geolocation::get_ip_address(),
-                    'method' => $method,
                     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Logging request data for debugging purposes.
                     'request' => $_REQUEST,
                     'server' => $_SERVER,
