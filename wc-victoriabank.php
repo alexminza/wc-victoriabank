@@ -156,25 +156,31 @@ function victoriabank_plugins_loaded_init()
                 'title'           => array(
                     'title'       => __('Title', 'wc-victoriabank'),
                     'type'        => 'text',
-                    'desc_tip'    => __('Payment method title that the customer will see during checkout.', 'wc-victoriabank'),
-                    'default'     => self::MOD_TITLE,
+                    'description' => __('Payment method title that the customer will see during checkout.', 'wc-victoriabank'),
+                    'desc_tip'    => true,
+                    'default'     => $this->get_method_title(),
+                    'custom_attributes' => array(
+                        'required' => 'required',
+                    ),
                 ),
                 'description'     => array(
                     'title'       => __('Description', 'wc-victoriabank'),
                     'type'        => 'textarea',
-                    'desc_tip'    => __('Payment method description that the customer will see during checkout.', 'wc-victoriabank'),
-                    'default'     => '',
+                    'description' => __('Payment method description that the customer will see during checkout.', 'wc-victoriabank'),
+                    'desc_tip'    => true,
+                    'default'     => __('Online payment with Visa / Mastercard bank cards issued by any bank in Moldova or abroad, processed through Victoriabank\'s online payment system.', 'wc-victoriabank'),
                 ),
                 'logo_type' => array(
                     'title'       => __('Logo', 'wc-victoriabank'),
                     'type'        => 'select',
-                    'class'       => 'wc-enhanced-select',
-                    'desc_tip'    => __('Payment method logo image that the customer will see during checkout.', 'wc-victoriabank'),
+                    'description' => __('Payment method logo image that the customer will see during checkout.', 'wc-victoriabank'),
+                    'desc_tip'    => true,
                     'default'     => self::LOGO_TYPE_BANK,
+                    'class'       => 'wc-enhanced-select',
                     'options'     => array(
                         self::LOGO_TYPE_BANK    => __('Bank logo', 'wc-victoriabank'),
                         self::LOGO_TYPE_SYSTEMS => __('Payment systems logos', 'wc-victoriabank'),
-                        self::LOGO_TYPE_NONE    => __('No logo', 'wc-victoriabank'),
+                        // self::LOGO_TYPE_NONE    => __('No logo', 'wc-victoriabank'),
                     ),
                 ),
 
@@ -182,24 +188,26 @@ function victoriabank_plugins_loaded_init()
                     'title'       => __('Test mode', 'wc-victoriabank'),
                     'type'        => 'checkbox',
                     'label'       => __('Enabled', 'wc-victoriabank'),
-                    'desc_tip'    => __('Use Test or Live bank gateway to process the payments. Disable when ready to accept live payments.', 'wc-victoriabank'),
+                    'description' => __('Use Test or Live bank gateway to process the payments. Disable when ready to accept live payments.', 'wc-victoriabank'),
+                    'desc_tip'    => true,
                     'default'     => 'no',
                 ),
                 'debug'           => array(
                     'title'       => __('Debug mode', 'wc-victoriabank'),
                     'type'        => 'checkbox',
                     'label'       => __('Enable logging', 'wc-victoriabank'),
-                    'default'     => 'no',
                     'description' => sprintf('<a href="%2$s">%1$s</a>', esc_html__('View logs', 'wc-victoriabank'), esc_url(self::get_logs_url())),
                     'desc_tip'    => __('Save debug messages to the WooCommerce System Status logs. Note: this may log personal information. Use this for debugging purposes only and delete the logs when finished.', 'wc-victoriabank'),
+                    'default'     => 'no',
                 ),
 
                 'transaction_type' => array(
                     'title'       => __('Transaction type', 'wc-victoriabank'),
                     'type'        => 'select',
-                    'class'       => 'wc-enhanced-select',
-                    'desc_tip'    => __('Select how transactions should be processed. Charge submits all transactions for settlement, Authorization simply authorizes the order total for capture later.', 'wc-victoriabank'),
+                    'description' => __('Select how transactions should be processed. Charge submits all transactions for settlement, Authorization simply authorizes the order total for capture later.', 'wc-victoriabank'),
+                    'desc_tip'    => true,
                     'default'     => self::TRANSACTION_TYPE_CHARGE,
+                    'class'       => 'wc-enhanced-select',
                     'options'     => array(
                         self::TRANSACTION_TYPE_CHARGE        => __('Charge', 'wc-victoriabank'),
                         self::TRANSACTION_TYPE_AUTHORIZATION => __('Authorization', 'wc-victoriabank'),
@@ -212,6 +220,10 @@ function victoriabank_plugins_loaded_init()
                     'description' => __('Format: <code>%1$s</code> - Order ID', 'wc-victoriabank'),
                     'desc_tip'    => __('Order description that the customer will see on the bank payment page.', 'wc-victoriabank'),
                     'default'     => self::ORDER_TEMPLATE,
+                    'custom_attributes' => array(
+                        'required'  => 'required',
+                        'maxlength' => 50,
+                    ),
                 ),
 
                 'merchant_settings' => array(
@@ -222,11 +234,12 @@ function victoriabank_plugins_loaded_init()
                 'vb_merchant_name' => array(
                     'title'       => __('Merchant name', 'wc-victoriabank'),
                     'type'        => 'text',
-                    'desc_tip'    => 'Latin symbols',
                     'description' => esc_html($blog_info_name),
+                    'desc_tip'    => __('Latin symbols', 'wc-victoriabank'),
                     'default'     => $blog_info_name,
                     'custom_attributes' => array(
-                        'maxlength' => '50',
+                        'required'  => 'required',
+                        'maxlength' => 50,
                     ),
                 ),
                 'vb_merchant_url' => array(
@@ -235,7 +248,8 @@ function victoriabank_plugins_loaded_init()
                     'description' => esc_url($home_url),
                     'default'     => $home_url,
                     'custom_attributes' => array(
-                        'maxlength' => '250',
+                        'required'  => 'required',
+                        'maxlength' => 250,
                     ),
                 ),
                 'vb_merchant_address' => array(
@@ -244,37 +258,40 @@ function victoriabank_plugins_loaded_init()
                     'description' => esc_html($store_address),
                     'default'     => $store_address,
                     'custom_attributes' => array(
-                        'maxlength' => '250',
+                        'required'  => 'required',
+                        'maxlength' => 250,
                     ),
                 ),
                 'vb_merchant_id'  => array(
-                    'title'       => __('Card acceptor ID', 'wc-victoriabank'),
+                    'title'       => __('Merchant ID', 'wc-victoriabank'),
                     'type'        => 'text',
-                    'description' => 'Example: 498000049812345',
-                    'default'     => '',
+                    'description' => __('Example: 498000049812345', 'wc-victoriabank'),
                     'custom_attributes' => array(
-                        'maxlength' => '15',
+                        'required'  => 'required',
+                        'minlength' => 15,
+                        'maxlength' => 15,
                     ),
                 ),
                 'vb_merchant_terminal' => array(
                     'title'       => __('Terminal ID', 'wc-victoriabank'),
                     'type'        => 'text',
-                    'description' => 'Example: 49812345',
-                    'default'     => '',
+                    'description' => __('Example: 49812345', 'wc-victoriabank'),
                     'custom_attributes' => array(
-                        'maxlength' => '8',
+                        'required'  => 'required',
+                        'minlength' => 8,
+                        'maxlength' => 8,
                     ),
                 ),
 
                 'connection_settings' => array(
                     'title'       => __('Connection Settings', 'wc-victoriabank'),
+                    'type'        => 'title',
                     'description' => sprintf(
                         '%1$s<br /><br /><a href="#" id="woocommerce_victoriabank_basic_settings" class="button">%2$s</a> <a href="#" id="woocommerce_victoriabank_advanced_settings" class="button">%3$s</a>',
                         esc_html__('Use Basic settings to upload the key files received from the bank or configure manually using Advanced settings below.', 'wc-victoriabank'),
                         esc_html__('Basic settings&raquo;', 'wc-victoriabank'),
                         esc_html__('Advanced settings&raquo;', 'wc-victoriabank')
                     ),
-                    'type'        => 'title',
                 ),
                 'vb_public_key_pem' => array(
                     'title'       => __('Public key', 'wc-victoriabank'),
@@ -305,30 +322,28 @@ function victoriabank_plugins_loaded_init()
                     'title'       => __('Public key file', 'wc-victoriabank'),
                     'type'        => 'text',
                     'description' => '<code>/path/to/pubkey.pem</code>',
-                    'default'     => '',
                 ),
                 'vb_bank_public_key' => array(
                     'title'       => __('Bank public key file', 'wc-victoriabank'),
                     'type'        => 'text',
                     'description' => '<code>/path/to/victoria_pub.pem</code>',
-                    'default'     => '',
                 ),
                 'vb_private_key'  => array(
                     'title'       => __('Private key file', 'wc-victoriabank'),
                     'type'        => 'text',
                     'description' => '<code>/path/to/key.pem</code>',
-                    'default'     => '',
                 ),
                 'vb_private_key_pass' => array(
                     'title'       => __('Private key passphrase', 'wc-victoriabank'),
                     'type'        => 'password',
-                    'desc_tip'    => __('Leave empty if private key is not encrypted.', 'wc-victoriabank'),
+                    'description' => __('Leave empty if private key is not encrypted.', 'wc-victoriabank'),
+                    'desc_tip'    => true,
                     'placeholder' => __('Optional', 'wc-victoriabank'),
-                    'default'     => '',
                 ),
 
                 'payment_notification' => array(
                     'title'       => __('Payment Notification', 'wc-victoriabank'),
+                    'type'        => 'title',
                     'description' => sprintf(
                         '%1$s<br /><br /><b>%2$s:</b> <code>%3$s</code><br /><br /><a href="#" id="woocommerce_victoriabank_payment_notification_advanced" class="button">%4$s</a>',
                         esc_html__('Provide this URL to the bank to enable online payment notifications.', 'wc-victoriabank'),
@@ -336,12 +351,11 @@ function victoriabank_plugins_loaded_init()
                         esc_url($this->get_callback_url()),
                         esc_html__('Advanced&raquo;', 'wc-victoriabank')
                     ),
-                    'type'        => 'title',
                 ),
                 'vb_callback_data'  => array(
                     'title'       => __('Process callback data', 'wc-victoriabank'),
-                    'description' => '<a href="#" id="woocommerce_victoriabank_callback_data_process" class="button">Process</a>',
                     'type'        => 'textarea',
+                    'description' => '<a href="#" id="woocommerce_victoriabank_callback_data_process" class="button">Process</a>',
                     'desc_tip'    => __('Manually process bank transaction response callback data received by email as part of the backup procedure.', 'wc-victoriabank'),
                     'placeholder' => __('Bank transaction response callback data', 'wc-victoriabank'),
                 ),
@@ -354,7 +368,7 @@ function victoriabank_plugins_loaded_init()
                 case self::LOGO_TYPE_BANK:
                     return plugins_url('/assets/img/victoriabank.png', __FILE__);
                 case self::LOGO_TYPE_SYSTEMS:
-                    return plugins_url('assets/img/paymentsystems.png', __FILE__);
+                    return plugins_url('/assets/img/paymentsystems.png', __FILE__);
                 case self::LOGO_TYPE_NONE:
                     return '';
             }
