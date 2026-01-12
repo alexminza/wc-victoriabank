@@ -357,7 +357,7 @@ function victoriabank_plugins_loaded_init()
                     'type'        => 'textarea',
                     'description' => '<a href="#" id="woocommerce_victoriabank_callback_data_process" class="button">Process</a>',
                     'desc_tip'    => __('Manually process bank transaction response callback data received by email as part of the backup procedure.', 'wc-victoriabank'),
-                    'placeholder' => __('Bank transaction response callback data', 'wc-victoriabank'),
+                    'placeholder' => "TERMINAL=49812345\nTRTYPE=0\nORDER=000123\nAMOUNT=123.45\nCURRENCY=MDL\n...",
                 ),
             );
         }
