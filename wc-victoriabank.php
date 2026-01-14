@@ -1412,10 +1412,10 @@ function victoriabank_plugins_loaded_init()
 
         public function receipt_page(int $order_id)
         {
-            try {
-                $order = wc_get_order($order_id);
-                $payment_method = $order->get_payment_method();
+            $order = wc_get_order($order_id);
+            $payment_method = $order->get_payment_method();
 
+            try {
                 if (self::MOD_ID === $payment_method) {
                     /* translators: 1: Order ID, 2: Payment method title */
                     $message = esc_html(sprintf(__('Order #%1$s payment initiated via %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
@@ -1436,8 +1436,11 @@ function victoriabank_plugins_loaded_init()
                     )
                 );
 
-                /* translators: 1: Payment method title */
-                $message = esc_html(sprintf(__('Payment initiation failed via %1$s.', 'wc-victoriabank'), $this->get_method_title()));
+                /* translators: 1: Order ID, 2: Payment method title */
+                $message = esc_html(sprintf(__('Order #%1$s payment initiation failed via %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
+                $message = $this->get_test_message($message);
+                $order->add_order_note($message);
+
                 wc_add_notice($message, 'error');
                 $this->settings_admin_notice();
             }
