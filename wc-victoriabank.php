@@ -912,8 +912,8 @@ function victoriabank_plugins_loaded_init()
             // Funds locked on bank side - transfer the product/service to the customer and request completion
             $completion_result = null;
             try {
-                $victoriabank_gateway = $this->init_vb_client();
-                $completion_result = $victoriabank_gateway->requestCompletion($order_id, $order_total, $rrn, $int_ref, $order_currency);
+                $client = $this->init_victoriabank_client();
+                $completion_result = $client->orderComplete(strval($order_id), $order_total, $order_currency, $rrn, $int_ref);
             } catch (Exception $ex) {
                 $this->log(
                     $ex->getMessage(),
@@ -1072,9 +1072,8 @@ function victoriabank_plugins_loaded_init()
             $bank_response = null;
             $check_result = null;
             try {
-                $victoriabank_gateway = $this->init_vb_client();
-                $bank_response = $victoriabank_gateway->getResponseObject($vbdata);
-                $check_result = $bank_response->isValid();
+                $client = $this->init_victoriabank_client();
+                $check_result = $client->validateResponse($vbdata);
             } catch (Exception $ex) {
                 $this->log(
                     $ex->getMessage(),
@@ -1471,8 +1470,8 @@ function victoriabank_plugins_loaded_init()
 
             $reversal_result = null;
             try {
-                $victoriabank_gateway = $this->init_vb_client();
-                $reversal_result = $victoriabank_gateway->requestReversal($order_id, $amount, $rrn, $int_ref, $order_currency);
+                $client = $this->init_victoriabank_client();
+                $reversal_result = $client->orderReverse(strval($order_id), $amount, $order_currency, $rrn, $int_ref);
             } catch (Exception $ex) {
                 $this->log(
                     $ex->getMessage(),
