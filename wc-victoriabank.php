@@ -118,8 +118,6 @@ function victoriabank_plugins_loaded_init()
 
             $this->vb_private_key         = $this->get_option('vb_private_key');
             $this->vb_bank_public_key     = $this->get_option('vb_bank_public_key');
-
-            $this->initialize_keys();
             //endregion
 
             if (is_admin()) {
@@ -576,42 +574,6 @@ function victoriabank_plugins_loaded_init()
             $_POST[$pem_field_id] = $pem_option_value;
         }
 
-        protected function initialize_keys()
-        {
-            $this->initialize_key($this->vb_bank_public_key, $this->vb_bank_public_key_pem, 'vb_bank_public_key', 'victoria_pub.pem');
-            $this->initialize_key($this->vb_private_key, $this->vb_private_key_pem, 'vb_private_key', 'key.pem');
-        }
-
-        protected function initialize_key(string &$pem_file, string $pem_data, string $pem_option_name, string $pem_type)
-        {
-            try {
-                if (!is_readable($pem_file)) {
-                    if (self::is_overwritable($pem_file)) {
-                        if (!empty($pem_data)) {
-                            $result = $this->save_temp_file($pem_data, $pem_type);
-
-                            if (!empty($result)) {
-                                $this->update_option($pem_option_name, $result);
-                                $pem_file = $result;
-                            }
-                        }
-                    }
-                }
-            } catch (Exception $ex) {
-                $this->log(
-                    $ex->getMessage(),
-                    WC_Log_Levels::ERROR,
-                    array(
-                        'pem_file' => $pem_file,
-                        'pem_option_name' => $pem_option_name,
-                        'pem_type' => $pem_type,
-                        'exception' => (string) $ex,
-                        'backtrace' => true,
-                    )
-                );
-            }
-        }
-
         protected function validate_public_key(string $key_data)
         {
             try {
@@ -706,33 +668,6 @@ function victoriabank_plugins_loaded_init()
             }
 
             return $wp_filesystem;
-        }
-
-        protected function save_temp_file(string $file_data, string $file_suffix = '')
-        {
-            $wp_filesystem = self::get_wp_filesystem();
-
-            $temp_file_name = sprintf('%1$s%2$s_', self::MOD_PREFIX, $file_suffix);
-            $temp_file = wp_tempnam($temp_file_name);
-
-            if (!$wp_filesystem->put_contents($temp_file, $file_data, FS_CHMOD_FILE)) {
-                /* translators: 1: Temporary file name */
-                $this->log(sprintf(__('Unable to save data to temporary file: %1$s', 'wc-victoriabank'), $temp_file), WC_Log_Levels::ERROR);
-                return null;
-            }
-
-            return $temp_file;
-        }
-
-        protected static function is_temp_file(string $file_name)
-        {
-            $temp_dir = get_temp_dir();
-            return strncmp($file_name, $temp_dir, strlen($temp_dir)) === 0;
-        }
-
-        protected static function is_overwritable(string $file_name)
-        {
-            return empty($file_name) || self::is_temp_file($file_name);
         }
         //endregion
 
