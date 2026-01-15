@@ -288,14 +288,6 @@ function victoriabank_plugins_loaded_init()
                         esc_html__('Advanced settings&raquo;', 'wc-victoriabank')
                     ),
                 ),
-                'vb_public_key_pem' => array(
-                    'title'       => __('Public key', 'wc-victoriabank'),
-                    'type'        => 'file',
-                    'description' => '<code>pubkey.pem</code>',
-                    'custom_attributes' => array(
-                        'accept' => '.pem',
-                    ),
-                ),
                 'vb_bank_public_key_pem' => array(
                     'title'       => __('Bank public key', 'wc-victoriabank'),
                     'type'        => 'file',
@@ -304,8 +296,18 @@ function victoriabank_plugins_loaded_init()
                         'accept' => '.pem',
                     ),
                 ),
+                /*
+                'vb_public_key_pem' => array(
+                    'title'       => __('Public key', 'wc-victoriabank'),
+                    'type'        => 'file',
+                    'description' => '<code>pubkey.pem</code>',
+                    'custom_attributes' => array(
+                        'accept' => '.pem',
+                    ),
+                ),
+                */
                 'vb_private_key_pem' => array(
-                    'title'       => __('Private key', 'wc-victoriabank'),
+                    'title'       => __('Merchant private key', 'wc-victoriabank'),
                     'type'        => 'file',
                     'description' => '<code>key.pem</code>',
                     'custom_attributes' => array(
@@ -313,20 +315,25 @@ function victoriabank_plugins_loaded_init()
                     ),
                 ),
 
-                'vb_public_key'   => array(
-                    'title'       => __('Public key file', 'wc-victoriabank'),
-                    'type'        => 'text',
-                    'description' => '<code>/path/to/pubkey.pem</code>',
-                ),
                 'vb_bank_public_key' => array(
-                    'title'       => __('Bank public key file', 'wc-victoriabank'),
-                    'type'        => 'text',
-                    'description' => '<code>/path/to/victoria_pub.pem</code>',
+                    'title'       => __('Bank public key', 'wc-victoriabank'),
+                    'type'        => 'textarea',
+                    'description' => '<code>file:///path/to/victoria_pub.pem</code>',
+                    'placeholder' => "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----",
                 ),
+                /*
+                'vb_public_key'   => array(
+                    'title'       => __('Merchant Public key', 'wc-victoriabank'),
+                    'type'        => 'textarea',
+                    'description' => '<code>/path/to/pubkey.pem</code>',
+                    'placeholder' => "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----",
+                ),
+                */
                 'vb_private_key'  => array(
-                    'title'       => __('Private key file', 'wc-victoriabank'),
-                    'type'        => 'text',
-                    'description' => '<code>/path/to/key.pem</code>',
+                    'title'       => __('Merchant Private key', 'wc-victoriabank'),
+                    'type'        => 'textarea',
+                    'description' => '<code>file:///path/to/key.pem</code>',
+                    'placeholder' => "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----",
                 ),
                 'vb_private_key_pass' => array(
                     'title'       => __('Private key passphrase', 'wc-victoriabank'),
