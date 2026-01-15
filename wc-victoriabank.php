@@ -622,14 +622,12 @@ function victoriabank_plugins_loaded_init()
             }
         }
 
-        protected function validate_public_key(string $key_file)
+        protected function validate_public_key(string $key_data)
         {
             try {
-                $wp_filesystem = self::get_wp_filesystem();
-                $key_data = $wp_filesystem->get_contents($key_file);
-                $public_key = openssl_pkey_get_public($key_data);
+                $public_key_resource = openssl_pkey_get_public($key_data);
 
-                if (false === $public_key) {
+                if (false === $public_key_resource) {
                     $message = __('Invalid public key', 'wc-victoriabank');
                     $this->log_openssl_errors($message);
                     return $message;
@@ -639,24 +637,26 @@ function victoriabank_plugins_loaded_init()
                     $ex->getMessage(),
                     WC_Log_Levels::ERROR,
                     array(
-                        'key_file' => $key_file,
                         'exception' => (string) $ex,
                         'backtrace' => true,
                     )
                 );
 
                 return __('Could not validate public key', 'wc-victoriabank');
+            } finally {
+                if (PHP_VERSION_ID < 80000) {
+                    // phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated -- PHP_VERSION_ID check performed before invocation.
+                    openssl_free_key($public_key_resource);
+                }
             }
         }
 
-        protected function validate_private_key(string $key_file, string $key_passphrase)
+        protected function validate_private_key(string $key_data, string $key_passphrase)
         {
             try {
-                $wp_filesystem = self::get_wp_filesystem();
-                $key_data = $wp_filesystem->get_contents($key_file);
-                $private_key = openssl_pkey_get_private($key_data, $key_passphrase);
+                $private_key_resource = openssl_pkey_get_private($key_data, $key_passphrase);
 
-                if (false === $private_key) {
+                if (false === $private_key_resource) {
                     $message = __('Invalid private key or wrong private key passphrase', 'wc-victoriabank');
                     $this->log_openssl_errors($message);
                     return $message;
@@ -666,13 +666,17 @@ function victoriabank_plugins_loaded_init()
                     $ex->getMessage(),
                     WC_Log_Levels::ERROR,
                     array(
-                        'key_file' => $key_file,
                         'exception' => (string) $ex,
                         'backtrace' => true,
                     )
                 );
 
                 return __('Could not validate private key', 'wc-victoriabank');
+            } finally {
+                if (PHP_VERSION_ID < 80000) {
+                    // phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated -- PHP_VERSION_ID check performed before invocation.
+                    openssl_free_key($private_key_resource);
+                }
             }
         }
 
