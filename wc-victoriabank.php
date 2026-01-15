@@ -538,7 +538,7 @@ function victoriabank_plugins_loaded_init()
         {
             if (empty($value)) {
                 /* translators: 1: Field label */
-                WC_Admin_Settings::add_error(esc_html(sprintf(__('%1$s field must be set.', 'wc-victoriabank'), $this->get_settings_field_label($key))));
+                $this->add_error(esc_html(sprintf(__('%1$s field must be set.', 'wc-victoriabank'), $this->get_settings_field_label($key))));
             }
 
             return $value;
