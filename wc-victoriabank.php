@@ -870,7 +870,7 @@ function victoriabank_plugins_loaded_init()
             $order_id = isset($_REQUEST[self::VB_ORDER_ID]) ? absint(wp_unslash($_REQUEST[self::VB_ORDER_ID])) : 0;
             if (empty($order_id)) {
                 /* translators: 1: Payment method title */
-                $message = esc_html(sprintf(__('Payment verification failed: Order ID not received from %1$s.', 'wc-victoriabank'), $this->get_method_title()));
+                $message = esc_html(sprintf(__('Order ID not received from %1$s.', 'wc-victoriabank'), $this->get_method_title()));
                 $this->log($message, WC_Log_Levels::ERROR);
 
                 wc_add_notice($message, 'error');
