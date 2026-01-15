@@ -951,9 +951,9 @@ function victoriabank_plugins_loaded_init()
 
         protected function check_transaction(\WC_Order $order, array $bank_response)
         {
-            $payment_data_order_id = intval(VictoriaBankGateway::deNormalizeOrderId($bank_response->{Response::ORDER}));
-            $payment_data_amount   = floatval($bank_response->{Response::AMOUNT});
-            $payment_data_currency = strval($bank_response->{Response::CURRENCY});
+            $payment_data_order_id = intval(VictoriabankClient::deNormalizeOrderId($bank_response['ORDER']));
+            $payment_data_amount   = floatval($bank_response['AMOUNT']);
+            $payment_data_currency = strval($bank_response['CURRENCY']);
 
             $order_id = $order->get_id();
             $order_total = $order->get_total();
@@ -970,8 +970,8 @@ function victoriabank_plugins_loaded_init()
                 return false;
             }
 
-            $trx_type = $bank_response::TRX_TYPE;
-            if (VictoriaBankGateway::TRX_TYPE_REVERSAL === $trx_type) {
+            $tr_type = strval($bank_response['TRTYPE']);
+            if (VictoriabankClient::TRTYPE_REVERSAL === $tr_type) {
                 return $payment_data_amount <= $order_total;
             }
 
