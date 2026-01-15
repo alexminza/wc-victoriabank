@@ -54,7 +54,6 @@ function victoriabank_plugins_loaded_init()
 
         const LOGO_TYPE_BANK       = 'bank';
         const LOGO_TYPE_SYSTEMS    = 'systems';
-        const LOGO_TYPE_NONE       = 'none';
 
         const MOD_TRANSACTION_TYPE = self::MOD_PREFIX . 'transaction_type';
 
@@ -173,7 +172,6 @@ function victoriabank_plugins_loaded_init()
                     'options'     => array(
                         self::LOGO_TYPE_BANK    => __('Bank logo', 'wc-victoriabank'),
                         self::LOGO_TYPE_SYSTEMS => __('Payment systems logos', 'wc-victoriabank'),
-                        // self::LOGO_TYPE_NONE    => __('No logo', 'wc-victoriabank'),
                     ),
                 ),
 
@@ -351,8 +349,6 @@ function victoriabank_plugins_loaded_init()
                     return plugins_url('/assets/img/victoriabank.png', __FILE__);
                 case self::LOGO_TYPE_SYSTEMS:
                     return plugins_url('/assets/img/paymentsystems.png', __FILE__);
-                case self::LOGO_TYPE_NONE:
-                    return '';
             }
 
             return '';
