@@ -832,7 +832,6 @@ function victoriabank_plugins_loaded_init()
                 ->setMerchantUrl($this->vb_merchant_url)
                 ->setMerchantName($this->vb_merchant_name)
                 ->setMerchantAddress($this->vb_merchant_address)
-                ->setLanguage($this->get_language())
                 ->setTimezone(wc_timezone_string())
                 ->setCountry(WC()->countries->get_base_country())
                 ->setMerchantPrivateKey($this->vb_private_key, $this->vb_private_key_pass)
@@ -1371,7 +1370,7 @@ function victoriabank_plugins_loaded_init()
 
         protected function generate_form(\WC_Order $order)
         {
-            $order_id = $order->get_id();
+            $order_id = strval($order->get_id());
             $order_total = $order->get_total();
             $order_currency = $order->get_currency();
             $order_description = $this->get_order_description($order);
@@ -1380,32 +1379,23 @@ function victoriabank_plugins_loaded_init()
 
             $redirect_url = add_query_arg(self::VB_ORDER_ID, rawurlencode($order_id), $this->get_redirect_url());
 
+            //Request payment authorization - redirects to the bank page
+            $client = $this->init_victoriabank_client();
+            $authorize_request = $client->generateOrderAuthorizeRequest($order_id, $order_total, $order_currency, $order_description, $order_email, $redirect_url, $language);
+            $authorize_form = $client->generateHtmlForm($this->vb_base_url, $authorize_request);
+
             $this->log(
                 __FUNCTION__,
                 WC_Log_Levels::DEBUG,
                 array(
-                    'order_id' => $order_id,
-                    'order_total' => $order_total,
-                    'redirect_url' => $redirect_url,
-                    'order_currency' => $order_currency,
-                    'order_description' => $order_description,
-                    'order_email' => $order_email,
-                    'language' => $language,
+                    'authorize_request' => $authorize_request,
+                    'authorize_form' => $authorize_form,
                     'backtrace' => true,
                 )
             );
 
-            //Request payment authorization - redirects to the bank page
-            $victoriabank_gateway = $this->init_vb_client();
-            $victoriabank_gateway->requestAuthorization(
-                $order_id,
-                $order_total,
-                $redirect_url,
-                $order_currency,
-                $order_description,
-                $order_email,
-                $language
-            );
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Raw HTML form.
+            echo $authorize_form;
         }
 
         public function receipt_page(int $order_id)
@@ -1550,7 +1540,7 @@ function victoriabank_plugins_loaded_init()
         protected function get_order_description(\WC_Order $order)
         {
             $description = sprintf($this->order_template, $order->get_id());
-            return apply_filters('victoriabank_order_description', $description, $order);
+            return (string) apply_filters('victoriabank_order_description', $description, $order);
         }
         //endregion
 
