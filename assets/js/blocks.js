@@ -1,18 +1,18 @@
-const vb_settings = window.wc.wcSettings.getSetting('victoriabank_data', {});
-const vb_title = window.wp.htmlEntities.decodeEntities(vb_settings.title);
+const victoriabank_settings = window.wc.wcSettings.getSetting('victoriabank_data', {});
+const victoriabank_title = window.wp.htmlEntities.decodeEntities(victoriabank_settings.title);
 
-const vb_content = () => {
-    return window.wp.htmlEntities.decodeEntities(vb_settings.description || '');
+const victoriabank_content = () => {
+    return window.wp.htmlEntities.decodeEntities(victoriabank_settings.description || '');
 };
 
-const vb_label = () => {
-    let icon = vb_settings.icon
+const victoriabank_label = () => {
+    let icon = victoriabank_settings.icon
         ? window.wp.element.createElement(
             'img',
             {
-                alt: vb_title,
-                title: vb_title,
-                src: vb_settings.icon,
+                alt: victoriabank_title,
+                title: victoriabank_title,
+                src: victoriabank_settings.icon,
                 style: { float: 'right', paddingRight: '1em' }
             }
         )
@@ -21,24 +21,24 @@ const vb_label = () => {
     let label = window.wp.element.createElement(
         'span',
         icon ? { style: { width: '100%' } } : null,
-        vb_title,
+        victoriabank_title,
         icon
     );
 
     return label;
 };
 
-const vb_blockGateway = {
-    name: vb_settings.id,
-    label: Object(window.wp.element.createElement)(vb_label, null),
+const victoriabank_blockGateway = {
+    name: victoriabank_settings.id,
+    label: window.wp.element.createElement(victoriabank_label, null),
     icons: ['visa', 'mastercard'],
-    content: Object(window.wp.element.createElement)(vb_content, null),
-    edit: Object(window.wp.element.createElement)(vb_content, null),
+    content: window.wp.element.createElement(victoriabank_content, null),
+    edit: window.wp.element.createElement(victoriabank_content, null),
     canMakePayment: () => true,
-    ariaLabel: vb_title,
+    ariaLabel: victoriabank_title,
     supports: {
-        features: vb_settings.supports,
+        features: victoriabank_settings.supports,
     },
 };
 
-window.wc.wcBlocksRegistry.registerPaymentMethod(vb_blockGateway);
+window.wc.wcBlocksRegistry.registerPaymentMethod(victoriabank_blockGateway);

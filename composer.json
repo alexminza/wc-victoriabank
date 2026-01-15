@@ -2,7 +2,16 @@
     "name": "alexminza/wc-victoriabank",
     "description": "Payment Gateway for Victoriabank for WooCommerce",
     "type": "wordpress-plugin",
-    "keywords": ["WooCommerce", "Moldova", "Victoriabank", "VB", "bank", "payment", "gateway", "visa", "mastercard", "credit card"],
+    "keywords": [
+        "WooCommerce",
+        "Moldova",
+        "Victoriabank",
+        "bank",
+        "payment",
+        "gateway",
+        "visa",
+        "mastercard"
+    ],
     "homepage": "https://github.com/alexminza/wc-victoriabank",
     "license": "GPL-3.0-or-later",
     "authors": [
@@ -18,12 +27,19 @@
         "source": "https://github.com/alexminza/wc-victoriabank"
     },
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.2.5",
         "fruitware/victoria-bank-gateway": "dev-master"
     },
     "config": {
         "platform": {
-            "php": "7.0"
+            "php": "7.2.5"
+        },
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
+    },
+    "prefer-stable": true,
+    "require-dev": {
+        "woocommerce/woocommerce-sniffs": "^1.0"
     }
 }
