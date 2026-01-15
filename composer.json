@@ -28,7 +28,8 @@
     },
     "require": {
         "php": ">=7.2.5",
-        "fruitware/victoria-bank-gateway": "dev-master"
+        "alexminza/victoriabank-sdk": "^1.0",
+        "monolog/monolog": "^2.7"
     },
     "config": {
         "platform": {
