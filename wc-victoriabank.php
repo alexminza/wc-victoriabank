@@ -22,7 +22,7 @@
  */
 
 // Looking to contribute code to this plugin? Go ahead and fork the repository over at GitHub https://github.com/alexminza/wc-victoriabank
-// This plugin is based on VictoriaBankGateway by Fruitware https://github.com/Fruitware/VictoriaBankGateway (https://packagist.org/packages/fruitware/victoria-bank-gateway)
+// This plugin is based on PHP SDK for Victoriabank API https://github.com/alexminza/victoriabank-sdk-php (https://packagist.org/packages/alexminza/victoriabank-sdk)
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
@@ -30,8 +30,7 @@ if (!defined('ABSPATH')) {
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Fruitware\VictoriaBankGateway\VictoriaBankGateway;
-use Fruitware\VictoriaBankGateway\VictoriaBank\Response;
+use Victoriabank\Victoriabank\VictoriabankClient;
 
 add_action('plugins_loaded', 'victoriabank_plugins_loaded_init');
 
@@ -70,16 +69,11 @@ function victoriabank_plugins_loaded_init()
         const VB_APPROVAL = self::MOD_PREFIX . 'APPROVAL';
         const VB_CARD     = self::MOD_PREFIX . 'CARD';
 
-        // e-Commerce Gateway merchant interface (CGI/WWW forms version)
-        // Appendix A: P_SIGN creation/verification in the Merchant System
-        // https://github.com/Fruitware/VictoriaBankGateway/blob/master/doc/e-Gateway_Merchant_CGI_2.1.pdf
-        const VB_SIGNATURE_FIRST   = '0001';
-        const VB_SIGNATURE_PREFIX  = '3020300C06082A864886F70D020505000410';
-        const VB_SIGNATURE_PADDING = '00';
+        const DEFAULT_TIMEOUT = 30; // seconds
         //endregion
 
         protected $logo_type, $testmode, $debug, $logger, $transaction_type, $order_template;
-        protected $vb_merchant_id, $vb_merchant_terminal, $vb_merchant_name, $vb_merchant_url, $vb_merchant_address;
+        protected $vb_base_url, $vb_merchant_id, $vb_merchant_terminal, $vb_merchant_name, $vb_merchant_url, $vb_merchant_address;
         protected $vb_public_key_pem, $vb_bank_public_key_pem, $vb_private_key_pem, $vb_private_key_pass, $vb_public_key, $vb_private_key, $vb_bank_public_key;
 
         public function __construct()
@@ -112,6 +106,7 @@ function victoriabank_plugins_loaded_init()
             $this->transaction_type       = $this->get_option('transaction_type', self::TRANSACTION_TYPE_CHARGE);
             $this->order_template         = $this->get_option('order_template', self::ORDER_TEMPLATE);
 
+            $this->vb_base_url            = $this->testmode ? VictoriabankClient::TEST_BASE_URL : VictoriabankClient::DEFAULT_BASE_URL;
             $this->vb_merchant_id         = $this->get_option('vb_merchant_id');
             $this->vb_merchant_terminal   = $this->get_option('vb_merchant_terminal');
             $this->vb_merchant_name       = $this->get_option('vb_merchant_name');
@@ -808,40 +803,43 @@ function victoriabank_plugins_loaded_init()
         //endregion
 
         //region Payment
-        protected function init_vb_client()
+        protected function init_victoriabank_client()
         {
-            $victoriabank_gateway = new VictoriaBankGateway();
+            $options = array(
+                'base_uri' => $this->vb_base_url,
+                'timeout'  => self::DEFAULT_TIMEOUT,
+            );
 
-            $gateway_url = ($this->testmode ? 'https://ecomt.victoriabank.md/cgi-bin/cgi_link' : 'https://vb059.vb.md/cgi-bin/cgi_link');
-            $ssl_verify = !$this->testmode;
+            if ($this->debug) {
+                $log_name = "{$this->id}_guzzle";
+                $log_file_name = WC_Log_Handler_File::get_log_file_path($log_name);
 
-            // Set basic info
-            $victoriabank_gateway
-                ->setGatewayUrl($gateway_url)
-                ->setSslVerify($ssl_verify)
+                $log = new \Monolog\Logger($log_name);
+                $log->pushHandler(new \Monolog\Handler\StreamHandler($log_file_name, \Monolog\Logger::DEBUG));
+
+                $stack = \GuzzleHttp\HandlerStack::create();
+                $stack->push(\GuzzleHttp\Middleware::log($log, new \GuzzleHttp\MessageFormatter(\GuzzleHttp\MessageFormatter::DEBUG)));
+
+                $options['handler'] = $stack;
+            }
+
+            $guzzle_client = new \GuzzleHttp\Client($options);
+            $client = new VictoriabankClient($guzzle_client);
+
+            $client
                 ->setMerchantId($this->vb_merchant_id)
-                ->setMerchantTerminal($this->vb_merchant_terminal)
+                ->setTerminalId($this->vb_merchant_terminal)
                 ->setMerchantUrl($this->vb_merchant_url)
                 ->setMerchantName($this->vb_merchant_name)
                 ->setMerchantAddress($this->vb_merchant_address)
+                ->setLanguage($this->get_language())
                 ->setTimezone(wc_timezone_string())
-                ->setDefaultLanguage($this->get_language());
-            // ->setCountryCode(WC()->countries->get_base_country())
-            // ->setDefaultCurrency(get_woocommerce_currency())
-            // ->setDebug($this->debug)
+                ->setCountry(WC()->countries->get_base_country())
+                ->setMerchantPrivateKey($this->vb_private_key, $this->vb_private_key_pass)
+                ->setBankPublicKey($this->vb_bank_public_key)
+                ->setSignatureAlgo(VictoriabankClient::P_SIGN_HASH_ALGO_SHA256);
 
-            // Set security options - provided by the bank
-            $victoriabank_gateway->setSecurityOptions(
-                self::VB_SIGNATURE_FIRST,
-                self::VB_SIGNATURE_PREFIX,
-                self::VB_SIGNATURE_PADDING,
-                $this->vb_public_key,
-                $this->vb_private_key,
-                $this->vb_bank_public_key,
-                $this->vb_private_key_pass
-            );
-
-            return $victoriabank_gateway;
+            return $client;
         }
 
         /**
@@ -951,7 +949,7 @@ function victoriabank_plugins_loaded_init()
             return true;
         }
 
-        protected function check_transaction(\WC_Order $order, \Fruitware\VictoriaBankGateway\VictoriaBank\ResponseInterface $bank_response)
+        protected function check_transaction(\WC_Order $order, array $bank_response)
         {
             $payment_data_order_id = intval(VictoriaBankGateway::deNormalizeOrderId($bank_response->{Response::ORDER}));
             $payment_data_amount   = floatval($bank_response->{Response::AMOUNT});
