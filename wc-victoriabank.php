@@ -964,17 +964,32 @@ function victoriabank_plugins_loaded_init()
             }
 
             //region Extract bank response params
+            $terminal  = strval($bank_response['TERMINAL']);
             $tr_type   = strval($bank_response['TRTYPE']);
             $order_id  = VictoriabankClient::deNormalizeOrderId($bank_response['ORDER']);
             $amount    = floatval($bank_response['AMOUNT']);
             $currency  = strval($bank_response['CURRENCY']);
+            $action    = strval($bank_response['ACTION']);
+            $rc        = strval($bank_response['RC']);
+            $text      = strval($bank_response['TEXT']);
             $approval  = strval($bank_response['APPROVAL']);
             $rrn       = strval($bank_response['RRN']);
             $int_ref   = strval($bank_response['INT_REF']);
             $timestamp = strval($bank_response['TIMESTAMP']);
-            $text      = strval($bank_response['TEXT']);
             $bin       = strval($bank_response['BIN']);
             $card      = strval($bank_response['CARD']);
+            $auth      = strval($bank_response['AUTH']);
+            $eci       = strval($bank_response['ECI']);
+            //endregion
+
+            //region Check TransResponse
+            if ($terminal !== $this->vb_merchant_terminal) {
+                $check_result = false;
+            }
+
+            if (VictoriabankClient::ACTION_SUCCESS !== $action) {
+                $check_result = false;
+            }
             //endregion
 
             //region Validate order
