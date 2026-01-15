@@ -4,7 +4,7 @@
  * Plugin Name: Payment Gateway for Victoriabank for WooCommerce
  * Description: Accept Visa and Mastercard directly on your store with the Payment Gateway for Victoriabank for WooCommerce.
  * Plugin URI: https://github.com/alexminza/wc-victoriabank
- * Version: 1.5.0
+ * Version: 1.5.1
  * Author: Alexander Minza
  * Author URI: https://profiles.wordpress.org/alexminza
  * Developer: Alexander Minza
@@ -48,7 +48,7 @@ function victoriabank_plugins_loaded_init()
         const MOD_ID          = 'victoriabank';
         const MOD_PREFIX      = 'vb_';
         const MOD_TITLE       = 'Victoriabank';
-        const MOD_VERSION     = '1.5.0';
+        const MOD_VERSION     = '1.5.1';
 
         const TRANSACTION_TYPE_CHARGE = 'charge';
         const TRANSACTION_TYPE_AUTHORIZATION = 'authorization';
@@ -782,10 +782,11 @@ function victoriabank_plugins_loaded_init()
 
         protected function save_temp_file(string $file_data, string $file_suffix = '')
         {
+            $wp_filesystem = self::get_wp_filesystem();
+
             $temp_file_name = sprintf('%1$s%2$s_', self::MOD_PREFIX, $file_suffix);
             $temp_file = wp_tempnam($temp_file_name);
 
-            $wp_filesystem = self::get_wp_filesystem();
             if (!$wp_filesystem->put_contents($temp_file, $file_data, FS_CHMOD_FILE)) {
                 /* translators: 1: Temporary file name */
                 $this->log(sprintf(__('Unable to save data to temporary file: %1$s', 'wc-victoriabank'), $temp_file), WC_Log_Levels::ERROR);
