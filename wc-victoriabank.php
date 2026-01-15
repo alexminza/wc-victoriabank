@@ -56,17 +56,17 @@ function victoriabank_plugins_loaded_init()
         const LOGO_TYPE_SYSTEMS    = 'systems';
 
         const MOD_TRANSACTION_TYPE = self::MOD_PREFIX . 'transaction_type';
+        const MOD_PAYMENT_RECEIPT  = self::MOD_PREFIX . 'payment_receipt';
+        const MOD_RRN              = self::MOD_PREFIX . 'rrn';
+        const MOD_INT_REF          = self::MOD_PREFIX . 'int_ref';
+        const MOD_APPROVAL         = self::MOD_PREFIX . 'approval';
+        const MOD_CARD             = self::MOD_PREFIX . 'card';
 
         const SUPPORTED_CURRENCIES = array('MDL', 'EUR', 'USD');
         const ORDER_TEMPLATE       = 'Order #%1$s';
 
         const VB_ORDER    = 'ORDER';
         const VB_ORDER_ID = 'order_id';
-
-        const VB_RRN      = self::MOD_PREFIX . 'RRN';
-        const VB_INT_REF  = self::MOD_PREFIX . 'INT_REF';
-        const VB_APPROVAL = self::MOD_PREFIX . 'APPROVAL';
-        const VB_CARD     = self::MOD_PREFIX . 'CARD';
 
         const DEFAULT_TIMEOUT = 30; // seconds
         //endregion
@@ -773,16 +773,16 @@ function victoriabank_plugins_loaded_init()
             $order_total = self::get_order_net_total($order);
             $order_currency = $order->get_currency();
 
-            $rrn = strval($order->get_meta(strtolower(self::VB_RRN), true));
-            $int_ref = strval($order->get_meta(strtolower(self::VB_INT_REF), true));
+            $rrn = strval($order->get_meta(self::MOD_RRN, true));
+            $int_ref = strval($order->get_meta(self::MOD_INT_REF, true));
             if (empty($rrn)) {
                 /* translators: 1: Order ID, 2: Meta field key */
-                $message = esc_html(sprintf(__('Order #%1$s missing meta field %2$s.', 'wc-victoriabank'), $order_id, self::VB_RRN));
+                $message = esc_html(sprintf(__('Order #%1$s missing meta field %2$s.', 'wc-victoriabank'), $order_id, self::MOD_RRN));
                 return new WP_Error('order_rrn', $message);
             }
             if (empty($int_ref)) {
                 /* translators: 1: Order ID, 2: Meta field key */
-                $message = esc_html(sprintf(__('Order #%1$s missing meta field %2$s.', 'wc-victoriabank'), $order_id, self::VB_INT_REF));
+                $message = esc_html(sprintf(__('Order #%1$s missing meta field %2$s.', 'wc-victoriabank'), $order_id, self::MOD_INT_REF));
                 return new WP_Error('order_int_ref', $message);
             }
 
@@ -975,19 +975,6 @@ function victoriabank_plugins_loaded_init()
             $text      = strval($bank_response['TEXT']);
             $bin       = strval($bank_response['BIN']);
             $card      = strval($bank_response['CARD']);
-
-            $bank_params = array(
-                'ORDER'     => $order_id,
-                'AMOUNT'    => $amount,
-                'CURRENCY'  => $currency,
-                'TEXT'      => $text,
-                'APPROVAL'  => $approval,
-                'RRN'       => $rrn,
-                'INT_REF'   => $int_ref,
-                'TIMESTAMP' => $timestamp,
-                'BIN'       => $bin,
-                'CARD'      => $card,
-            );
             //endregion
 
             //region Validate order
@@ -1022,10 +1009,12 @@ function victoriabank_plugins_loaded_init()
                         //region Update order payment metadata
                         // https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book
                         $order->add_meta_data(self::MOD_TRANSACTION_TYPE, $this->transaction_type, true);
+                        $order->add_meta_data(self::MOD_PAYMENT_RECEIPT, http_build_query($bank_response), true);
 
-                        foreach ($bank_params as $key => $value) {
-                            $order->add_meta_data(strtolower(self::MOD_PREFIX . $key), $value, true);
-                        }
+                        $order->add_meta_data(self::MOD_RRN, $rrn, true);
+                        $order->add_meta_data(self::MOD_INT_REF, $int_ref, true);
+                        $order->add_meta_data(self::MOD_APPROVAL, $approval, true);
+                        $order->add_meta_data(self::MOD_CARD, $card, true);
 
                         $order->save();
                         //endregion
@@ -1038,7 +1027,6 @@ function victoriabank_plugins_loaded_init()
                             WC_Log_Levels::INFO,
                             array(
                                 'bank_response' => $bank_response,
-                                'bank_params' => $bank_params,
                                 'check_result' => $check_result,
                                 'check_transaction' => $check_transaction,
                             )
@@ -1071,7 +1059,6 @@ function victoriabank_plugins_loaded_init()
                             WC_Log_Levels::INFO,
                             array(
                                 'bank_response' => $bank_response,
-                                'bank_params' => $bank_params,
                                 'check_result' => $check_result,
                                 'check_transaction' => $check_transaction,
                             )
@@ -1089,7 +1076,6 @@ function victoriabank_plugins_loaded_init()
                             WC_Log_Levels::INFO,
                             array(
                                 'bank_response' => $bank_response,
-                                'bank_params' => $bank_params,
                                 'check_result' => $check_result,
                                 'check_transaction' => $check_transaction,
                             )
@@ -1112,7 +1098,6 @@ function victoriabank_plugins_loaded_init()
                 WC_Log_Levels::ERROR,
                 array(
                     'bank_response' => $bank_response,
-                    'bank_params' => $bank_params,
                     'check_result' => $check_result,
                     'check_transaction' => $check_transaction,
                 )
@@ -1325,16 +1310,16 @@ function victoriabank_plugins_loaded_init()
             $order = wc_get_order($order_id);
             $order_currency = $order->get_currency();
 
-            $rrn = strval($order->get_meta(strtolower(self::VB_RRN), true));
-            $int_ref = strval($order->get_meta(strtolower(self::VB_INT_REF), true));
+            $rrn = strval($order->get_meta(self::MOD_RRN, true));
+            $int_ref = strval($order->get_meta(self::MOD_INT_REF, true));
             if (empty($rrn)) {
                 /* translators: 1: Order ID, 2: Meta field key */
-                $message = esc_html(sprintf(__('Order #%1$s missing meta field %2$s.', 'wc-victoriabank'), $order_id, self::VB_RRN));
+                $message = esc_html(sprintf(__('Order #%1$s missing meta field %2$s.', 'wc-victoriabank'), $order_id, self::MOD_RRN));
                 return new WP_Error('order_rrn', $message);
             }
             if (empty($int_ref)) {
                 /* translators: 1: Order ID, 2: Meta field key */
-                $message = esc_html(sprintf(__('Order #%1$s missing meta field %2$s.', 'wc-victoriabank'), $order_id, self::VB_INT_REF));
+                $message = esc_html(sprintf(__('Order #%1$s missing meta field %2$s.', 'wc-victoriabank'), $order_id, self::MOD_INT_REF));
                 return new WP_Error('order_int_ref', $message);
             }
 
@@ -1587,19 +1572,19 @@ function victoriabank_plugins_loaded_init()
                 return $fields;
             }
 
-            $fields[self::VB_RRN] = array(
+            $fields[self::MOD_RRN] = array(
                 'label' => __('Retrieval Reference Number (RRN)', 'wc-victoriabank'),
-                'value' => strval($order->get_meta(strtolower(self::VB_RRN), true)),
+                'value' => strval($order->get_meta(self::MOD_RRN, true)),
             );
 
-            $fields[self::VB_APPROVAL] = array(
+            $fields[self::MOD_APPROVAL] = array(
                 'label' => __('Authorization code', 'wc-victoriabank'),
-                'value' => strval($order->get_meta(strtolower(self::VB_APPROVAL), true)),
+                'value' => strval($order->get_meta(self::MOD_APPROVAL, true)),
             );
 
-            $fields[self::VB_CARD] = array(
+            $fields[self::MOD_CARD] = array(
                 'label' => __('Card number', 'wc-victoriabank'),
-                'value' => strval($order->get_meta(strtolower(self::VB_CARD), true)),
+                'value' => strval($order->get_meta(self::MOD_CARD, true)),
             );
 
             return $fields;
