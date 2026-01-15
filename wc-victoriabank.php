@@ -509,15 +509,15 @@ function victoriabank_plugins_loaded_init()
                 $this->add_error(sprintf('<strong>%1$s</strong>: %2$s. %3$s', esc_html__('Connection Settings', 'wc-victoriabank'), esc_html__('Not configured', 'wc-victoriabank'), wp_kses_post($message_instructions)));
                 $validate_result = false;
             } else {
-                $result = $this->validate_public_key($this->vb_bank_public_key);
-                if (!empty($result)) {
-                    $this->add_error(sprintf('<strong>%1$s</strong>: %2$s', esc_html__('Bank public key file', 'wc-victoriabank'), esc_html($result)));
+                if (!$this->validate_public_key($this->vb_bank_public_key)) {
+                    /* translators: 1: Field label */
+                    $this->add_error(esc_html(sprintf(__('Invalid %1$s.', 'wc-victoriabank'), $this->get_settings_field_label('vb_bank_public_key'))));
                     $validate_result = false;
                 }
 
-                $result = $this->validate_private_key($this->vb_private_key, $this->vb_private_key_pass);
-                if (!empty($result)) {
-                    $this->add_error(sprintf('<strong>%1$s</strong>: %2$s', esc_html__('Private key file', 'wc-victoriabank'), esc_html($result)));
+                if (!$this->validate_private_key($this->vb_private_key, $this->vb_private_key_pass)) {
+                    /* translators: 1: Field label */
+                    $this->add_error(esc_html(sprintf(__('Invalid %1$s or %2$s.', 'wc-victoriabank'), $this->get_settings_field_label('vb_private_key'), $this->get_settings_field_label('vb_private_key_pass'))));
                     $validate_result = false;
                 }
             }
@@ -627,80 +627,38 @@ function victoriabank_plugins_loaded_init()
 
         protected function validate_public_key(string $key_data)
         {
-            try {
-                $public_key_resource = openssl_pkey_get_public($key_data);
+            $public_key_resource = openssl_pkey_get_public($key_data);
 
-                if (false === $public_key_resource) {
-                    $message = __('Invalid public key', 'wc-victoriabank');
-                    $this->log_openssl_errors($message);
-                    return $message;
-                }
-            } catch (Exception $ex) {
-                $this->log(
-                    $ex->getMessage(),
-                    WC_Log_Levels::ERROR,
-                    array(
-                        'exception' => (string) $ex,
-                        'backtrace' => true,
-                    )
-                );
+            if (false === $public_key_resource) {
+                $this->log_openssl_errors(__FUNCTION__);
 
-                return __('Could not validate public key', 'wc-victoriabank');
-            } finally {
-                if (PHP_VERSION_ID < 80000) {
-                    // phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated -- PHP_VERSION_ID check performed before invocation.
-                    openssl_free_key($public_key_resource);
-                }
+                return false;
             }
+
+            if (PHP_VERSION_ID < 80000) {
+                // phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated -- PHP_VERSION_ID check performed before invocation.
+                openssl_free_key($public_key_resource);
+            }
+
+            return true;
         }
 
         protected function validate_private_key(string $key_data, string $key_passphrase)
         {
-            try {
-                $private_key_resource = openssl_pkey_get_private($key_data, $key_passphrase);
+            $private_key_resource = openssl_pkey_get_private($key_data, $key_passphrase);
 
-                if (false === $private_key_resource) {
-                    $message = __('Invalid private key or wrong private key passphrase', 'wc-victoriabank');
-                    $this->log_openssl_errors($message);
-                    return $message;
-                }
-            } catch (Exception $ex) {
-                $this->log(
-                    $ex->getMessage(),
-                    WC_Log_Levels::ERROR,
-                    array(
-                        'exception' => (string) $ex,
-                        'backtrace' => true,
-                    )
-                );
+            if (false === $private_key_resource) {
+                $this->log_openssl_errors(__FUNCTION__);
 
-                return __('Could not validate private key', 'wc-victoriabank');
-            } finally {
-                if (PHP_VERSION_ID < 80000) {
-                    // phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated -- PHP_VERSION_ID check performed before invocation.
-                    openssl_free_key($private_key_resource);
-                }
-            }
-        }
-
-        protected function log_openssl_errors(string $message)
-        {
-            $openssl_errors = array();
-
-            // https://www.php.net/manual/en/function.openssl-error-string.php
-            // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition -- Common openssl_error_string code pattern.
-            while ($error = openssl_error_string()) {
-                $openssl_errors[] = $error;
+                return false;
             }
 
-            $this->log(
-                $message,
-                WC_Log_Levels::ERROR,
-                array(
-                    'openssl_errors' => $openssl_errors,
-                    'backtrace' => true,
-                )
-            );
+            if (PHP_VERSION_ID < 80000) {
+                // phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated -- PHP_VERSION_ID check performed before invocation.
+                openssl_free_key($private_key_resource);
+            }
+
+            return true;
         }
 
         /**
@@ -1535,6 +1493,26 @@ function victoriabank_plugins_loaded_init()
             }
 
             $this->logger->log($level, $message, $log_context);
+        }
+
+        protected function log_openssl_errors(string $message)
+        {
+            $openssl_errors = array();
+
+            // https://www.php.net/manual/en/function.openssl-error-string.php
+            // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition -- Common openssl_error_string code pattern.
+            while ($error = openssl_error_string()) {
+                $openssl_errors[] = $error;
+            }
+
+            $this->log(
+                $message,
+                WC_Log_Levels::ERROR,
+                array(
+                    'openssl_errors' => $openssl_errors,
+                    'backtrace' => true,
+                )
+            );
         }
 
         protected function log_request(string $source)
