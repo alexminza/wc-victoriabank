@@ -477,7 +477,12 @@ function victoriabank_plugins_loaded_init()
 
         protected function check_settings()
         {
-            return !empty($this->vb_bank_public_key)
+            return !empty($this->vb_merchant_name)
+                && !empty($this->vb_merchant_url)
+                && !empty($this->vb_merchant_address)
+                && !empty($this->vb_merchant_id)
+                && !empty($this->vb_merchant_terminal)
+                && !empty($this->vb_bank_public_key)
                 && !empty($this->vb_private_key);
         }
 
