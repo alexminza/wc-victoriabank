@@ -1058,31 +1058,28 @@ function victoriabank_plugins_loaded_init()
             return $this->process_response_data($_POST);
         }
 
-        public function process_response_data(array $vbdata)
+        public function process_response_data(array $bank_response)
         {
             $this->log(
                 __FUNCTION__,
                 WC_Log_Levels::DEBUG,
                 array(
-                    'vbdata' => $vbdata,
+                    'bank_response' => $bank_response,
                     'backtrace' => true,
                 )
             );
 
-            $bank_response = null;
             $check_result = null;
             try {
                 $client = $this->init_victoriabank_client();
-                $check_result = $client->validateResponse($vbdata);
+                $check_result = $client->validateResponse($bank_response);
             } catch (Exception $ex) {
                 $this->log(
                     $ex->getMessage(),
                     WC_Log_Levels::ERROR,
                     array(
-                        'vbdata' => $vbdata,
                         'bank_response' => $bank_response,
                         'check_result' => $check_result,
-                        'bank_response_errors' => $bank_response ? $bank_response->getErrors() : null,
                         'exception' => (string) $ex,
                         'backtrace' => true,
                     )
@@ -1090,16 +1087,17 @@ function victoriabank_plugins_loaded_init()
             }
 
             //region Extract bank response params
-            $order_id  = VictoriaBankGateway::deNormalizeOrderId($bank_response->{Response::ORDER});
-            $amount    = floatval($bank_response->{Response::AMOUNT});
-            $currency  = strval($bank_response->{Response::CURRENCY});
-            $approval  = strval($bank_response->{Response::APPROVAL});
-            $rrn       = strval($bank_response->{Response::RRN});
-            $int_ref   = strval($bank_response->{Response::INT_REF});
-            $timestamp = strval($bank_response->{Response::TIMESTAMP});
-            $text      = strval($bank_response->{Response::TEXT});
-            $bin       = strval($bank_response->{Response::BIN});
-            $card      = strval($bank_response->{Response::CARD});
+            $tr_type   = strval($bank_response['TRTYPE']);
+            $order_id  = VictoriabankClient::deNormalizeOrderId($bank_response['ORDER']);
+            $amount    = floatval($bank_response['AMOUNT']);
+            $currency  = strval($bank_response['CURRENCY']);
+            $approval  = strval($bank_response['APPROVAL']);
+            $rrn       = strval($bank_response['RRN']);
+            $int_ref   = strval($bank_response['INT_REF']);
+            $timestamp = strval($bank_response['TIMESTAMP']);
+            $text      = strval($bank_response['TEXT']);
+            $bin       = strval($bank_response['BIN']);
+            $card      = strval($bank_response['CARD']);
 
             $bank_params = array(
                 'ORDER'     => $order_id,
@@ -1134,8 +1132,8 @@ function victoriabank_plugins_loaded_init()
 
             $check_transaction = $this->check_transaction($order, $bank_response);
             if ($check_result && $check_transaction) {
-                switch ($bank_response::TRX_TYPE) {
-                    case VictoriaBankGateway::TRX_TYPE_AUTHORIZATION:
+                switch ($tr_type) {
+                    case VictoriabankClient::TRTYPE_AUTHORIZATION:
                         if ($order->is_paid()) {
                             /* translators: 1: Order ID */
                             $message = sprintf(__('Order #%1$s already fully paid.', 'wc-victoriabank'), $order_id);
@@ -1164,7 +1162,6 @@ function victoriabank_plugins_loaded_init()
                             array(
                                 'bank_response' => $bank_response,
                                 'bank_params' => $bank_params,
-                                'vbdata' => $vbdata,
                                 'check_result' => $check_result,
                                 'check_transaction' => $check_transaction,
                             )
@@ -1188,7 +1185,7 @@ function victoriabank_plugins_loaded_init()
 
                         return true;
 
-                    case VictoriaBankGateway::TRX_TYPE_COMPLETION:
+                    case VictoriabankClient::TRTYPE_SALES_COMPLETION:
                         /* translators: 1: Order ID, 2: Payment method title, 3: Payment data */
                         $message = esc_html(sprintf(__('Order #%1$s payment completed via %2$s: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $rrn));
                         $message = $this->get_test_message($message);
@@ -1198,7 +1195,6 @@ function victoriabank_plugins_loaded_init()
                             array(
                                 'bank_response' => $bank_response,
                                 'bank_params' => $bank_params,
-                                'vbdata' => $vbdata,
                                 'check_result' => $check_result,
                                 'check_transaction' => $check_transaction,
                             )
@@ -1207,7 +1203,7 @@ function victoriabank_plugins_loaded_init()
                         $order->add_order_note($message);
                         return true;
 
-                    case VictoriaBankGateway::TRX_TYPE_REVERSAL:
+                    case VictoriabankClient::TRTYPE_REVERSAL:
                         /* translators: 1: Order ID, 2: Refund amount, 3: Payment method title */
                         $message = esc_html(sprintf(__('Order #%1$s refund of %2$s via %3$s approved.', 'wc-victoriabank'), $order_id, $this->format_price($amount, $currency), $this->get_method_title()));
                         $message = $this->get_test_message($message);
@@ -1217,7 +1213,6 @@ function victoriabank_plugins_loaded_init()
                             array(
                                 'bank_response' => $bank_response,
                                 'bank_params' => $bank_params,
-                                'vbdata' => $vbdata,
                                 'check_result' => $check_result,
                                 'check_transaction' => $check_transaction,
                             )
@@ -1227,7 +1222,7 @@ function victoriabank_plugins_loaded_init()
                         return true;
 
                     default:
-                        $this->log(sprintf('Order #%1$s unknown bank response TRX_TYPE: %2$s', $order_id, $bank_response::TRX_TYPE), WC_Log_Levels::ERROR);
+                        $this->log(sprintf('Order #%1$s unknown bank response TRTYPE: %2$s', $order_id, $tr_type), WC_Log_Levels::ERROR);
                         break;
                 }
             }
@@ -1241,10 +1236,8 @@ function victoriabank_plugins_loaded_init()
                 array(
                     'bank_response' => $bank_response,
                     'bank_params' => $bank_params,
-                    'vbdata' => $vbdata,
                     'check_result' => $check_result,
                     'check_transaction' => $check_transaction,
-                    'bank_response_errors' => $bank_response->getErrors(),
                 )
             );
 
