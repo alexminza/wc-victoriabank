@@ -74,7 +74,7 @@ function victoriabank_plugins_loaded_init()
 
         protected $logo_type, $testmode, $debug, $logger, $transaction_type, $order_template;
         protected $vb_base_url, $vb_merchant_id, $vb_merchant_terminal, $vb_merchant_name, $vb_merchant_url, $vb_merchant_address;
-        protected $vb_public_key_pem, $vb_bank_public_key_pem, $vb_private_key_pem, $vb_private_key_pass, $vb_public_key, $vb_private_key, $vb_bank_public_key;
+        protected $vb_bank_public_key_pem, $vb_private_key_pem, $vb_private_key_pass, $vb_private_key, $vb_bank_public_key;
 
         public function __construct()
         {
@@ -113,12 +113,10 @@ function victoriabank_plugins_loaded_init()
             $this->vb_merchant_url        = $this->get_option('vb_merchant_url');
             $this->vb_merchant_address    = $this->get_option('vb_merchant_address');
 
-            $this->vb_public_key_pem      = $this->get_option('vb_public_key_pem');
             $this->vb_bank_public_key_pem = $this->get_option('vb_bank_public_key_pem');
             $this->vb_private_key_pem     = $this->get_option('vb_private_key_pem');
             $this->vb_private_key_pass    = $this->get_option('vb_private_key_pass');
 
-            $this->vb_public_key          = $this->get_option('vb_public_key');
             $this->vb_private_key         = $this->get_option('vb_private_key');
             $this->vb_bank_public_key     = $this->get_option('vb_bank_public_key');
 
@@ -296,16 +294,6 @@ function victoriabank_plugins_loaded_init()
                         'accept' => '.pem',
                     ),
                 ),
-                /*
-                'vb_public_key_pem' => array(
-                    'title'       => __('Public key', 'wc-victoriabank'),
-                    'type'        => 'file',
-                    'description' => '<code>pubkey.pem</code>',
-                    'custom_attributes' => array(
-                        'accept' => '.pem',
-                    ),
-                ),
-                */
                 'vb_private_key_pem' => array(
                     'title'       => __('Merchant private key', 'wc-victoriabank'),
                     'type'        => 'file',
@@ -321,14 +309,6 @@ function victoriabank_plugins_loaded_init()
                     'description' => '<code>file:///path/to/victoria_pub.pem</code>',
                     'placeholder' => "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----",
                 ),
-                /*
-                'vb_public_key'   => array(
-                    'title'       => __('Merchant Public key', 'wc-victoriabank'),
-                    'type'        => 'textarea',
-                    'description' => '<code>/path/to/pubkey.pem</code>',
-                    'placeholder' => "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----",
-                ),
-                */
                 'vb_private_key'  => array(
                     'title'       => __('Merchant Private key', 'wc-victoriabank'),
                     'type'        => 'textarea',
@@ -418,8 +398,8 @@ function victoriabank_plugins_loaded_init()
             wp_add_inline_script(
                 $script_handle,
                 'jQuery(function() {
-                    var vb_connection_basic_fields_ids      = "#woocommerce_victoriabank_vb_public_key_pem, #woocommerce_victoriabank_vb_bank_public_key_pem, #woocommerce_victoriabank_vb_private_key_pem, #woocommerce_victoriabank_vb_private_key_pass";
-                    var vb_connection_advanced_fields_ids   = "#woocommerce_victoriabank_vb_public_key, #woocommerce_victoriabank_vb_bank_public_key, #woocommerce_victoriabank_vb_private_key, #woocommerce_victoriabank_vb_private_key_pass";
+                    var vb_connection_basic_fields_ids      = "#woocommerce_victoriabank_vb_bank_public_key_pem, #woocommerce_victoriabank_vb_private_key_pem, #woocommerce_victoriabank_vb_private_key_pass";
+                    var vb_connection_advanced_fields_ids   = "#woocommerce_victoriabank_vb_bank_public_key, #woocommerce_victoriabank_vb_private_key, #woocommerce_victoriabank_vb_private_key_pass";
                     var vb_notification_advanced_fields_ids = "#woocommerce_victoriabank_vb_callback_data";
 
                     var vb_connection_basic_fields      = jQuery(vb_connection_basic_fields_ids).closest("tr");
@@ -493,7 +473,6 @@ function victoriabank_plugins_loaded_init()
         {
             unset($_POST['woocommerce_victoriabank_vb_callback_data']);
 
-            $this->process_pem_setting('woocommerce_victoriabank_vb_public_key_pem', $this->vb_public_key_pem, 'woocommerce_victoriabank_vb_public_key', 'pubkey.pem');
             $this->process_pem_setting('woocommerce_victoriabank_vb_bank_public_key_pem', $this->vb_bank_public_key_pem, 'woocommerce_victoriabank_vb_bank_public_key', 'victoria_pub.pem');
             $this->process_pem_setting('woocommerce_victoriabank_vb_private_key_pem', $this->vb_private_key_pem, 'woocommerce_victoriabank_vb_private_key', 'key.pem');
 
@@ -502,8 +481,7 @@ function victoriabank_plugins_loaded_init()
 
         protected function check_settings()
         {
-            return !empty($this->vb_public_key)
-                && !empty($this->vb_bank_public_key)
+            return !empty($this->vb_bank_public_key)
                 && !empty($this->vb_private_key);
         }
 
@@ -531,12 +509,6 @@ function victoriabank_plugins_loaded_init()
                 $this->add_error(sprintf('<strong>%1$s</strong>: %2$s. %3$s', esc_html__('Connection Settings', 'wc-victoriabank'), esc_html__('Not configured', 'wc-victoriabank'), wp_kses_post($message_instructions)));
                 $validate_result = false;
             } else {
-                $result = $this->validate_public_key($this->vb_public_key);
-                if (!empty($result)) {
-                    $this->add_error(sprintf('<strong>%1$s</strong>: %2$s', esc_html__('Public key file', 'wc-victoriabank'), esc_html($result)));
-                    $validate_result = false;
-                }
-
                 $result = $this->validate_public_key($this->vb_bank_public_key);
                 if (!empty($result)) {
                     $this->add_error(sprintf('<strong>%1$s</strong>: %2$s', esc_html__('Bank public key file', 'wc-victoriabank'), esc_html($result)));
@@ -616,7 +588,6 @@ function victoriabank_plugins_loaded_init()
 
         protected function initialize_keys()
         {
-            $this->initialize_key($this->vb_public_key, $this->vb_public_key_pem, 'vb_public_key', 'pubkey.pem');
             $this->initialize_key($this->vb_bank_public_key, $this->vb_bank_public_key_pem, 'vb_bank_public_key', 'victoria_pub.pem');
             $this->initialize_key($this->vb_private_key, $this->vb_private_key_pem, 'vb_private_key', 'key.pem');
         }
