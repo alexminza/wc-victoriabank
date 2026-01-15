@@ -93,6 +93,9 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 
 See [wc-victoriabank project releases on GitHub](https://github.com/alexminza/wc-victoriabank/releases) for details.
 
+= 1.5.1 =
+WP_Filesystem initialization fix.
+
 = 1.5.0 =
 Overall modernization and improvements.
 
@@ -160,6 +163,9 @@ Minor improvements
 Initial release
 
 == Upgrade Notice ==
+
+= 1.5.1 =
+WP_Filesystem initialization fix.
 
 = 1.5.0 =
 Overall modernization and improvements.
