@@ -625,11 +625,6 @@ function victoriabank_plugins_loaded_init()
         protected function validate_public_key(string $key_file)
         {
             try {
-                $validate_result = $this->validate_file($key_file);
-                if (!empty($validate_result)) {
-                    return $validate_result;
-                }
-
                 $wp_filesystem = self::get_wp_filesystem();
                 $key_data = $wp_filesystem->get_contents($key_file);
                 $public_key = openssl_pkey_get_public($key_data);
@@ -657,11 +652,6 @@ function victoriabank_plugins_loaded_init()
         protected function validate_private_key(string $key_file, string $key_passphrase)
         {
             try {
-                $validate_result = $this->validate_file($key_file);
-                if (!empty($validate_result)) {
-                    return $validate_result;
-                }
-
                 $wp_filesystem = self::get_wp_filesystem();
                 $key_data = $wp_filesystem->get_contents($key_file);
                 $private_key = openssl_pkey_get_private($key_data, $key_passphrase);
@@ -683,35 +673,6 @@ function victoriabank_plugins_loaded_init()
                 );
 
                 return __('Could not validate private key', 'wc-victoriabank');
-            }
-        }
-
-        protected function validate_file(string $file)
-        {
-            try {
-                if (empty($file)) {
-                    return __('Invalid value', 'wc-victoriabank');
-                }
-
-                if (!file_exists($file)) {
-                    return __('File not found', 'wc-victoriabank');
-                }
-
-                if (!is_readable($file)) {
-                    return __('File not readable', 'wc-victoriabank');
-                }
-            } catch (Exception $ex) {
-                $this->log(
-                    $ex->getMessage(),
-                    WC_Log_Levels::ERROR,
-                    array(
-                        'file' => $file,
-                        'exception' => (string) $ex,
-                        'backtrace' => true,
-                    )
-                );
-
-                return __('Could not validate file', 'wc-victoriabank');
             }
         }
 
