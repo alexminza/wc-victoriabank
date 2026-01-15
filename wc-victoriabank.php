@@ -550,16 +550,10 @@ function victoriabank_plugins_loaded_init()
                         $pem_data = $wp_filesystem->get_contents($tmp_name);
 
                         if (false !== $pem_data) {
-                            $result = $this->save_temp_file($pem_data, $pem_type);
+                            // Overwrite advanced setting value
+                            $_POST[$pem_target_field_id] = $pem_data;
 
-                            if (!empty($result)) {
-                                // Overwrite advanced setting value
-                                $_POST[$pem_target_field_id] = $result;
-                                // Save uploaded file to settings
-                                $_POST[$pem_field_id] = $pem_data;
-
-                                return;
-                            }
+                            return;
                         }
                     }
                 }
