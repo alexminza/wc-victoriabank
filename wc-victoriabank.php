@@ -473,6 +473,7 @@ function victoriabank_plugins_loaded_init()
             return parent::process_admin_options();
         }
 
+        //region Settings validation
         protected function check_settings()
         {
             return !empty($this->vb_merchant_name)
@@ -524,6 +525,55 @@ function victoriabank_plugins_loaded_init()
             return $validate_result;
         }
 
+        /**
+         * @link https://developer.woocommerce.com/docs/extensions/settings-and-config/implementing-settings/
+         */
+        protected function get_settings_field_label($key)
+        {
+            $form_fields = $this->get_form_fields();
+            return $form_fields[$key]['title'];
+        }
+
+        public function validate_required_field($key, $value)
+        {
+            if (empty($value)) {
+                /* translators: 1: Field label */
+                WC_Admin_Settings::add_error(esc_html(sprintf(__('%1$s field must be set.', 'wc-victoriabank'), $this->get_settings_field_label($key))));
+            }
+
+            return $value;
+        }
+
+        public function validate_order_template_field($key, $value)
+        {
+            return $this->validate_required_field($key, $value);
+        }
+
+        public function validate_vb_merchant_name_field($key, $value)
+        {
+            return $this->validate_required_field($key, $value);
+        }
+
+        public function validate_vb_merchant_url_field($key, $value)
+        {
+            return $this->validate_required_field($key, $value);
+        }
+
+        public function validate_vb_merchant_address_field($key, $value)
+        {
+            return $this->validate_required_field($key, $value);
+        }
+
+        public function validate_vb_merchant_id_field($key, $value)
+        {
+            return $this->validate_required_field($key, $value);
+        }
+
+        public function validate_vb_merchant_terminal_field($key, $value)
+        {
+            return $this->validate_required_field($key, $value);
+        }
+
         protected function settings_admin_notice()
         {
             if (self::is_wc_admin()) {
@@ -532,6 +582,7 @@ function victoriabank_plugins_loaded_init()
                 wc_add_notice($message, 'error');
             }
         }
+        //endregion
 
         //region Keys
         protected function process_pem_setting(string $pem_field_id, string $pem_option_value, string $pem_target_field_id, string $pem_type)
