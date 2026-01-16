@@ -910,10 +910,6 @@ function victoriabank_plugins_loaded_init()
             $card     = strval($bank_response['CARD']);
             //endregion
 
-            //region Check TransResponse
-            $check_transaction = ($terminal === $this->vb_merchant_terminal) && (VictoriabankClient::ACTION_SUCCESS === $action);
-            //endregion
-
             //region Validate order
             if (empty($order_id)) {
                 /* translators: 1: Payment method title */
@@ -943,6 +939,11 @@ function victoriabank_plugins_loaded_init()
 
                 return false;
             }
+            //endregion
+
+            //region Check TransResponse
+            $check_transaction = ($terminal === $this->vb_merchant_terminal)
+                && (VictoriabankClient::ACTION_SUCCESS === $action);
             //endregion
 
             if ($check_transaction) {
