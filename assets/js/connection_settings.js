@@ -4,11 +4,9 @@ jQuery(function () {
     var vb_connection_advanced_fields = jQuery(vb_connection_settings.connection_advanced_fields_ids).closest("tr");
     var vb_notification_advanced_fields = jQuery(vb_connection_settings.notification_advanced_fields_ids).closest("tr");
 
-    jQuery(document).ready(function () {
-        vb_connection_basic_fields.hide();
-        vb_connection_advanced_fields.hide();
-        vb_notification_advanced_fields.hide();
-    });
+    vb_connection_basic_fields.hide();
+    vb_connection_advanced_fields.hide();
+    vb_notification_advanced_fields.hide();
 
     jQuery(vb_connection_settings.basic_settings_button_id).on("click", function () {
         vb_connection_advanced_fields.hide();
