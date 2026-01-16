@@ -970,16 +970,16 @@ function victoriabank_plugins_loaded_init()
             $amount    = floatval($bank_response['AMOUNT']);
             $currency  = strval($bank_response['CURRENCY']);
             $action    = strval($bank_response['ACTION']);
-            $rc        = strval($bank_response['RC']);
             $text      = strval($bank_response['TEXT']);
             $approval  = strval($bank_response['APPROVAL']);
             $rrn       = strval($bank_response['RRN']);
             $int_ref   = strval($bank_response['INT_REF']);
-            $timestamp = strval($bank_response['TIMESTAMP']);
-            $bin       = strval($bank_response['BIN']);
             $card      = strval($bank_response['CARD']);
-            $auth      = strval($bank_response['AUTH']);
-            $eci       = strval($bank_response['ECI']);
+            // $rc        = strval($bank_response['RC']);
+            // $timestamp = strval($bank_response['TIMESTAMP']);
+            // $bin       = strval($bank_response['BIN']);
+            // $auth      = strval($bank_response['AUTH']);
+            // $eci       = strval($bank_response['ECI']);
             //endregion
 
             //region Check TransResponse
@@ -996,7 +996,15 @@ function victoriabank_plugins_loaded_init()
             if (empty($order_id)) {
                 /* translators: 1: Payment method title */
                 $message = esc_html(sprintf(__('Order ID not received from %1$s.', 'wc-victoriabank'), $this->get_method_title()));
-                $this->log($message, WC_Log_Levels::ERROR);
+                $this->log(
+                    $message,
+                    WC_Log_Levels::ERROR,
+                    array(
+                        'bank_response' => $bank_response,
+                        'check_result' => $check_result,
+                    )
+                );
+
                 return false;
             }
 
@@ -1004,7 +1012,15 @@ function victoriabank_plugins_loaded_init()
             if (empty($order)) {
                 /* translators: 1: Order ID, 2: Payment method title */
                 $message = esc_html(sprintf(__('Order #%1$s not found as received from %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
-                $this->log($message, WC_Log_Levels::ERROR);
+                $this->log(
+                    $message,
+                    WC_Log_Levels::ERROR,
+                    array(
+                        'bank_response' => $bank_response,
+                        'check_result' => $check_result,
+                    )
+                );
+
                 return false;
             }
             //endregion
@@ -1013,6 +1029,7 @@ function victoriabank_plugins_loaded_init()
             if ($check_result && $check_transaction) {
                 switch ($tr_type) {
                     case VictoriabankClient::TRTYPE_AUTHORIZATION:
+                        //region Order already paid?
                         if ($order->is_paid()) {
                             /* translators: 1: Order ID */
                             $message = sprintf(__('Order #%1$s already fully paid.', 'wc-victoriabank'), $order_id);
@@ -1020,8 +1037,9 @@ function victoriabank_plugins_loaded_init()
 
                             return true;
                         }
+                        //endregion
 
-                        //region Update order payment metadata
+                        //region Complete order payment
                         // https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book
                         $order->add_meta_data(self::MOD_TRANSACTION_TYPE, $this->transaction_type, true);
                         $order->add_meta_data(self::MOD_PAYMENT_RECEIPT, http_build_query($bank_response), true);
@@ -1032,6 +1050,8 @@ function victoriabank_plugins_loaded_init()
                         $order->add_meta_data(self::MOD_CARD, $card, true);
 
                         $order->save();
+
+                        $order->payment_complete($rrn);
                         //endregion
 
                         /* translators: 1: Order ID, 2: Payment method title, 3: Payment data */
@@ -1048,19 +1068,9 @@ function victoriabank_plugins_loaded_init()
                         );
 
                         $order->add_order_note($message);
-                        $order->payment_complete($rrn);
 
-                        switch ($this->transaction_type) {
-                            case self::TRANSACTION_TYPE_CHARGE:
-                                $this->complete_transaction($order);
-                                break;
-
-                            case self::TRANSACTION_TYPE_AUTHORIZATION:
-                                break;
-
-                            default:
-                                $this->log(sprintf('Unknown order #%1$s transaction type: %2$s', $order_id, $this->transaction_type), WC_Log_Levels::ERROR);
-                                break;
+                        if (self::TRANSACTION_TYPE_CHARGE === $this->transaction_type) {
+                            $this->complete_transaction($order);
                         }
 
                         return true;
@@ -1105,8 +1115,8 @@ function victoriabank_plugins_loaded_init()
                 }
             }
 
-            /* translators: 1: Order ID, 2: Payment method title */
-            $message = esc_html(sprintf(__('Order #%1$s payment transaction check failed via %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
+            /* translators: 1: Order ID, 2: Payment method title, 3: Bank response text */
+            $message = esc_html(sprintf(__('Order #%1$s payment transaction check failed via %2$s.: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $text));
             $message = $this->get_test_message($message);
             $this->log(
                 $message,
