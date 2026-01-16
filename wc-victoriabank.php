@@ -388,19 +388,23 @@ function victoriabank_plugins_loaded_init()
             $script_handle = self::MOD_PREFIX . 'connection_settings';
             wp_register_script($script_handle, plugins_url('assets/js/connection_settings.js', __FILE__), array('jquery'), self::MOD_VERSION, true);
             wp_enqueue_script($script_handle);
-            wp_localize_script($script_handle, $script_handle, array(
-                'connection_basic_fields_ids' => '#woocommerce_victoriabank_vb_bank_public_key_pem, #woocommerce_victoriabank_vb_private_key_pem, #woocommerce_victoriabank_vb_private_key_pass',
-                'connection_advanced_fields_ids' => '#woocommerce_victoriabank_vb_bank_public_key, #woocommerce_victoriabank_vb_private_key, #woocommerce_victoriabank_vb_private_key_pass',
-                'notification_advanced_fields_ids' => '#woocommerce_victoriabank_vb_callback_data',
-                'basic_settings_button_id' => '#woocommerce_victoriabank_basic_settings',
-                'advanced_settings_button_id' => '#woocommerce_victoriabank_advanced_settings',
-                'payment_notification_advanced_button_id' => '#woocommerce_victoriabank_payment_notification_advanced',
-                'callback_data_process_button_id' => '#woocommerce_victoriabank_callback_data_process',
-                'vb_callback_data_field_id' => '#woocommerce_victoriabank_vb_callback_data',
-                'message' => __('Are you sure you want to process the entered bank transaction response callback data?', 'wc-victoriabank'),
-                'action' => 'victoriabank_callback_data_process',
-                'nonce' => wp_create_nonce('callback_data_process'),
-            ));
+            wp_localize_script(
+                $script_handle,
+                $script_handle,
+                array(
+                    'connection_basic_fields_ids' => '#woocommerce_victoriabank_vb_bank_public_key_pem, #woocommerce_victoriabank_vb_private_key_pem, #woocommerce_victoriabank_vb_private_key_pass',
+                    'connection_advanced_fields_ids' => '#woocommerce_victoriabank_vb_bank_public_key, #woocommerce_victoriabank_vb_private_key, #woocommerce_victoriabank_vb_private_key_pass',
+                    'notification_advanced_fields_ids' => '#woocommerce_victoriabank_vb_callback_data',
+                    'basic_settings_button_id' => '#woocommerce_victoriabank_basic_settings',
+                    'advanced_settings_button_id' => '#woocommerce_victoriabank_advanced_settings',
+                    'payment_notification_advanced_button_id' => '#woocommerce_victoriabank_payment_notification_advanced',
+                    'callback_data_process_button_id' => '#woocommerce_victoriabank_callback_data_process',
+                    'vb_callback_data_field_id' => '#woocommerce_victoriabank_vb_callback_data',
+                    'message' => __('Are you sure you want to process the entered bank transaction response callback data?', 'wc-victoriabank'),
+                    'action' => 'victoriabank_callback_data_process',
+                    'nonce' => wp_create_nonce('callback_data_process'),
+                )
+            );
 
             parent::admin_options();
         }
