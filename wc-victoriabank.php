@@ -1027,7 +1027,7 @@ function victoriabank_plugins_loaded_init()
             }
 
             /* translators: 1: Order ID, 2: Payment method title, 3: Bank response text */
-            $message = esc_html(sprintf(__('Order #%1$s payment transaction check failed via %2$s.: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $text));
+            $message = esc_html(sprintf(__('Order #%1$s payment transaction check failed via %2$s: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $text));
             $message = $this->get_test_message($message);
             $this->log(
                 $message,
@@ -1134,20 +1134,6 @@ function victoriabank_plugins_loaded_init()
             }
 
             return $vbdata;
-        }
-
-        protected function mark_order_refunded(\WC_Order $order)
-        {
-            /* translators: 1: Payment method title */
-            $message = esc_html(sprintf(__('Order fully refunded via %1$s.', 'wc-victoriabank'), $this->get_method_title()));
-            $message = $this->get_test_message($message);
-
-            //Mark order as refunded if not already set
-            if (!$order->has_status('refunded')) {
-                $order->update_status('refunded', $message);
-            } else {
-                $order->add_order_note($message);
-            }
         }
 
         protected function generate_form(\WC_Order $order)
@@ -1265,26 +1251,39 @@ function victoriabank_plugins_loaded_init()
                 );
             }
 
-            if (empty($reversal_result)) {
-                /* translators: 1: Order ID, 2: Refund amount, 3: Payment method title */
-                $message = esc_html(sprintf(__('Order #%1$s refund of %2$s via %3$s failed.', 'wc-victoriabank'), $order_id, $this->format_price($amount, $order_currency), $this->get_method_title()));
-                $message = $this->get_test_message($message);
-                $this->log(
-                    $message,
-                    WC_Log_Levels::ERROR,
-                    array(
-                        'order_id' => $order_id,
-                        'amount' => $amount,
-                        'reason' => $reason,
-                        'reversal_result' => wp_json_encode($reversal_result),
-                    )
-                );
+            $vbdata = null;
+            $text = null;
+            if (!empty($reversal_result)) {
+                $bank_response = strval($reversal_result['body']);
+                $vbdata = $this->parse_response_form($bank_response);
 
-                $order->add_order_note($message);
-                return new WP_Error('process_refund', $message);
+                if (!empty($vbdata)) {
+                    $action = strval($bank_response['ACTION']);
+                    $text   = strval($bank_response['TEXT']);
+
+                    if (VictoriabankClient::ACTION_SUCCESS === $action) {
+                        return true;
+                    }
+                }
             }
 
-            return true;
+            /* translators: 1: Order ID, 2: Refund amount, 3: Payment method title, 4: Bank response text */
+            $message = esc_html(sprintf(__('Order #%1$s refund of %2$s via %3$s failed: %4$s', 'wc-victoriabank'), $order_id, $this->format_price($amount, $order_currency), $this->get_method_title(), $text));
+            $message = $this->get_test_message($message);
+            $this->log(
+                $message,
+                WC_Log_Levels::ERROR,
+                array(
+                    'order_id' => $order_id,
+                    'amount' => $amount,
+                    'reason' => $reason,
+                    'reversal_result' => wp_json_encode($reversal_result),
+                    'vbdata' => $vbdata,
+                )
+            );
+
+            $order->add_order_note($message);
+            return new WP_Error('process_refund', $message);
         }
         //endregion
 
