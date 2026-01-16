@@ -1165,9 +1165,8 @@ function victoriabank_plugins_loaded_init()
             $order_email = $order->get_billing_email();
             $language = $this->get_language();
 
-            $redirect_url = add_query_arg(self::VB_ORDER_ID, rawurlencode($order_id), $this->get_redirect_url());
+            $redirect_url = add_query_arg(self::VB_ORDER_ID, $order_id, $this->get_redirect_url());
 
-            //Request payment authorization - redirects to the bank page
             $client = $this->init_victoriabank_client();
             $authorize_request = $client->generateOrderAuthorizeRequest($order_id, $order_total, $order_currency, $order_description, $order_email, $redirect_url, $language);
             $authorize_form = $client->generateHtmlForm($this->vb_base_url, $authorize_request);
@@ -1189,18 +1188,15 @@ function victoriabank_plugins_loaded_init()
         public function receipt_page(int $order_id)
         {
             $order = wc_get_order($order_id);
-            $payment_method = $order->get_payment_method();
-
             try {
-                if (self::MOD_ID === $payment_method) {
-                    /* translators: 1: Order ID, 2: Payment method title */
-                    $message = esc_html(sprintf(__('Order #%1$s payment initiated via %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
-                    $message = $this->get_test_message($message);
-                    $this->log($message, WC_Log_Levels::INFO);
-                    $order->add_order_note($message);
+                /* translators: 1: Order ID, 2: Payment method title */
+                $message = esc_html(sprintf(__('Order #%1$s payment initiated via %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
+                $message = $this->get_test_message($message);
+                $this->log($message, WC_Log_Levels::INFO);
+                $order->add_order_note($message);
 
-                    $this->generate_form($order);
-                }
+                $this->generate_form($order);
+                return;
             } catch (Exception $ex) {
                 $this->log(
                     $ex->getMessage(),
@@ -1211,15 +1207,15 @@ function victoriabank_plugins_loaded_init()
                         'backtrace' => true,
                     )
                 );
-
-                /* translators: 1: Order ID, 2: Payment method title */
-                $message = esc_html(sprintf(__('Order #%1$s payment initiation failed via %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
-                $message = $this->get_test_message($message);
-                $order->add_order_note($message);
-
-                wc_add_notice($message, 'error');
-                $this->settings_admin_notice();
             }
+
+            /* translators: 1: Order ID, 2: Payment method title */
+            $message = esc_html(sprintf(__('Order #%1$s payment initiation failed via %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
+            $message = $this->get_test_message($message);
+            $order->add_order_note($message);
+
+            wc_add_notice($message, 'error');
+            $this->settings_admin_notice();
         }
 
         /**
