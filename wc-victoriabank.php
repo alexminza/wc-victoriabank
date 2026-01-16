@@ -964,22 +964,17 @@ function victoriabank_plugins_loaded_init()
             }
 
             //region Extract bank response params
-            $terminal  = strval($bank_response['TERMINAL']);
-            $tr_type   = strval($bank_response['TRTYPE']);
-            $order_id  = VictoriabankClient::deNormalizeOrderId($bank_response['ORDER']);
-            $amount    = floatval($bank_response['AMOUNT']);
-            $currency  = strval($bank_response['CURRENCY']);
-            $action    = strval($bank_response['ACTION']);
-            $text      = strval($bank_response['TEXT']);
-            $approval  = strval($bank_response['APPROVAL']);
-            $rrn       = strval($bank_response['RRN']);
-            $int_ref   = strval($bank_response['INT_REF']);
-            $card      = strval($bank_response['CARD']);
-            // $rc        = strval($bank_response['RC']);
-            // $timestamp = strval($bank_response['TIMESTAMP']);
-            // $bin       = strval($bank_response['BIN']);
-            // $auth      = strval($bank_response['AUTH']);
-            // $eci       = strval($bank_response['ECI']);
+            $terminal = strval($bank_response['TERMINAL']);
+            $tr_type  = strval($bank_response['TRTYPE']);
+            $order_id = VictoriabankClient::deNormalizeOrderId($bank_response['ORDER']);
+            $amount   = floatval($bank_response['AMOUNT']);
+            $currency = strval($bank_response['CURRENCY']);
+            $action   = strval($bank_response['ACTION']);
+            $text     = strval($bank_response['TEXT']);
+            $approval = strval($bank_response['APPROVAL']);
+            $rrn      = strval($bank_response['RRN']);
+            $int_ref  = strval($bank_response['INT_REF']);
+            $card     = strval($bank_response['CARD']);
             //endregion
 
             //region Check TransResponse
@@ -1136,56 +1131,47 @@ function victoriabank_plugins_loaded_init()
         {
             $this->log_request(__FUNCTION__);
 
-            // https://codex.wordpress.org/AJAX_in_Plugins
             // https://developer.wordpress.org/plugins/javascript/ajax/
-
             // https://developer.wordpress.org/reference/functions/check_ajax_referer/
             check_ajax_referer('callback_data_process');
 
             if (!self::is_wc_admin()) {
-                // https://developer.wordpress.org/reference/functions/wp_die/
                 $message = get_status_header_desc(WP_Http::FORBIDDEN);
                 $this->log($message, WC_Log_Levels::ERROR);
                 wp_send_json_error($message, WP_Http::FORBIDDEN);
-                wp_die();
-                return;
+            }
+
+            if (!$this->is_available()) {
+                /* translators: 1: Payment method title */
+                $message = sprintf(__('%1$s is not configured', 'wc-victoriabank'), $this->get_method_title());
+                $this->log($message, WC_Log_Levels::ERROR);
+                wp_send_json_error($message);
             }
 
             $callback_data = isset($_POST['callback_data']) ? sanitize_textarea_field(wp_unslash($_POST['callback_data'])) : '';
-            if (!empty($callback_data)) {
-                $vbdata = self::parse_response_post($callback_data);
-
-                if (!empty($vbdata)) {
-                    if ($this->is_available() && $this->enabled) {
-                        $response = $this->process_response_data($vbdata);
-
-                        if ($response) {
-                            $message = __('Processed successfully', 'wc-victoriabank');
-                            $this->log($message, WC_Log_Levels::INFO);
-                            wp_send_json_success($message);
-                        } else {
-                            $message = __('Processing error', 'wc-victoriabank');
-                            $this->log($message, WC_Log_Levels::ERROR);
-                            wp_send_json_error($message);
-                        }
-                    } else {
-                        /* translators: 1: Payment method title */
-                        $message = sprintf(__('%1$s is not configured', 'wc-victoriabank'), $this->get_method_title());
-                        $this->log($message, WC_Log_Levels::ERROR);
-                        wp_send_json_error($message);
-                    }
-                } else {
-                    $message = __('Invalid message', 'wc-victoriabank');
-                    $this->log($message, WC_Log_Levels::ERROR);
-                    wp_send_json_error($message);
-                }
-            } else {
+            if (empty($callback_data)) {
                 $message = __('Empty message', 'wc-victoriabank');
                 $this->log($message, WC_Log_Levels::ERROR);
                 wp_send_json_error($message);
             }
 
-            wp_die();
+            $vbdata = self::parse_response_post($callback_data);
+            if (empty($vbdata)) {
+                $message = __('Invalid message', 'wc-victoriabank');
+                $this->log($message, WC_Log_Levels::ERROR);
+                wp_send_json_error($message);
+            }
+
+            $response = $this->process_response_data($vbdata);
+            if ($response) {
+                $message = __('Processed successfully', 'wc-victoriabank');
+                $this->log($message, WC_Log_Levels::INFO);
+                wp_send_json_success($message);
+            }
+
+            $message = __('Processing error', 'wc-victoriabank');
+            $this->log($message, WC_Log_Levels::ERROR);
+            wp_send_json_error($message);
         }
 
         protected function process_response_form(string $vbresponse)
