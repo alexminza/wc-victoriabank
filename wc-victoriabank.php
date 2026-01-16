@@ -769,11 +769,6 @@ function victoriabank_plugins_loaded_init()
                 return false;
             }
 
-            $tr_type = strval($bank_response['TRTYPE']);
-            if (VictoriabankClient::TRTYPE_REVERSAL === $tr_type) {
-                return $payment_data_amount <= $order_total;
-            }
-
             return true;
         }
 
@@ -1122,7 +1117,8 @@ function victoriabank_plugins_loaded_init()
 
         protected static function parse_response_post(string $vbpost)
         {
-            return self::parse_response_regex($vbpost, '/^(\w+)=(.*)$/im');
+            $vbpost = trim($vbpost);
+            return self::parse_response_regex($vbpost, '/(\w+)=(.*?)(?:&|$)/im');
         }
 
         protected static function parse_response_regex(string $vbresponse, string $regex)
