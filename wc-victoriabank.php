@@ -1031,9 +1031,8 @@ function victoriabank_plugins_loaded_init()
                 }
             }
 
-            $status_text = $this->get_transaction_status_text($bank_response);
             /* translators: 1: Order ID, 2: Payment method title, 3: Bank response text */
-            $message = esc_html(sprintf(__('Order #%1$s payment transaction check failed via %2$s: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $status_text));
+            $message = esc_html(sprintf(__('Order #%1$s payment transaction check failed via %2$s: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $this->get_transaction_status_text($bank_response)));
             $message = $this->get_test_message($message);
             $this->log(
                 $message,
@@ -1270,9 +1269,8 @@ function victoriabank_plugins_loaded_init()
                 }
             }
 
-            $status_text = $this->get_transaction_status_text($vbdata);
             /* translators: 1: Order ID, 2: Refund amount, 3: Payment method title, 4: Bank response text */
-            $message = esc_html(sprintf(__('Order #%1$s refund of %2$s via %3$s failed: %4$s', 'wc-victoriabank'), $order_id, $this->format_price($amount, $order_currency), $this->get_method_title(), $status_text));
+            $message = esc_html(sprintf(__('Order #%1$s refund of %2$s via %3$s failed: %4$s', 'wc-victoriabank'), $order_id, $this->format_price($amount, $order_currency), $this->get_method_title(), $this->get_transaction_status_text($vbdata)));
             $message = $this->get_test_message($message);
             $this->log(
                 $message,
@@ -1298,16 +1296,19 @@ function victoriabank_plugins_loaded_init()
             $action_status = '';
             switch ($action) {
                 case VictoriabankClient::ACTION_SUCCESS:
-                    $action_status = 'Transaction successfully completed';
+                    $action_status = __('Transaction successfully completed', 'wc-victoriabank');
                     break;
                 case VictoriabankClient::ACTION_DUPLICATE:
-                    $action_status = 'Duplicate transaction detected';
+                    $action_status = __('Duplicate transaction detected', 'wc-victoriabank');
                     break;
                 case VictoriabankClient::ACTION_DECLINED:
-                    $action_status = 'Transaction declined';
+                    $action_status = __('Transaction declined', 'wc-victoriabank');
                     break;
                 case VictoriabankClient::ACTION_FAULT:
-                    $action_status = 'Transaction processing fault';
+                    $action_status = __('Transaction processing fault', 'wc-victoriabank');
+                    break;
+                default:
+                    $action_status = __('Unknown', 'wc-victoriabank');
                     break;
             }
 
