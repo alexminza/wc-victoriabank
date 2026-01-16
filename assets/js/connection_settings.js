@@ -26,13 +26,15 @@ jQuery(function () {
     });
 
     jQuery(vb_connection_settings.callback_data_process_button_id).on("click", function () {
-        if (!confirm(vb_connection_settings.message))
+        if (!confirm(vb_connection_settings.message)) {
             return false;
+        }
 
         var $this = jQuery(this);
 
-        if ($this.attr("disabled"))
+        if ($this.attr("disabled")) {
             return false;
+        }
 
         $this.attr("disabled", true);
         var callback_data = jQuery(vb_connection_settings.vb_callback_data_field_id).val();
