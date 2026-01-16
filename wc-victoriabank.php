@@ -748,7 +748,7 @@ function victoriabank_plugins_loaded_init()
             return true;
         }
 
-        protected function check_transaction(\WC_Order $order, array $bank_response)
+        protected function check_transaction_order_data(\WC_Order $order, array $bank_response)
         {
             $payment_data_order_id = intval(VictoriabankClient::deNormalizeOrderId($bank_response['ORDER']));
             $payment_data_amount   = floatval($bank_response['AMOUNT']);
@@ -863,21 +863,37 @@ function victoriabank_plugins_loaded_init()
                 )
             );
 
-            $check_result = null;
+            $validate_result = null;
             try {
                 $client = $this->init_victoriabank_client();
-                $check_result = $client->validateResponse($bank_response);
+                $validate_result = $client->validateResponse($bank_response);
             } catch (Exception $ex) {
                 $this->log(
                     $ex->getMessage(),
                     WC_Log_Levels::ERROR,
                     array(
                         'bank_response' => $bank_response,
-                        'check_result' => $check_result,
+                        'validate_result' => $validate_result,
                         'exception' => (string) $ex,
                         'backtrace' => true,
                     )
                 );
+            }
+
+            if (!$validate_result) {
+                /* translators: 1: Payment method title */
+                $message = esc_html(sprintf(__('%1$s payment notification callback validation failed.', 'wc-victoriabank'), $this->get_method_title()));
+                $this->log(
+                    $message,
+                    WC_Log_Levels::ERROR,
+                    array(
+                        'bank_response' => $bank_response,
+                        'validate_result' => $validate_result,
+                        'backtrace' => true,
+                    )
+                );
+
+                return false;
             }
 
             //region Extract bank response params
@@ -895,13 +911,7 @@ function victoriabank_plugins_loaded_init()
             //endregion
 
             //region Check TransResponse
-            if ($terminal !== $this->vb_merchant_terminal) {
-                $check_result = false;
-            }
-
-            if (VictoriabankClient::ACTION_SUCCESS !== $action) {
-                $check_result = false;
-            }
+            $check_transaction = ($terminal === $this->vb_merchant_terminal) && (VictoriabankClient::ACTION_SUCCESS === $action);
             //endregion
 
             //region Validate order
@@ -913,7 +923,6 @@ function victoriabank_plugins_loaded_init()
                     WC_Log_Levels::ERROR,
                     array(
                         'bank_response' => $bank_response,
-                        'check_result' => $check_result,
                     )
                 );
 
@@ -929,7 +938,6 @@ function victoriabank_plugins_loaded_init()
                     WC_Log_Levels::ERROR,
                     array(
                         'bank_response' => $bank_response,
-                        'check_result' => $check_result,
                     )
                 );
 
@@ -937,10 +945,10 @@ function victoriabank_plugins_loaded_init()
             }
             //endregion
 
-            if ($check_result) {
+            if ($check_transaction) {
                 switch ($tr_type) {
                     case VictoriabankClient::TRTYPE_AUTHORIZATION:
-                        if ($this->check_transaction($order, $bank_response)) {
+                        if ($this->check_transaction_order_data($order, $bank_response)) {
                             //region Order already paid?
                             if ($order->is_paid()) {
                                 /* translators: 1: Order ID */
@@ -974,7 +982,6 @@ function victoriabank_plugins_loaded_init()
                                 WC_Log_Levels::INFO,
                                 array(
                                     'bank_response' => $bank_response,
-                                    'check_result' => $check_result,
                                 )
                             );
 
@@ -997,7 +1004,6 @@ function victoriabank_plugins_loaded_init()
                             WC_Log_Levels::INFO,
                             array(
                                 'bank_response' => $bank_response,
-                                'check_result' => $check_result,
                             )
                         );
 
@@ -1013,7 +1019,6 @@ function victoriabank_plugins_loaded_init()
                             WC_Log_Levels::INFO,
                             array(
                                 'bank_response' => $bank_response,
-                                'check_result' => $check_result,
                             )
                         );
 
@@ -1034,7 +1039,7 @@ function victoriabank_plugins_loaded_init()
                 WC_Log_Levels::ERROR,
                 array(
                     'bank_response' => $bank_response,
-                    'check_result' => $check_result,
+                    'check_transaction' => $check_transaction,
                 )
             );
 
@@ -1357,13 +1362,13 @@ function victoriabank_plugins_loaded_init()
         {
             // https://developer.woocommerce.com/docs/extensions/core-concepts/woocommerce-plugin-api-callback/
             $callback_url = WC()->api_request_url("wc_{$this->id}");
-            return apply_filters('victoriabank_callback_url', $callback_url);
+            return (string) apply_filters('victoriabank_callback_url', $callback_url);
         }
 
         protected function get_redirect_url()
         {
             $redirect_url = WC()->api_request_url("wc_{$this->id}_redirect");
-            return apply_filters('victoriabank_redirect_url', $redirect_url);
+            return (string) apply_filters('victoriabank_redirect_url', $redirect_url);
         }
 
         protected static function get_logs_url()
