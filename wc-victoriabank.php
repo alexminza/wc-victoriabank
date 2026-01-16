@@ -937,55 +937,56 @@ function victoriabank_plugins_loaded_init()
             }
             //endregion
 
-            $check_transaction = $this->check_transaction($order, $bank_response);
-            if ($check_result && $check_transaction) {
+            if ($check_result) {
                 switch ($tr_type) {
                     case VictoriabankClient::TRTYPE_AUTHORIZATION:
-                        //region Order already paid?
-                        if ($order->is_paid()) {
-                            /* translators: 1: Order ID */
-                            $message = sprintf(__('Order #%1$s already fully paid.', 'wc-victoriabank'), $order_id);
-                            $this->log($message, WC_Log_Levels::WARNING);
+                        if ($this->check_transaction($order, $bank_response)) {
+                            //region Order already paid?
+                            if ($order->is_paid()) {
+                                /* translators: 1: Order ID */
+                                $message = sprintf(__('Order #%1$s already fully paid.', 'wc-victoriabank'), $order_id);
+                                $this->log($message, WC_Log_Levels::WARNING);
+
+                                return true;
+                            }
+                            //endregion
+
+                            //region Complete order payment
+                            // https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book
+                            $order->add_meta_data(self::MOD_TRANSACTION_TYPE, $this->transaction_type, true);
+                            $order->add_meta_data(self::MOD_PAYMENT_RECEIPT, http_build_query($bank_response), true);
+
+                            $order->add_meta_data(self::MOD_RRN, $rrn, true);
+                            $order->add_meta_data(self::MOD_INT_REF, $int_ref, true);
+                            $order->add_meta_data(self::MOD_APPROVAL, $approval, true);
+                            $order->add_meta_data(self::MOD_CARD, $card, true);
+
+                            $order->save();
+
+                            $order->payment_complete($rrn);
+                            //endregion
+
+                            /* translators: 1: Order ID, 2: Payment method title, 3: Payment data */
+                            $message = esc_html(sprintf(__('Order #%1$s payment authorized via %2$s: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $rrn));
+                            $message = $this->get_test_message($message);
+                            $this->log(
+                                $message,
+                                WC_Log_Levels::INFO,
+                                array(
+                                    'bank_response' => $bank_response,
+                                    'check_result' => $check_result,
+                                )
+                            );
+
+                            $order->add_order_note($message);
+
+                            if (self::TRANSACTION_TYPE_CHARGE === $this->transaction_type) {
+                                $this->complete_transaction($order);
+                            }
 
                             return true;
                         }
-                        //endregion
-
-                        //region Complete order payment
-                        // https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book
-                        $order->add_meta_data(self::MOD_TRANSACTION_TYPE, $this->transaction_type, true);
-                        $order->add_meta_data(self::MOD_PAYMENT_RECEIPT, http_build_query($bank_response), true);
-
-                        $order->add_meta_data(self::MOD_RRN, $rrn, true);
-                        $order->add_meta_data(self::MOD_INT_REF, $int_ref, true);
-                        $order->add_meta_data(self::MOD_APPROVAL, $approval, true);
-                        $order->add_meta_data(self::MOD_CARD, $card, true);
-
-                        $order->save();
-
-                        $order->payment_complete($rrn);
-                        //endregion
-
-                        /* translators: 1: Order ID, 2: Payment method title, 3: Payment data */
-                        $message = esc_html(sprintf(__('Order #%1$s payment authorized via %2$s: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $rrn));
-                        $message = $this->get_test_message($message);
-                        $this->log(
-                            $message,
-                            WC_Log_Levels::INFO,
-                            array(
-                                'bank_response' => $bank_response,
-                                'check_result' => $check_result,
-                                'check_transaction' => $check_transaction,
-                            )
-                        );
-
-                        $order->add_order_note($message);
-
-                        if (self::TRANSACTION_TYPE_CHARGE === $this->transaction_type) {
-                            $this->complete_transaction($order);
-                        }
-
-                        return true;
+                        break;
 
                     case VictoriabankClient::TRTYPE_SALES_COMPLETION:
                         /* translators: 1: Order ID, 2: Payment method title, 3: Payment data */
@@ -997,7 +998,6 @@ function victoriabank_plugins_loaded_init()
                             array(
                                 'bank_response' => $bank_response,
                                 'check_result' => $check_result,
-                                'check_transaction' => $check_transaction,
                             )
                         );
 
@@ -1014,7 +1014,6 @@ function victoriabank_plugins_loaded_init()
                             array(
                                 'bank_response' => $bank_response,
                                 'check_result' => $check_result,
-                                'check_transaction' => $check_transaction,
                             )
                         );
 
@@ -1036,7 +1035,6 @@ function victoriabank_plugins_loaded_init()
                 array(
                     'bank_response' => $bank_response,
                     'check_result' => $check_result,
-                    'check_transaction' => $check_transaction,
                 )
             );
 
