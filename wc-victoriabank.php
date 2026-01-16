@@ -666,28 +666,8 @@ function victoriabank_plugins_loaded_init()
          */
         public function process_payment($order_id)
         {
-            $is_store_api_request = WC()->is_store_api_request();
-
-            if (!$this->check_settings()) {
-                /* translators: 1: Payment method title */
-                $message = esc_html(sprintf(__('%1$s is not properly configured.', 'wc-victoriabank'), $this->get_method_title()));
-
-                // https://github.com/woocommerce/woocommerce/issues/48687#issuecomment-2186475264
-                if ($is_store_api_request) {
-                    throw new Exception(esc_html($message));
-                }
-
-                wc_add_notice($message, 'error');
-                $this->settings_admin_notice();
-
-                return array(
-                    'result'   => 'failure',
-                    'messages' => $message,
-                );
-            }
-
             // https://github.com/woocommerce/woocommerce/issues/48126#issuecomment-2180991020
-            if ($is_store_api_request || is_ajax()) {
+            if (WC()->is_store_api_request()) {
                 $order = wc_get_order($order_id);
 
                 return array(
