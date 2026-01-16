@@ -903,7 +903,6 @@ function victoriabank_plugins_loaded_init()
             $amount   = floatval($bank_response['AMOUNT']);
             $currency = strval($bank_response['CURRENCY']);
             $action   = strval($bank_response['ACTION']);
-            $text     = strval($bank_response['TEXT']);
             $approval = strval($bank_response['APPROVAL']);
             $rrn      = strval($bank_response['RRN']);
             $int_ref  = strval($bank_response['INT_REF']);
@@ -1032,8 +1031,9 @@ function victoriabank_plugins_loaded_init()
                 }
             }
 
+            $status_text = $this->get_transaction_status_text($bank_response);
             /* translators: 1: Order ID, 2: Payment method title, 3: Bank response text */
-            $message = esc_html(sprintf(__('Order #%1$s payment transaction check failed via %2$s: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $text));
+            $message = esc_html(sprintf(__('Order #%1$s payment transaction check failed via %2$s: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $status_text));
             $message = $this->get_test_message($message);
             $this->log(
                 $message,
@@ -1258,23 +1258,21 @@ function victoriabank_plugins_loaded_init()
             }
 
             $vbdata = null;
-            $text = null;
             if (!empty($reversal_result)) {
                 $bank_response = strval($reversal_result['body']);
                 $vbdata = $this->parse_response_form($bank_response);
 
                 if (!empty($vbdata)) {
-                    $action = strval($bank_response['ACTION']);
-                    $text   = strval($bank_response['TEXT']);
-
+                    $action = strval($vbdata['ACTION']);
                     if (VictoriabankClient::ACTION_SUCCESS === $action) {
                         return true;
                     }
                 }
             }
 
+            $status_text = $this->get_transaction_status_text($vbdata);
             /* translators: 1: Order ID, 2: Refund amount, 3: Payment method title, 4: Bank response text */
-            $message = esc_html(sprintf(__('Order #%1$s refund of %2$s via %3$s failed: %4$s', 'wc-victoriabank'), $order_id, $this->format_price($amount, $order_currency), $this->get_method_title(), $text));
+            $message = esc_html(sprintf(__('Order #%1$s refund of %2$s via %3$s failed: %4$s', 'wc-victoriabank'), $order_id, $this->format_price($amount, $order_currency), $this->get_method_title(), $status_text));
             $message = $this->get_test_message($message);
             $this->log(
                 $message,
@@ -1290,6 +1288,30 @@ function victoriabank_plugins_loaded_init()
 
             $order->add_order_note($message);
             return new WP_Error('process_refund', $message);
+        }
+
+        private static function get_transaction_status_text(array $vbdata)
+        {
+            $action = strval($vbdata['ACTION']);
+            $text   = strval($vbdata['TEXT']);
+
+            $action_status = '';
+            switch ($action) {
+                case VictoriabankClient::ACTION_SUCCESS:
+                    $action_status = 'Transaction successfully completed';
+                    break;
+                case VictoriabankClient::ACTION_DUPLICATE:
+                    $action_status = 'Duplicate transaction detected';
+                    break;
+                case VictoriabankClient::ACTION_DECLINED:
+                    $action_status = 'Transaction declined';
+                    break;
+                case VictoriabankClient::ACTION_FAULT:
+                    $action_status = 'Transaction processing fault';
+                    break;
+            }
+
+            return join(': ', array_filter(array($action_status, $text), 'strlen'));
         }
         //endregion
 
