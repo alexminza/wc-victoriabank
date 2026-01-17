@@ -32,11 +32,11 @@ jQuery(function () {
 
         var $this = jQuery(this);
 
-        if ($this.attr("disabled")) {
+        if ($this.prop("disabled")) {
             return false;
         }
 
-        $this.attr("disabled", true);
+        $this.prop("disabled", true);
         var callback_data = jQuery(vb_connection_settings.vb_callback_data_field_id).val();
 
         jQuery.ajax({
@@ -49,7 +49,7 @@ jQuery(function () {
             dataType: "json",
             url: ajaxurl,
             complete: function (response, textStatus) {
-                $this.attr("disabled", false);
+                $this.prop("disabled", false);
 
                 if (response.responseJSON && response.responseJSON.data) {
                     alert(response.responseJSON.data);
