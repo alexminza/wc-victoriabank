@@ -824,7 +824,9 @@ function victoriabank_plugins_loaded_init()
             }
 
             if (!empty($check_result)) {
-                $vbdata = $this->parse_response_form($check_result);
+                $bank_response = strval($check_result['body']);
+                $vbdata = $this->parse_response_form($bank_response);
+
                 if (!empty($vbdata)) {
                     /* translators: 1: Order ID, 2: Payment method title, 3: Payment status */
                     $message = esc_html(sprintf(__('Order #%1$s %2$s payment status: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $this->get_transaction_status_text($vbdata)));
@@ -1584,14 +1586,16 @@ function victoriabank_plugins_loaded_init()
 
         public static function order_actions(array $actions, \WC_Order $order)
         {
-            if (!$order->is_paid() || $order->get_payment_method() !== self::MOD_ID) {
+            if ($order->get_payment_method() !== self::MOD_ID) {
                 return $actions;
             }
 
-            $transaction_type = strval($order->get_meta(self::MOD_TRANSACTION_TYPE, true));
-            if (self::TRANSACTION_TYPE_AUTHORIZATION === $transaction_type) {
-                /* translators: 1: Payment method title */
-                $actions[self::MOD_ACTION_COMPLETE_TRANSACTION] = esc_html(sprintf(__('Complete %1$s transaction', 'wc-victoriabank'), self::MOD_TITLE));
+            if ($order->is_paid()) {
+                $transaction_type = strval($order->get_meta(self::MOD_TRANSACTION_TYPE, true));
+                if (self::TRANSACTION_TYPE_AUTHORIZATION === $transaction_type) {
+                    /* translators: 1: Payment method title */
+                    $actions[self::MOD_ACTION_COMPLETE_TRANSACTION] = esc_html(sprintf(__('Complete %1$s transaction', 'wc-victoriabank'), self::MOD_TITLE));
+                }
             }
 
             /* translators: 1: Payment method title */
