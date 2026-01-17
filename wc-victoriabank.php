@@ -1158,8 +1158,9 @@ function victoriabank_plugins_loaded_init()
 
         protected static function parse_response_post(string $vbpost)
         {
-            $vbpost = trim($vbpost);
-            return self::parse_response_regex($vbpost, '/(\w+)=(.*?)(?:&|$)/im');
+            $vbdata = null;
+            parse_str(str_replace(array("\r\n", "\r", "\n"), '&', trim($vbpost)), $vbdata);
+            return $vbdata;
         }
 
         protected static function parse_response_regex(string $vbresponse, string $regex)
