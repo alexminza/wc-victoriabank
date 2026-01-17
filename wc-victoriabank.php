@@ -73,7 +73,7 @@ function victoriabank_plugins_loaded_init()
 
         protected $logo_type, $testmode, $debug, $logger, $transaction_type, $order_template;
         protected $vb_base_url, $vb_merchant_id, $vb_merchant_terminal, $vb_merchant_name, $vb_merchant_url, $vb_merchant_address;
-        protected $vb_bank_public_key_pem, $vb_private_key_pem, $vb_private_key_pass, $vb_private_key, $vb_bank_public_key;
+        protected $vb_bank_public_key_pem, $vb_private_key_pem, $vb_private_key_pass, $vb_private_key, $vb_bank_public_key, $vb_signature_algo;
 
         public function __construct()
         {
@@ -118,6 +118,7 @@ function victoriabank_plugins_loaded_init()
 
             $this->vb_private_key         = $this->get_option('vb_private_key');
             $this->vb_bank_public_key     = $this->get_option('vb_bank_public_key');
+            $this->vb_signature_algo      = $this->get_option('vb_signature_algo', VictoriabankClient::P_SIGN_HASH_ALGO_MD5);
             //endregion
 
             if (is_admin()) {
@@ -318,6 +319,18 @@ function victoriabank_plugins_loaded_init()
                     'desc_tip'    => true,
                     'placeholder' => __('Optional', 'wc-victoriabank'),
                 ),
+                'vb_signature_algo' => array(
+                    'title'       => __('Signature algorithm', 'wc-victoriabank'),
+                    'type'        => 'select',
+                    'description' => __('P_SIGN signature algorithm provided by the bank.', 'wc-victoriabank'),
+                    'desc_tip'    => true,
+                    'default'     => VictoriabankClient::P_SIGN_HASH_ALGO_MD5,
+                    'class'       => 'wc-enhanced-select',
+                    'options'     => array(
+                        VictoriabankClient::P_SIGN_HASH_ALGO_MD5    => strtoupper(VictoriabankClient::P_SIGN_HASH_ALGO_MD5),
+                        VictoriabankClient::P_SIGN_HASH_ALGO_SHA256 => strtoupper(VictoriabankClient::P_SIGN_HASH_ALGO_SHA256),
+                    ),
+                ),
 
                 'payment_notification' => array(
                     'title'       => __('Payment Notification', 'wc-victoriabank'),
@@ -392,8 +405,8 @@ function victoriabank_plugins_loaded_init()
                 $script_handle,
                 $script_handle,
                 array(
-                    'connection_basic_fields_ids' => '#woocommerce_victoriabank_vb_bank_public_key_pem, #woocommerce_victoriabank_vb_private_key_pem, #woocommerce_victoriabank_vb_private_key_pass',
-                    'connection_advanced_fields_ids' => '#woocommerce_victoriabank_vb_bank_public_key, #woocommerce_victoriabank_vb_private_key, #woocommerce_victoriabank_vb_private_key_pass',
+                    'connection_basic_fields_ids' => '#woocommerce_victoriabank_vb_bank_public_key_pem, #woocommerce_victoriabank_vb_private_key_pem, #woocommerce_victoriabank_vb_private_key_pass, #woocommerce_victoriabank_vb_signature_algo',
+                    'connection_advanced_fields_ids' => '#woocommerce_victoriabank_vb_bank_public_key, #woocommerce_victoriabank_vb_private_key, #woocommerce_victoriabank_vb_private_key_pass, #woocommerce_victoriabank_vb_signature_algo',
                     'notification_advanced_fields_ids' => '#woocommerce_victoriabank_vb_callback_data',
                     'basic_settings_button_id' => '#woocommerce_victoriabank_basic_settings',
                     'advanced_settings_button_id' => '#woocommerce_victoriabank_advanced_settings',
@@ -660,7 +673,7 @@ function victoriabank_plugins_loaded_init()
                 ->setCountry(WC()->countries->get_base_country())
                 ->setMerchantPrivateKey($this->vb_private_key, $this->vb_private_key_pass)
                 ->setBankPublicKey($this->vb_bank_public_key)
-                ->setSignatureAlgo(VictoriabankClient::P_SIGN_HASH_ALGO_SHA256);
+                ->setSignatureAlgo($this->vb_signature_algo);
 
             return $client;
         }
