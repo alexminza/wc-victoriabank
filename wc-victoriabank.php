@@ -116,9 +116,10 @@ function victoriabank_plugins_loaded_init()
             $this->vb_private_key_pem     = $this->get_option('vb_private_key_pem');
             $this->vb_private_key_pass    = $this->get_option('vb_private_key_pass');
 
-            $this->vb_private_key         = $this->get_option('vb_private_key');
-            $this->vb_bank_public_key     = $this->get_option('vb_bank_public_key');
-            $this->vb_signature_algo      = $this->get_option('vb_signature_algo', VictoriabankClient::P_SIGN_HASH_ALGO_MD5);
+            $this->vb_private_key     = $this->normalize_key_path($this->get_option('vb_private_key'));
+            $this->vb_bank_public_key = $this->normalize_key_path($this->get_option('vb_bank_public_key'));
+
+            $this->vb_signature_algo = $this->get_option('vb_signature_algo', VictoriabankClient::P_SIGN_HASH_ALGO_MD5);
             //endregion
 
             if (is_admin()) {
@@ -533,6 +534,16 @@ function victoriabank_plugins_loaded_init()
             return $this->validate_required_field($key, $value);
         }
 
+        public function validate_vb_private_key_field($key, $value)
+        {
+            return $this->normalize_key_path($value);
+        }
+
+        public function validate_vb_bank_public_key_field($key, $value)
+        {
+            return $this->normalize_key_path($value);
+        }
+
         protected function settings_admin_notice()
         {
             if (self::is_wc_admin()) {
@@ -618,6 +629,21 @@ function victoriabank_plugins_loaded_init()
             }
 
             return true;
+        }
+
+        protected function normalize_key_path(string $key_path)
+        {
+            $key_path = trim($key_path);
+
+            if (empty($key_path) || strpos($key_path, 'file://') === 0 || strpos($key_path, '---') === 0) {
+                return $key_path;
+            }
+
+            if (is_file($key_path)) {
+                return "file://$key_path";
+            }
+
+            return $key_path;
         }
 
         /**
