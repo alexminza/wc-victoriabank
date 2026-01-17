@@ -65,6 +65,9 @@ function victoriabank_plugins_loaded_init()
         const SUPPORTED_CURRENCIES = array('MDL', 'EUR', 'USD');
         const ORDER_TEMPLATE       = 'Order #%1$s';
 
+        const MOD_ACTION_COMPLETE_TRANSACTION = self::MOD_PREFIX . 'complete_transaction';
+        const MOD_ACTION_CHECK_PAYMENT        = self::MOD_PREFIX . 'check_payment';
+
         const VB_ORDER    = 'ORDER';
         const VB_ORDER_ID = 'order_id';
 
@@ -784,6 +787,66 @@ function victoriabank_plugins_loaded_init()
             }
 
             return true;
+        }
+
+        public function check_payment(\WC_Order $order)
+        {
+            $order_id = $order->get_id();
+
+            $this->log(
+                __FUNCTION__,
+                WC_Log_Levels::DEBUG,
+                array(
+                    'order_id' => $order_id,
+                    'backtrace' => true,
+                )
+            );
+
+            $rrn = strval($order->get_meta(self::MOD_RRN, true));
+            $tr_type = empty($rrn) ? VictoriabankClient::TRTYPE_AUTHORIZATION : VictoriabankClient::TRTYPE_SALES_COMPLETION;
+
+            $check_result = null;
+            try {
+                $client = $this->init_victoriabank_client();
+                $check_result = $client->orderCheck(strval($order_id), $tr_type);
+            } catch (Exception $ex) {
+                $this->log(
+                    $ex->getMessage(),
+                    WC_Log_Levels::ERROR,
+                    array(
+                        'order_id' => $order_id,
+                        'tr_type' => $tr_type,
+                        'check_result' => wp_json_encode($check_result),
+                        'exception' => (string) $ex,
+                        'backtrace' => true,
+                    )
+                );
+            }
+
+            if (!empty($check_result)) {
+                $vbdata = $this->parse_response_form($check_result);
+                if (!empty($vbdata)) {
+                    /* translators: 1: Order ID, 2: Payment method title, 3: Payment status */
+                    $message = esc_html(sprintf(__('Order #%1$s %2$s payment status: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $this->get_transaction_status_text($vbdata)));
+                    $message = $this->get_test_message($message);
+                    WC_Admin_Meta_Boxes::add_error($message);
+
+                    $this->log(
+                        $message,
+                        WC_Log_Levels::INFO,
+                        array(
+                            'order_id' => $order_id,
+                            'tr_type' => $tr_type,
+                            'check_result' => wp_json_encode($check_result),
+                            'vbdata' => $vbdata,
+                        )
+                    );
+                }
+            } else {
+                /* translators: 1: Order ID */
+                $message = esc_html(sprintf(__('Order #%1$s payment check failed.', 'wc-victoriabank'), $order_id));
+                WC_Admin_Meta_Boxes::add_error($message);
+            }
         }
 
         protected function check_transaction_order_data(\WC_Order $order, array $bank_response)
@@ -1526,13 +1589,21 @@ function victoriabank_plugins_loaded_init()
             }
 
             $transaction_type = strval($order->get_meta(self::MOD_TRANSACTION_TYPE, true));
-            if (self::TRANSACTION_TYPE_AUTHORIZATION !== $transaction_type) {
-                return $actions;
+            if (self::TRANSACTION_TYPE_AUTHORIZATION === $transaction_type) {
+                /* translators: 1: Payment method title */
+                $actions[self::MOD_ACTION_COMPLETE_TRANSACTION] = esc_html(sprintf(__('Complete %1$s transaction', 'wc-victoriabank'), self::MOD_TITLE));
             }
 
             /* translators: 1: Payment method title */
-            $actions['victoriabank_complete_transaction'] = esc_html(sprintf(__('Complete %1$s transaction', 'wc-victoriabank'), self::MOD_TITLE));
+            $actions[self::MOD_ACTION_CHECK_PAYMENT] = esc_html(sprintf(__('Check %1$s order payment', 'wc-victoriabank'), self::MOD_TITLE));
+
             return $actions;
+        }
+
+        public static function action_check_payment(\WC_Order $order)
+        {
+            $plugin = new self();
+            return $plugin->check_payment($order);
         }
 
         public static function action_complete_transaction(\WC_Order $order)
@@ -1590,7 +1661,8 @@ function victoriabank_plugins_loaded_init()
 
         //Add WooCommerce order actions
         add_filter('woocommerce_order_actions', array(WC_Gateway_Victoriabank::class, 'order_actions'), 10, 2);
-        add_action('woocommerce_order_action_victoriabank_complete_transaction', array(WC_Gateway_Victoriabank::class, 'action_complete_transaction'));
+        add_action('woocommerce_order_action_' . WC_Gateway_Victoriabank::MOD_ACTION_COMPLETE_TRANSACTION, array(WC_Gateway_Victoriabank::class, 'action_complete_transaction'));
+        add_action('woocommerce_order_action_' . WC_Gateway_Victoriabank::MOD_ACTION_CHECK_PAYMENT, array(WC_Gateway_Victoriabank::class, 'action_check_payment'));
     }
     //endregion
 
