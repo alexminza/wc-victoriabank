@@ -307,7 +307,7 @@ function victoriabank_plugins_loaded_init()
                     'placeholder' => "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----",
                 ),
                 'vb_private_key'  => array(
-                    'title'       => __('Merchant Private key', 'wc-victoriabank'),
+                    'title'       => __('Merchant private key', 'wc-victoriabank'),
                     'type'        => 'textarea',
                     'description' => '<code>file:///path/to/key.pem</code>',
                     'placeholder' => "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----",
@@ -470,13 +470,13 @@ function victoriabank_plugins_loaded_init()
             } else {
                 if (!$this->validate_public_key($this->vb_bank_public_key)) {
                     /* translators: 1: Field label */
-                    $this->add_error(esc_html(sprintf(__('Invalid %1$s.', 'wc-victoriabank'), $this->get_settings_field_label('vb_bank_public_key'))));
+                    $this->add_error(esc_html(sprintf(__('Invalid %1$s field.', 'wc-victoriabank'), $this->get_settings_field_label('vb_bank_public_key'))));
                     $validate_result = false;
                 }
 
                 if (!$this->validate_private_key($this->vb_private_key, $this->vb_private_key_pass)) {
-                    /* translators: 1: Field label */
-                    $this->add_error(esc_html(sprintf(__('Invalid %1$s or %2$s.', 'wc-victoriabank'), $this->get_settings_field_label('vb_private_key'), $this->get_settings_field_label('vb_private_key_pass'))));
+                    /* translators: 1: Field label, 2: Field label */
+                    $this->add_error(esc_html(sprintf(__('Invalid %1$s or %2$s fields.', 'wc-victoriabank'), $this->get_settings_field_label('vb_private_key'), $this->get_settings_field_label('vb_private_key_pass'))));
                     $validate_result = false;
                 }
             }
@@ -714,15 +714,10 @@ function victoriabank_plugins_loaded_init()
 
             $rrn = strval($order->get_meta(self::MOD_RRN, true));
             $int_ref = strval($order->get_meta(self::MOD_INT_REF, true));
-            if (empty($rrn)) {
-                /* translators: 1: Order ID, 2: Meta field key */
-                $message = esc_html(sprintf(__('Order #%1$s missing meta field %2$s.', 'wc-victoriabank'), $order_id, self::MOD_RRN));
-                return new WP_Error('order_rrn', $message);
-            }
-            if (empty($int_ref)) {
-                /* translators: 1: Order ID, 2: Meta field key */
-                $message = esc_html(sprintf(__('Order #%1$s missing meta field %2$s.', 'wc-victoriabank'), $order_id, self::MOD_INT_REF));
-                return new WP_Error('order_int_ref', $message);
+            if (empty($rrn) || empty($int_ref)) {
+                /* translators: 1: Order ID, 2: Meta field key, 3: Meta field key */
+                $message = esc_html(sprintf(__('Order #%1$s missing meta fields %2$s, %3$s.', 'wc-victoriabank'), $order_id, self::MOD_RRN, self::MOD_INT_REF));
+                return new WP_Error('order_meta_fields', $message);
             }
 
             // Funds locked on bank side - transfer the product/service to the customer and request completion
@@ -1243,15 +1238,10 @@ function victoriabank_plugins_loaded_init()
 
             $rrn = strval($order->get_meta(self::MOD_RRN, true));
             $int_ref = strval($order->get_meta(self::MOD_INT_REF, true));
-            if (empty($rrn)) {
-                /* translators: 1: Order ID, 2: Meta field key */
-                $message = esc_html(sprintf(__('Order #%1$s missing meta field %2$s.', 'wc-victoriabank'), $order_id, self::MOD_RRN));
-                return new WP_Error('order_rrn', $message);
-            }
-            if (empty($int_ref)) {
-                /* translators: 1: Order ID, 2: Meta field key */
-                $message = esc_html(sprintf(__('Order #%1$s missing meta field %2$s.', 'wc-victoriabank'), $order_id, self::MOD_INT_REF));
-                return new WP_Error('order_int_ref', $message);
+            if (empty($rrn) || empty($int_ref)) {
+                /* translators: 1: Order ID, 2: Meta field key, 3: Meta field key */
+                $message = esc_html(sprintf(__('Order #%1$s missing meta fields %2$s, %3$s.', 'wc-victoriabank'), $order_id, self::MOD_RRN, self::MOD_INT_REF));
+                return new WP_Error('order_meta_fields', $message);
             }
 
             $reversal_result = null;
