@@ -710,7 +710,7 @@ function victoriabank_plugins_loaded_init()
         public function process_payment($order_id)
         {
             // https://github.com/woocommerce/woocommerce/issues/48126#issuecomment-2180991020
-            if (WC()->is_store_api_request()) {
+            if (WC()->is_store_api_request() || is_ajax()) {
                 $order = wc_get_order($order_id);
 
                 return array(
