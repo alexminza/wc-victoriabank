@@ -1321,10 +1321,14 @@ function victoriabank_plugins_loaded_init()
             return new WP_Error('process_refund', $message);
         }
 
-        private static function get_transaction_status_text(array $vbdata)
+        private static function get_transaction_status_text(?array $vbdata)
         {
-            $action = strval($vbdata['ACTION']);
-            $text   = strval($vbdata['TEXT']);
+            if (empty($vbdata)) {
+                return __('Unknown', 'wc-victoriabank');
+            }
+
+            $action = isset($vbdata['ACTION']) ? strval($vbdata['ACTION']) : '';
+            $text   = isset($vbdata['TEXT']) ? strval($vbdata['TEXT']) : '';
 
             $action_status = '';
             switch ($action) {
