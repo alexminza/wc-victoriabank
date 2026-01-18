@@ -129,7 +129,7 @@ function victoriabank_plugins_loaded_init()
 
             if (is_admin()) {
                 add_action("woocommerce_update_options_payment_gateways_{$this->id}", array($this, 'process_admin_options'));
-                add_action('wp_ajax_victoriabank_callback_data_process', array($this, 'callback_data_process'));
+                add_action('wp_ajax_victoriabank_process_callback_data', array($this, 'process_callback_data'));
             }
 
             add_action("woocommerce_receipt_{$this->id}", array($this, 'receipt_page'));
@@ -352,7 +352,7 @@ function victoriabank_plugins_loaded_init()
                 'vb_callback_data'  => array(
                     'title'       => __('Process callback data', 'wc-victoriabank'),
                     'type'        => 'textarea',
-                    'description' => '<a href="#" id="woocommerce_victoriabank_callback_data_process" class="button">Process</a>',
+                    'description' => '<a href="#" id="woocommerce_victoriabank_process_callback_data" class="button">Process</a>',
                     'desc_tip'    => __('Manually process bank transaction response callback data received by email as part of the backup procedure.', 'wc-victoriabank'),
                     'placeholder' => "TERMINAL=49812345\nTRTYPE=0\nORDER=000123\nAMOUNT=123.45\nCURRENCY=MDL\n...",
                 ),
@@ -417,11 +417,11 @@ function victoriabank_plugins_loaded_init()
                     'basic_settings_button_id' => '#woocommerce_victoriabank_basic_settings',
                     'advanced_settings_button_id' => '#woocommerce_victoriabank_advanced_settings',
                     'payment_notification_advanced_button_id' => '#woocommerce_victoriabank_payment_notification_advanced',
-                    'callback_data_process_button_id' => '#woocommerce_victoriabank_callback_data_process',
+                    'process_callback_data_button_id' => '#woocommerce_victoriabank_process_callback_data',
                     'vb_callback_data_field_id' => '#woocommerce_victoriabank_vb_callback_data',
                     'message' => __('Are you sure you want to process the entered bank transaction response callback data?', 'wc-victoriabank'),
-                    'action' => 'victoriabank_callback_data_process',
-                    'nonce' => wp_create_nonce('callback_data_process'),
+                    'action' => 'victoriabank_process_callback_data',
+                    'nonce' => wp_create_nonce('process_callback_data'),
                 )
             );
 
@@ -889,7 +889,7 @@ function victoriabank_plugins_loaded_init()
             }
 
             if ($order->is_paid()) {
-                WC()->cart->empty_cart();
+                // WC()->cart->empty_cart();
 
                 /* translators: 1: Order ID, 2: Payment method title */
                 $message = esc_html(sprintf(__('Order #%1$s paid successfully via %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
@@ -907,7 +907,7 @@ function victoriabank_plugins_loaded_init()
                 wc_add_notice($message, 'error');
                 $this->settings_admin_notice();
 
-                wp_safe_redirect($order->get_checkout_payment_url()); // wc_get_checkout_url()
+                wp_safe_redirect($order->get_checkout_payment_url());
                 return false;
             }
         }
@@ -1125,13 +1125,13 @@ function victoriabank_plugins_loaded_init()
             return false;
         }
 
-        public function callback_data_process()
+        public function process_callback_data()
         {
             $this->log_request(__FUNCTION__);
 
             // https://developer.wordpress.org/plugins/javascript/ajax/
             // https://developer.wordpress.org/reference/functions/check_ajax_referer/
-            check_ajax_referer('callback_data_process');
+            check_ajax_referer('process_callback_data');
 
             if (!self::is_wc_admin()) {
                 $message = get_status_header_desc(WP_Http::FORBIDDEN);
