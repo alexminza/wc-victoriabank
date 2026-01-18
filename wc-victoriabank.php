@@ -557,18 +557,6 @@ function victoriabank_plugins_loaded_init()
             }
         }
 
-        protected function logs_admin_notice()
-        {
-            $message = $this->get_logs_admin_message();
-            WC_Admin_Meta_Boxes::add_error($message);
-        }
-
-        protected function settings_admin_notice()
-        {
-            $message = $this->get_settings_admin_message();
-            WC_Admin_Meta_Boxes::add_error($message);
-        }
-
         protected function get_settings_admin_message()
         {
             /* translators: 1: Payment method title, 2: Plugin settings URL */
