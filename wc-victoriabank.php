@@ -549,13 +549,38 @@ function victoriabank_plugins_loaded_init()
             return $this->normalize_key_path($value);
         }
 
-        protected function settings_admin_notice()
+        protected function logs_admin_website_notice()
         {
             if (self::is_wc_admin()) {
-                /* translators: 1: Plugin settings URL */
-                $message = sprintf(wp_kses_post(__('Please review the <a href="%1$s">payment method settings</a> page for log details and setup instructions.', 'wc-victoriabank')), esc_url(self::get_settings_url()));
+                $message = $this->get_logs_admin_message();
                 wc_add_notice($message, 'error');
             }
+        }
+
+        protected function logs_admin_notice()
+        {
+            $message = $this->get_logs_admin_message();
+            WC_Admin_Notices::add_custom_notice("{$this->id}_logs_admin_notice", $message);
+        }
+
+        protected function settings_admin_notice()
+        {
+            $message = $this->get_settings_admin_message();
+            WC_Admin_Notices::add_custom_notice("{$this->id}_settings_admin_notice", $message);
+        }
+
+        protected function get_settings_admin_message()
+        {
+            /* translators: 1: Payment method title, 2: Plugin settings URL */
+            $message = sprintf(wp_kses_post(__('%1$s is not properly configured. Verify plugin <a href="%2$s">Connection Settings</a>.', 'wc-victoriabank')), esc_html($this->get_method_title()), esc_url(self::get_settings_url()));
+            return $message;
+        }
+
+        protected function get_logs_admin_message()
+        {
+            /* translators: 1: Payment method title, 2: Plugin settings URL */
+            $message = sprintf(wp_kses_post(__('See <a href="%2$s">%1$s settings</a> page for log details and setup instructions.', 'wc-victoriabank')), esc_html($this->get_method_title()), esc_url(self::get_settings_url()));
+            return $message;
         }
         //endregion
 
@@ -763,7 +788,7 @@ function victoriabank_plugins_loaded_init()
                     array(
                         'order_id' => $order_id,
                         'order_total' => $order_total,
-                        'completion_result' => wp_json_encode($completion_result),
+                        'response' => self::get_guzzle_error_response_body($ex),
                         'exception' => (string) $ex,
                         'backtrace' => true,
                     )
@@ -818,7 +843,7 @@ function victoriabank_plugins_loaded_init()
                     array(
                         'order_id' => $order_id,
                         'tr_type' => $tr_type,
-                        'check_result' => wp_json_encode($check_result),
+                        'response' => self::get_guzzle_error_response_body($ex),
                         'exception' => (string) $ex,
                         'backtrace' => true,
                     )
@@ -869,7 +894,7 @@ function victoriabank_plugins_loaded_init()
                 $this->log($message, WC_Log_Levels::ERROR);
 
                 wc_add_notice($message, 'error');
-                $this->settings_admin_notice();
+                $this->logs_admin_website_notice();
 
                 wp_safe_redirect(wc_get_cart_url());
                 return false;
@@ -882,7 +907,7 @@ function victoriabank_plugins_loaded_init()
                 $this->log($message, WC_Log_Levels::ERROR);
 
                 wc_add_notice($message, 'error');
-                $this->settings_admin_notice();
+                $this->logs_admin_website_notice();
 
                 wp_safe_redirect(wc_get_cart_url());
                 return false;
@@ -905,7 +930,7 @@ function victoriabank_plugins_loaded_init()
                 $this->log($message, WC_Log_Levels::ERROR);
 
                 wc_add_notice($message, 'error');
-                $this->settings_admin_notice();
+                $this->logs_admin_website_notice();
 
                 wp_safe_redirect($order->get_checkout_payment_url());
                 return false;
@@ -1279,7 +1304,7 @@ function victoriabank_plugins_loaded_init()
             $order->add_order_note($message);
 
             wc_add_notice($message, 'error');
-            $this->settings_admin_notice();
+            $this->logs_admin_website_notice();
         }
 
         /**
@@ -1323,7 +1348,7 @@ function victoriabank_plugins_loaded_init()
                         'order_id' => $order_id,
                         'amount' => $amount,
                         'reason' => $reason,
-                        'reversal_result' => wp_json_encode($reversal_result),
+                        'response' => self::get_guzzle_error_response_body($ex),
                         'exception' => (string) $ex,
                         'backtrace' => true,
                     )
@@ -1543,6 +1568,20 @@ function victoriabank_plugins_loaded_init()
                 )
             );
         }
+
+        protected static function get_guzzle_error_response_body(Exception $exception)
+        {
+            // https://github.com/guzzle/guzzle/issues/2185
+            if ($exception instanceof \GuzzleHttp\Command\Exception\CommandException) {
+                $response = $exception->getResponse();
+
+                if (!empty($response)) {
+                    return (string) $response->getBody();
+                }
+            }
+
+            return null;
+        }
         //endregion
 
         //region Admin
@@ -1599,7 +1638,7 @@ function victoriabank_plugins_loaded_init()
             return $methods;
         }
 
-        public static function is_wc_admin()
+        protected static function is_wc_admin()
         {
             // https://developer.wordpress.org/reference/functions/current_user_can/
             return current_user_can('manage_woocommerce');
