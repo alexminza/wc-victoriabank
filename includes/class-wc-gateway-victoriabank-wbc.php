@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * WC_Gateway_Victoriabank_WBC
+ *
+ * @package wc-victoriabank
+ */
+
 declare(strict_types=1);
 
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
@@ -52,7 +58,7 @@ final class WC_Gateway_Victoriabank_WBC extends AbstractPaymentMethodType
 
         wp_register_script(
             $script_id,
-            plugins_url('assets/js/blocks.js', __FILE__),
+            plugins_url('assets/js/blocks.js', WC_VICTORIABANK_PLUGIN_FILE),
             array(
                 'wc-blocks-registry',
                 'wc-settings',
@@ -65,7 +71,7 @@ final class WC_Gateway_Victoriabank_WBC extends AbstractPaymentMethodType
         );
 
         if (function_exists('wp_set_script_translations')) {
-            wp_set_script_translations($script_id, 'wc-victoriabank', plugin_dir_path(__FILE__) . 'languages');
+            wp_set_script_translations($script_id, 'wc-victoriabank', plugin_dir_path(WC_VICTORIABANK_PLUGIN_FILE) . 'languages');
         }
 
         return array($script_id);
