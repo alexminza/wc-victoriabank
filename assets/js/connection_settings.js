@@ -25,7 +25,7 @@ jQuery(function () {
         return false;
     });
 
-    jQuery(vb_connection_settings.callback_data_process_button_id).on("click", function () {
+    jQuery(vb_connection_settings.process_callback_data_button_id).on("click", function () {
         if (!confirm(vb_connection_settings.message)) {
             return false;
         }
