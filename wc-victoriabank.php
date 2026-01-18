@@ -822,33 +822,6 @@ function victoriabank_plugins_loaded_init()
                     )
                 );
             }
-
-            if (!empty($check_result)) {
-                $bank_response = strval($check_result['body']);
-                $vbdata = $this->parse_response_form($bank_response);
-
-                if (!empty($vbdata)) {
-                    /* translators: 1: Order ID, 2: Payment method title, 3: Payment status */
-                    $message = esc_html(sprintf(__('Order #%1$s %2$s payment status: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $this->get_transaction_status_text($vbdata)));
-                    $message = $this->get_test_message($message);
-                    WC_Admin_Meta_Boxes::add_error($message);
-
-                    $this->log(
-                        $message,
-                        WC_Log_Levels::INFO,
-                        array(
-                            'order_id' => $order_id,
-                            'tr_type' => $tr_type,
-                            'check_result' => wp_json_encode($check_result),
-                            'vbdata' => $vbdata,
-                        )
-                    );
-                }
-            } else {
-                /* translators: 1: Order ID */
-                $message = esc_html(sprintf(__('Order #%1$s payment check failed.', 'wc-victoriabank'), $order_id));
-                WC_Admin_Meta_Boxes::add_error($message);
-            }
         }
 
         protected function check_transaction_order_data(\WC_Order $order, array $bank_response)
