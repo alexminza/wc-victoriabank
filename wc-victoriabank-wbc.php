@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Plugin Name: Payment Gateway for Victoriabank for WooCommerce
+ */
+
+declare(strict_types=1);
+
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
 
 final class WC_Gateway_Victoriabank_WBC extends AbstractPaymentMethodType

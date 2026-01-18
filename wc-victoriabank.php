@@ -24,6 +24,8 @@
 // Looking to contribute code to this plugin? Go ahead and fork the repository over at GitHub https://github.com/alexminza/wc-victoriabank
 // This plugin is based on PHP SDK for Victoriabank API https://github.com/alexminza/victoriabank-sdk-php (https://packagist.org/packages/alexminza/victoriabank-sdk)
 
+declare(strict_types=1);
+
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
