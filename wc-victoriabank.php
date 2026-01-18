@@ -1422,7 +1422,7 @@ function victoriabank_plugins_loaded_init()
         protected function get_order_description(\WC_Order $order)
         {
             $description = sprintf($this->order_template, $order->get_id());
-            return (string) apply_filters('victoriabank_order_description', $description, $order);
+            return wp_strip_all_tags(apply_filters('victoriabank_order_description', $description, $order));
         }
         //endregion
 
