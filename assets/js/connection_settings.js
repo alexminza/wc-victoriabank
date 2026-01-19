@@ -37,6 +37,8 @@ jQuery(function () {
         }
 
         $this.prop("disabled", true);
+        $this.next(".spinner").addClass("is-active");
+
         var callback_data = jQuery(vb_connection_settings.vb_callback_data_field_id).val();
 
         jQuery.ajax({
@@ -50,6 +52,7 @@ jQuery(function () {
             url: ajaxurl,
             complete: function (response, textStatus) {
                 $this.prop("disabled", false);
+                $this.next(".spinner").removeClass("is-active");
 
                 if (response.responseJSON && response.responseJSON.data) {
                     alert(response.responseJSON.data);

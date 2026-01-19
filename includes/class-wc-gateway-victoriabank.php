@@ -316,7 +316,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway
             'vb_callback_data'  => array(
                 'title'       => __('Process callback data', 'wc-victoriabank'),
                 'type'        => 'textarea',
-                'description' => sprintf('<a href="#" id="%1$s" class="button">%2$s</a>', $this->get_field_key('process_callback_data'), esc_html__('Process', 'wc-victoriabank')),
+                'description' => sprintf('<a href="#" id="%1$s" class="button">%2$s</a><span class="spinner"></span>', $this->get_field_key('process_callback_data'), esc_html__('Process', 'wc-victoriabank')),
                 'desc_tip'    => __('Manually process bank transaction response callback data received by email as part of the backup procedure.', 'wc-victoriabank'),
                 'placeholder' => "TERMINAL=49812345\nTRTYPE=0\nORDER=000123\nAMOUNT=123.45\nCURRENCY=MDL\n...",
             ),
