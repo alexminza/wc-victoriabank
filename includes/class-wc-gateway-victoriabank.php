@@ -568,8 +568,6 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway
                 )
             );
         }
-
-        unset($_POST[$pem_field_key]);
     }
 
     protected function validate_public_key(string $key_data)
