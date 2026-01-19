@@ -244,10 +244,12 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway
                 'title'       => __('Connection Settings', 'wc-victoriabank'),
                 'type'        => 'title',
                 'description' => sprintf(
-                    '%1$s<br /><br /><a href="#" id="woocommerce_victoriabank_basic_settings" class="button">%2$s</a> <a href="#" id="woocommerce_victoriabank_advanced_settings" class="button">%3$s</a>',
+                    '%1$s<br /><br /><a href="#" id="%4$s" class="button">%2$s</a> <a href="#" id="%5$s" class="button">%3$s</a>',
                     esc_html__('Use Basic settings to upload the key files received from the bank or configure manually using Advanced settings below.', 'wc-victoriabank'),
                     esc_html__('Basic settings&raquo;', 'wc-victoriabank'),
-                    esc_html__('Advanced settings&raquo;', 'wc-victoriabank')
+                    esc_html__('Advanced settings&raquo;', 'wc-victoriabank'),
+                    $this->get_field_key('basic_settings'),
+                    $this->get_field_key('advanced_settings')
                 ),
             ),
             'vb_bank_public_key_pem' => array(
@@ -303,17 +305,18 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway
                 'title'       => __('Payment Notification', 'wc-victoriabank'),
                 'type'        => 'title',
                 'description' => sprintf(
-                    '%1$s<br /><br /><b>%2$s:</b> <code>%3$s</code><br /><br /><a href="#" id="woocommerce_victoriabank_payment_notification_advanced" class="button">%4$s</a>',
+                    '%1$s<br /><br /><b>%2$s:</b> <code>%3$s</code><br /><br /><a href="#" id="%5$s" class="button">%4$s</a>',
                     esc_html__('Provide this URL to the bank to enable online payment notifications.', 'wc-victoriabank'),
                     esc_html__('Callback URL', 'wc-victoriabank'),
                     esc_url($this->get_callback_url()),
-                    esc_html__('Advanced&raquo;', 'wc-victoriabank')
+                    esc_html__('Advanced&raquo;', 'wc-victoriabank'),
+                    $this->get_field_key('payment_notification_advanced')
                 ),
             ),
             'vb_callback_data'  => array(
                 'title'       => __('Process callback data', 'wc-victoriabank'),
                 'type'        => 'textarea',
-                'description' => '<a href="#" id="woocommerce_victoriabank_process_callback_data" class="button">Process</a>',
+                'description' => sprintf('<a href="#" id="%1$s" class="button">%2$s</a>', $this->get_field_key('process_callback_data'), esc_html__('Process', 'wc-victoriabank')),
                 'desc_tip'    => __('Manually process bank transaction response callback data received by email as part of the backup procedure.', 'wc-victoriabank'),
                 'placeholder' => "TERMINAL=49812345\nTRTYPE=0\nORDER=000123\nAMOUNT=123.45\nCURRENCY=MDL\n...",
             ),
@@ -372,14 +375,14 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway
             $script_handle,
             $script_handle,
             array(
-                'connection_basic_fields_ids' => '#woocommerce_victoriabank_vb_bank_public_key_pem, #woocommerce_victoriabank_vb_private_key_pem, #woocommerce_victoriabank_vb_private_key_pass, #woocommerce_victoriabank_vb_signature_algo',
-                'connection_advanced_fields_ids' => '#woocommerce_victoriabank_vb_bank_public_key, #woocommerce_victoriabank_vb_private_key, #woocommerce_victoriabank_vb_private_key_pass, #woocommerce_victoriabank_vb_signature_algo',
-                'notification_advanced_fields_ids' => '#woocommerce_victoriabank_vb_callback_data',
-                'basic_settings_button_id' => '#woocommerce_victoriabank_basic_settings',
-                'advanced_settings_button_id' => '#woocommerce_victoriabank_advanced_settings',
-                'payment_notification_advanced_button_id' => '#woocommerce_victoriabank_payment_notification_advanced',
-                'process_callback_data_button_id' => '#woocommerce_victoriabank_process_callback_data',
-                'vb_callback_data_field_id' => '#woocommerce_victoriabank_vb_callback_data',
+                'connection_basic_fields_ids' => $this->get_field_id(array('vb_bank_public_key_pem', 'vb_private_key_pem', 'vb_private_key_pass', 'vb_signature_algo')),
+                'connection_advanced_fields_ids' => $this->get_field_id(array('vb_bank_public_key', 'vb_private_key', 'vb_private_key_pass', 'vb_signature_algo')),
+                'notification_advanced_fields_ids' => $this->get_field_id('vb_callback_data'),
+                'basic_settings_button_id' => $this->get_field_id('basic_settings'),
+                'advanced_settings_button_id' => $this->get_field_id('advanced_settings'),
+                'payment_notification_advanced_button_id' => $this->get_field_id('payment_notification_advanced'),
+                'process_callback_data_button_id' => $this->get_field_id('process_callback_data'),
+                'vb_callback_data_field_id' => $this->get_field_id('vb_callback_data'),
                 'message' => __('Are you sure you want to process the entered bank transaction response callback data?', 'wc-victoriabank'),
                 'action' => 'victoriabank_process_callback_data',
                 'nonce' => wp_create_nonce('process_callback_data'),
@@ -397,6 +400,21 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway
         $this->process_pem_setting('vb_private_key_pem', 'vb_private_key');
 
         return parent::process_admin_options();
+    }
+
+    /**
+     * Get the HTML field ID for one or more field keys.
+     *
+     * @param string|string[] $key Field key or array of field keys.
+     * @return string Comma-separated list of field IDs with # prefix.
+     */
+    protected function get_field_id($key): string
+    {
+        if (is_array($key)) {
+            return implode(', ', array_map(array($this, 'get_field_id'), $key));
+        }
+
+        return '#' . $this->get_field_key($key);
     }
 
     //region Settings validation
