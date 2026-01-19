@@ -813,7 +813,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway
         $payment_data_currency = strval($bank_response['CURRENCY']);
 
         $order_id = $order->get_id();
-        $order_total = $order->get_total();
+        $order_total = floatval($order->get_total());
         $order_currency = $order->get_currency();
 
         $order_price = $this->format_price($order_total, $order_currency);
@@ -1203,7 +1203,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway
     protected function generate_form(\WC_Order $order)
     {
         $order_id = strval($order->get_id());
-        $order_total = $order->get_total();
+        $order_total = floatval($order->get_total());
         $order_currency = $order->get_currency();
         $order_description = $this->get_order_description($order);
         $order_email = $order->get_billing_email();
@@ -1383,11 +1383,11 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway
         $order_refunds = $order->get_refunds();
         foreach ($order_refunds as $refund) {
             if ($refund->get_refunded_payment()) {
-                $total_refunded += $refund->get_amount();
+                $total_refunded += floatval($refund->get_amount());
             }
         }
 
-        $order_total = $order->get_total();
+        $order_total = floatval($order->get_total());
         return $order_total - $total_refunded;
     }
 
