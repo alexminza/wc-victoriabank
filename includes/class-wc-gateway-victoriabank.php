@@ -43,7 +43,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway
 
     protected $logo_type, $testmode, $debug, $logger, $transaction_type, $order_template;
     protected $vb_base_url, $vb_merchant_id, $vb_merchant_terminal, $vb_merchant_name, $vb_merchant_url, $vb_merchant_address;
-    protected $vb_bank_public_key_pem, $vb_private_key_pem, $vb_private_key_pass, $vb_private_key, $vb_bank_public_key, $vb_signature_algo;
+    protected $vb_private_key_pass, $vb_private_key, $vb_bank_public_key, $vb_signature_algo;
 
     public function __construct()
     {
@@ -72,24 +72,20 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway
             $this->description = $this->get_test_message($this->description);
         }
 
-        $this->transaction_type       = $this->get_option('transaction_type', self::TRANSACTION_TYPE_CHARGE);
-        $this->order_template         = $this->get_option('order_template', self::ORDER_TEMPLATE);
+        $this->transaction_type     = $this->get_option('transaction_type', self::TRANSACTION_TYPE_CHARGE);
+        $this->order_template       = $this->get_option('order_template', self::ORDER_TEMPLATE);
 
-        $this->vb_base_url            = $this->testmode ? VictoriabankClient::TEST_BASE_URL : VictoriabankClient::DEFAULT_BASE_URL;
-        $this->vb_merchant_id         = $this->get_option('vb_merchant_id');
-        $this->vb_merchant_terminal   = $this->get_option('vb_merchant_terminal');
-        $this->vb_merchant_name       = $this->get_option('vb_merchant_name');
-        $this->vb_merchant_url        = $this->get_option('vb_merchant_url');
-        $this->vb_merchant_address    = $this->get_option('vb_merchant_address');
+        $this->vb_base_url          = $this->testmode ? VictoriabankClient::TEST_BASE_URL : VictoriabankClient::DEFAULT_BASE_URL;
+        $this->vb_merchant_id       = $this->get_option('vb_merchant_id');
+        $this->vb_merchant_terminal = $this->get_option('vb_merchant_terminal');
+        $this->vb_merchant_name     = $this->get_option('vb_merchant_name');
+        $this->vb_merchant_url      = $this->get_option('vb_merchant_url');
+        $this->vb_merchant_address  = $this->get_option('vb_merchant_address');
 
-        $this->vb_bank_public_key_pem = $this->get_option('vb_bank_public_key_pem');
-        $this->vb_private_key_pem     = $this->get_option('vb_private_key_pem');
-        $this->vb_private_key_pass    = $this->get_option('vb_private_key_pass');
-
-        $this->vb_private_key     = $this->normalize_key_path($this->get_option('vb_private_key'));
-        $this->vb_bank_public_key = $this->normalize_key_path($this->get_option('vb_bank_public_key'));
-
-        $this->vb_signature_algo = $this->get_option('vb_signature_algo', VictoriabankClient::P_SIGN_HASH_ALGO_MD5);
+        $this->vb_bank_public_key   = $this->normalize_key_path($this->get_option('vb_bank_public_key'));
+        $this->vb_private_key       = $this->normalize_key_path($this->get_option('vb_private_key'));
+        $this->vb_private_key_pass  = $this->get_option('vb_private_key_pass');
+        $this->vb_signature_algo    = $this->get_option('vb_signature_algo', VictoriabankClient::P_SIGN_HASH_ALGO_MD5);
         //endregion
 
         if (is_admin()) {
