@@ -395,10 +395,10 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway
 
     public function process_admin_options()
     {
-        unset($_POST['woocommerce_victoriabank_vb_callback_data']);
+        unset($_POST[$this->get_field_key('vb_callback_data')]);
 
-        $this->process_pem_setting('woocommerce_victoriabank_vb_bank_public_key_pem', $this->vb_bank_public_key_pem, 'woocommerce_victoriabank_vb_bank_public_key', 'victoria_pub.pem');
-        $this->process_pem_setting('woocommerce_victoriabank_vb_private_key_pem', $this->vb_private_key_pem, 'woocommerce_victoriabank_vb_private_key', 'key.pem');
+        $this->process_pem_setting('vb_bank_public_key_pem', 'vb_bank_public_key');
+        $this->process_pem_setting('vb_private_key_pem', 'vb_private_key');
 
         return parent::process_admin_options();
     }
@@ -538,13 +538,16 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway
     //endregion
 
     //region Keys
-    protected function process_pem_setting(string $pem_field_id, string $pem_option_value, string $pem_target_field_id, string $pem_type)
+    protected function process_pem_setting(string $pem_field_id, string $pem_target_field_id)
     {
+        $pem_field_key = $this->get_field_key($pem_field_id);
+        $pem_target_field_key = $this->get_field_key($pem_target_field_id);
+
         try {
             // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled by WooCommerce.
-            if (array_key_exists($pem_field_id, $_FILES)) {
+            if (isset($_FILES[$pem_field_key])) {
                 // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing -- File validation is performed via is_uploaded_file and error check. Nonce verification is handled by WooCommerce.
-                $pem_file = $_FILES[$pem_field_id];
+                $pem_file = $_FILES[$pem_field_key];
                 $tmp_name = $pem_file['tmp_name'];
 
                 if (UPLOAD_ERR_OK === $pem_file['error'] && is_uploaded_file($tmp_name)) {
@@ -553,9 +556,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway
 
                     if (false !== $pem_data) {
                         // Overwrite advanced setting value
-                        $_POST[$pem_target_field_id] = $pem_data;
-
-                        return;
+                        $_POST[$pem_target_field_key] = $pem_data;
                     }
                 }
             }
@@ -566,16 +567,13 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway
                 array(
                     'pem_field_id' => $pem_field_id,
                     'pem_target_field_id' => $pem_target_field_id,
-                    'pem_type' => $pem_type,
                     'exception' => (string) $ex,
                     'backtrace' => true,
                 )
             );
         }
 
-        // Preserve existing value
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verification is handled by WooCommerce.
-        $_POST[$pem_field_id] = $pem_option_value;
+        unset($_POST[$pem_field_key]);
     }
 
     protected function validate_public_key(string $key_data)
@@ -635,8 +633,8 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway
     protected static function get_wp_filesystem()
     {
         /**
-            * @var WP_Filesystem_Base
-            */
+         * @var WP_Filesystem_Base
+         */
         global $wp_filesystem;
 
         if (empty($wp_filesystem)) {
