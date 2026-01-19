@@ -1,8 +1,6 @@
 <?php
 
 /**
- * WC_Gateway_Victoriabank_WBC
- *
  * @package wc-victoriabank
  */
 
