@@ -6,6 +6,8 @@
 
 declare(strict_types=1);
 
+namespace AlexMinza\WC_Payment_Gateway;
+
 defined('ABSPATH') || exit;
 
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;

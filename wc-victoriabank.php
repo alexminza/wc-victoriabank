@@ -28,6 +28,8 @@
 
 declare(strict_types=1);
 
+namespace AlexMinza\WC_Payment_Gateway;
+
 defined('ABSPATH') || exit;
 
 if (!defined('WC_VICTORIABANK_PLUGIN_FILE')) {
@@ -36,7 +38,7 @@ if (!defined('WC_VICTORIABANK_PLUGIN_FILE')) {
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-add_action('plugins_loaded', 'victoriabank_plugins_loaded_init');
+add_action('plugins_loaded', __NAMESPACE__ . '\victoriabank_plugins_loaded_init');
 
 function victoriabank_plugins_loaded_init()
 {
