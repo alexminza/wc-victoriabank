@@ -371,4 +371,12 @@ class WC_Payment_Gateway_Base extends \WC_Payment_Gateway
         return array_merge($plugin_links, $links);
     }
     //endregion
+
+    //region WooCommerce
+    public static function add_gateway(array $methods)
+    {
+        $methods[] = static::class;
+        return $methods;
+    }
+    //endregion
 }

@@ -1269,12 +1269,6 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     //endregion
 
     //region WooCommerce
-    public static function add_gateway(array $methods)
-    {
-        $methods[] = self::class;
-        return $methods;
-    }
-
     public static function email_order_meta_fields(array $fields, bool $sent_to_admin, \WC_Order $order)
     {
         if (!$order->is_paid() || $order->get_payment_method() !== self::MOD_ID) {
