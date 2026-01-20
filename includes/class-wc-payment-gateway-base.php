@@ -8,8 +8,9 @@ defined('ABSPATH') || exit;
 
 class WC_Payment_Gateway_Base extends \WC_Payment_Gateway
 {
-    const MOD_ID = 'wc-payment-gateway-base';
+    const MOD_ID          = 'wc-payment-gateway-base';
     const MOD_TEXT_DOMAIN = self::MOD_ID;
+    const MOD_VERSION     = null;
 
     const SUPPORTED_CURRENCIES = array();
     const ORDER_TEMPLATE       = 'Order #%1$s';
