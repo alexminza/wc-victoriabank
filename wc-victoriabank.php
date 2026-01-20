@@ -94,7 +94,7 @@ add_action(
             add_action(
                 'woocommerce_blocks_payment_method_type_registration',
                 function (\Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry) {
-                    $payment_method_registry->register(new WC_Gateway_Victoriabank_WBC());
+                    $payment_method_registry->register(new WC_Gateway_Victoriabank_WBC(WC_Gateway_Victoriabank::MOD_ID));
                 }
             );
         }
