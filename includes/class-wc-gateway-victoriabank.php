@@ -103,7 +103,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     {
         $blog_info_name = get_bloginfo('name');
         $home_url = home_url();
-        $store_address = self::get_store_address();
+        $store_address = WC()->mailer()->get_store_address();
 
         $this->form_fields = array(
             'enabled'         => array(
@@ -1221,21 +1221,6 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     //endregion
 
     //region Utility
-    protected static function get_store_address()
-    {
-        $wc_countries = WC()->countries;
-        $address = array(
-            'address_1' => $wc_countries->get_base_address(),
-            'address_2' => $wc_countries->get_base_address_2(),
-            'city'      => $wc_countries->get_base_city(),
-            'state'     => $wc_countries->get_base_state(),
-            'postcode'  => $wc_countries->get_base_postcode(),
-            'country'   => $wc_countries->get_base_country(),
-        );
-
-        return $wc_countries->get_formatted_address($address, ', ');
-    }
-
     protected function get_callback_url()
     {
         // https://developer.woocommerce.com/docs/extensions/core-concepts/woocommerce-plugin-api-callback/
