@@ -254,6 +254,22 @@ class WC_Payment_Gateway_Base extends \WC_Payment_Gateway
         return current_user_can('manage_woocommerce');
     }
 
+    protected function get_test_message(string $message)
+    {
+        if ($this->testmode) {
+            /* translators: 1: Original message */
+            $message = esc_html(sprintf(__('TEST: %1$s', static::MOD_TEXT_DOMAIN), $message)); // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralDomain
+        }
+
+        return $message;
+    }
+
+    protected function get_language()
+    {
+        $lang = get_locale();
+        return substr($lang, 0, 2);
+    }
+
     protected static function get_logs_url()
     {
         return add_query_arg(

@@ -1221,22 +1221,6 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     //endregion
 
     //region Utility
-    protected function get_test_message(string $message)
-    {
-        if ($this->testmode) {
-            /* translators: 1: Original message */
-            $message = esc_html(sprintf(__('TEST: %1$s', 'wc-victoriabank'), $message));
-        }
-
-        return $message;
-    }
-
-    protected function get_language()
-    {
-        $lang = get_locale();
-        return substr($lang, 0, 2);
-    }
-
     protected static function get_store_address()
     {
         $wc_countries = WC()->countries;
