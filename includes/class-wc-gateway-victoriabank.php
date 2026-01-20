@@ -6,6 +6,8 @@
 
 declare(strict_types=1);
 
+defined('ABSPATH') || exit;
+
 use Victoriabank\Victoriabank\VictoriabankClient;
 
 class WC_Gateway_Victoriabank extends WC_Payment_Gateway

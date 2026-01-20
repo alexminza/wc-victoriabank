@@ -28,9 +28,7 @@
 
 declare(strict_types=1);
 
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly
-}
+defined('ABSPATH') || exit;
 
 if (!defined('WC_VICTORIABANK_PLUGIN_FILE')) {
     define('WC_VICTORIABANK_PLUGIN_FILE', __FILE__);
