@@ -20,7 +20,6 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     const MOD_PREFIX      = 'vb_';
     const MOD_TITLE       = 'Victoriabank';
     const MOD_VERSION     = '1.6.0';
-    const MOD_PLUGIN_FILE = WC_VICTORIABANK_PLUGIN_FILE;
 
     const SUPPORTED_CURRENCIES = array('MDL', 'EUR', 'USD');
 
@@ -324,9 +323,9 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     {
         switch ($logo_type) {
             case self::LOGO_TYPE_BANK:
-                return plugins_url('/assets/img/victoriabank.png', self::MOD_PLUGIN_FILE);
+                return plugins_url('/assets/img/victoriabank.png', self::$mod_plugin_file);
             case self::LOGO_TYPE_SYSTEMS:
-                return plugins_url('/assets/img/paymentsystems.png', self::MOD_PLUGIN_FILE);
+                return plugins_url('/assets/img/paymentsystems.png', self::$mod_plugin_file);
         }
 
         return '';
@@ -339,7 +338,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
         // https://developer.woocommerce.com/2025/11/19/deprecation-of-wc_enqueue_js-in-10-4/
         $script_handle = self::MOD_PREFIX . 'connection_settings';
-        wp_register_script($script_handle, plugins_url('assets/js/connection_settings.js', self::MOD_PLUGIN_FILE), array('jquery'), self::MOD_VERSION, true);
+        wp_register_script($script_handle, plugins_url('assets/js/connection_settings.js', self::$mod_plugin_file), array('jquery'), self::MOD_VERSION, true);
         wp_enqueue_script($script_handle);
         wp_localize_script(
             $script_handle,
