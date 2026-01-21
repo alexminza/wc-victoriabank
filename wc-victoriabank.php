@@ -54,7 +54,7 @@ function victoriabank_plugins_loaded_init()
 
     //region Admin init
     if (is_admin()) {
-        add_filter('plugin_action_links_' . plugin_basename(WC_VICTORIABANK_PLUGIN_FILE), array(WC_Gateway_Victoriabank::class, 'plugin_links'));
+        add_filter('plugin_action_links_' . plugin_basename(WC_VICTORIABANK_PLUGIN_FILE), array(WC_Gateway_Victoriabank::class, 'plugin_action_links'));
 
         //Add WooCommerce order actions
         add_filter('woocommerce_order_actions', array(WC_Gateway_Victoriabank::class, 'order_actions'), 10, 2);
