@@ -65,9 +65,10 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
         parent::__construct();
 
-        $this->icon = self::get_logo_icon($this->get_option('logo_type', self::LOGO_TYPE_BANK));
+        $this->icon             = self::get_logo_icon($this->get_option('logo_type', self::LOGO_TYPE_BANK));
         $this->transaction_type = $this->get_option('transaction_type', self::TRANSACTION_TYPE_CHARGE);
 
+        // https://github.com/alexminza/victoriabank-sdk-php/blob/main/src/Victoriabank/VictoriabankClient.php
         $this->vb_base_url          = $this->testmode ? VictoriabankClient::TEST_BASE_URL : VictoriabankClient::DEFAULT_BASE_URL;
         $this->vb_merchant_id       = $this->get_option('vb_merchant_id');
         $this->vb_merchant_terminal = $this->get_option('vb_merchant_terminal');
