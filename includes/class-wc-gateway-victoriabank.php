@@ -63,16 +63,10 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $this->init_form_fields();
         $this->init_settings();
 
-        $this->enabled     = $this->get_option('enabled', 'no');
-        $this->title       = $this->get_option('title', $this->get_method_title());
-        $this->description = $this->get_option('description');
-        $this->icon        = self::get_logo_icon($this->get_option('logo_type', self::LOGO_TYPE_BANK));
+        parent::__construct();
 
-        if ($this->testmode) {
-            $this->description = $this->get_test_message($this->description);
-        }
-
-        $this->transaction_type     = $this->get_option('transaction_type', self::TRANSACTION_TYPE_CHARGE);
+        $this->icon = self::get_logo_icon($this->get_option('logo_type', self::LOGO_TYPE_BANK));
+        $this->transaction_type = $this->get_option('transaction_type', self::TRANSACTION_TYPE_CHARGE);
 
         $this->vb_base_url          = $this->testmode ? VictoriabankClient::TEST_BASE_URL : VictoriabankClient::DEFAULT_BASE_URL;
         $this->vb_merchant_id       = $this->get_option('vb_merchant_id');
