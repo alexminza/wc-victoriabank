@@ -42,6 +42,8 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
     const VB_ORDER    = 'ORDER';
     const VB_ORDER_ID = 'order_id';
+
+    public const DEFAULT_TIMEOUT = 30; // seconds
     //endregion
 
     protected $logo_type, $transaction_type;
