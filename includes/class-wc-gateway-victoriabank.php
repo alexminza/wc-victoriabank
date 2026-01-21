@@ -10,8 +10,6 @@ namespace AlexMinza\WC_Payment_Gateway;
 
 defined('ABSPATH') || exit;
 
-require_once plugin_dir_path(WC_VICTORIABANK_PLUGIN_FILE) . 'includes/class-wc-payment-gateway-base.php';
-
 use Victoriabank\Victoriabank\VictoriabankClient;
 
 class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
@@ -67,12 +65,12 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $this->title       = $this->get_option('title', $this->get_method_title());
         $this->description = $this->get_option('description');
 
-        $this->logo_type   = $this->get_option('logo_type', self::LOGO_TYPE_BANK);
-        $this->icon        = self::get_logo_icon($this->logo_type);
-
         if ($this->testmode) {
             $this->description = $this->get_test_message($this->description);
         }
+
+        $this->logo_type = $this->get_option('logo_type', self::LOGO_TYPE_BANK);
+        $this->icon      = self::get_logo_icon($this->logo_type);
 
         $this->transaction_type     = $this->get_option('transaction_type', self::TRANSACTION_TYPE_CHARGE);
 

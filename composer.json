@@ -29,6 +29,7 @@
     "require": {
         "php": ">=7.2.5",
         "alexminza/victoriabank-sdk": "^1.0",
+        "alexminza/wc-payment-gateway-base": "^1.0",
         "monolog/monolog": "^2.7"
     },
     "config": {
@@ -42,5 +43,22 @@
     "prefer-stable": true,
     "require-dev": {
         "woocommerce/woocommerce-sniffs": "^1.0"
-    }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../victoriabank-sdk-php",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../wc-payment-gateway-base",
+            "options": {
+                "symlink": false
+            }
+        }
+    ],
+    "minimum-stability": "dev"
 }
