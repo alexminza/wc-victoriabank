@@ -22,6 +22,8 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     const MOD_VERSION     = '1.6.0';
     const MOD_PLUGIN_FILE = WC_VICTORIABANK_PLUGIN_FILE;
 
+    const SUPPORTED_CURRENCIES = array('MDL', 'EUR', 'USD');
+
     const TRANSACTION_TYPE_CHARGE = 'charge';
     const TRANSACTION_TYPE_AUTHORIZATION = 'authorization';
 
@@ -35,13 +37,10 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     const MOD_APPROVAL         = self::MOD_PREFIX . 'approval';
     const MOD_CARD             = self::MOD_PREFIX . 'card';
 
-    const SUPPORTED_CURRENCIES = array('MDL', 'EUR', 'USD');
+    const MOD_ORDER_ID = 'order_id';
 
     const MOD_ACTION_COMPLETE_TRANSACTION = self::MOD_PREFIX . 'complete_transaction';
     const MOD_ACTION_CHECK_PAYMENT        = self::MOD_PREFIX . 'check_payment';
-
-    const VB_ORDER    = 'ORDER';
-    const VB_ORDER_ID = 'order_id';
 
     public const DEFAULT_TIMEOUT = 30; // seconds
     //endregion
@@ -689,7 +688,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         }
 
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Verification is done via order existence check.
-        $order_id = isset($_REQUEST[self::VB_ORDER_ID]) ? absint(wp_unslash($_REQUEST[self::VB_ORDER_ID])) : 0;
+        $order_id = isset($_REQUEST[self::MOD_ORDER_ID]) ? absint(wp_unslash($_REQUEST[self::MOD_ORDER_ID])) : 0;
         if (empty($order_id)) {
             /* translators: 1: Payment method title */
             $message = esc_html(sprintf(__('Order ID not received from %1$s.', 'wc-victoriabank'), $this->get_method_title()));
@@ -1056,7 +1055,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $order_email = $order->get_billing_email();
         $language = $this->get_language();
 
-        $redirect_url = add_query_arg(self::VB_ORDER_ID, $order_id, $this->get_redirect_url());
+        $redirect_url = add_query_arg(self::MOD_ORDER_ID, $order_id, $this->get_redirect_url());
 
         $client = $this->init_victoriabank_client();
         $authorize_request = $client->generateOrderAuthorizeRequest($order_id, $order_total, $order_currency, $order_description, $order_email, $redirect_url, $language);
