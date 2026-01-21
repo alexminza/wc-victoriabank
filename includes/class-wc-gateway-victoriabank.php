@@ -24,7 +24,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
     const SUPPORTED_CURRENCIES = array('MDL', 'EUR', 'USD');
 
-    const TRANSACTION_TYPE_CHARGE = 'charge';
+    const TRANSACTION_TYPE_CHARGE        = 'charge';
     const TRANSACTION_TYPE_AUTHORIZATION = 'authorization';
 
     const LOGO_TYPE_BANK       = 'bank';
@@ -42,7 +42,10 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     const MOD_ACTION_COMPLETE_TRANSACTION = self::MOD_PREFIX . 'complete_transaction';
     const MOD_ACTION_CHECK_PAYMENT        = self::MOD_PREFIX . 'check_payment';
 
-    public const DEFAULT_TIMEOUT = 30; // seconds
+    /**
+     * Default API request timeout (seconds).
+     */
+    public const DEFAULT_TIMEOUT = 30;
     //endregion
 
     protected $transaction_type;
