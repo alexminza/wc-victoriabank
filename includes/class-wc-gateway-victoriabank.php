@@ -45,7 +45,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     public const DEFAULT_TIMEOUT = 30; // seconds
     //endregion
 
-    protected $logo_type, $transaction_type;
+    protected $transaction_type;
     protected $vb_base_url, $vb_merchant_id, $vb_merchant_terminal, $vb_merchant_name, $vb_merchant_url, $vb_merchant_address;
     protected $vb_private_key_pass, $vb_private_key, $vb_bank_public_key, $vb_signature_algo;
 
@@ -66,13 +66,11 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $this->enabled     = $this->get_option('enabled', 'no');
         $this->title       = $this->get_option('title', $this->get_method_title());
         $this->description = $this->get_option('description');
+        $this->icon        = self::get_logo_icon($this->get_option('logo_type', self::LOGO_TYPE_BANK));
 
         if ($this->testmode) {
             $this->description = $this->get_test_message($this->description);
         }
-
-        $this->logo_type = $this->get_option('logo_type', self::LOGO_TYPE_BANK);
-        $this->icon      = self::get_logo_icon($this->logo_type);
 
         $this->transaction_type     = $this->get_option('transaction_type', self::TRANSACTION_TYPE_CHARGE);
 
