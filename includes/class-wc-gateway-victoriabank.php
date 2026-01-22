@@ -1018,8 +1018,21 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
     protected static function parse_response_post(string $vbpost)
     {
-        $vbdata = null;
-        parse_str(str_replace(array("\r\n", "\r", "\n"), '&', trim($vbpost)), $vbdata);
+        $vbpost = trim($vbpost);
+        if (empty($vbpost)) {
+            return null;
+        }
+
+        $vbdata = json_decode($vbpost, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($vbdata)) {
+            return $vbdata;
+        }
+
+        // Transform key/value pairs to query string
+        $vbpost = preg_replace('/\R+/', '&', $vbpost) ?? '';
+        $vbdata = array();
+        parse_str($vbpost, $vbdata);
+
         return $vbdata;
     }
 
