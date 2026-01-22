@@ -54,8 +54,6 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
     public function __construct()
     {
-        parent::__construct();
-
         $this->id                 = self::MOD_ID;
         $this->method_title       = self::MOD_TITLE;
         $this->method_description = __('Accept Visa and Mastercard through Victoriabank.', 'wc-victoriabank');
