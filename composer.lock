@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e5cb8f43953e468700ba2537591fd084",
+    "content-hash": "443bc8f1ec13d7d93f4b9a8e7a3a6bcf",
     "packages": [
         {
             "name": "alexminza/victoriabank-sdk",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alexminza/victoriabank-sdk-php.git",
-                "reference": "d9187e2e867db625734f8825e244abe7761398a8"
+                "reference": "b98f8f677fffa7d6053b80209f72f33ec136b838"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alexminza/victoriabank-sdk-php/zipball/d9187e2e867db625734f8825e244abe7761398a8",
-                "reference": "d9187e2e867db625734f8825e244abe7761398a8",
+                "url": "https://api.github.com/repos/alexminza/victoriabank-sdk-php/zipball/b98f8f677fffa7d6053b80209f72f33ec136b838",
+                "reference": "b98f8f677fffa7d6053b80209f72f33ec136b838",
                 "shasum": ""
             },
             "require": {
@@ -66,7 +66,60 @@
                 "issues": "https://github.com/alexminza/victoriabank-sdk-php/issues",
                 "source": "https://github.com/alexminza/victoriabank-sdk-php"
             },
-            "time": "2026-01-14T10:39:12+00:00"
+            "time": "2026-01-17T10:08:10+00:00"
+        },
+        {
+            "name": "alexminza/wc-payment-gateway-base",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alexminza/wc-payment-gateway-base.git",
+                "reference": "c6c5428c93c3ae1c11eb9af79f8baadf7f392eee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alexminza/wc-payment-gateway-base/zipball/c6c5428c93c3ae1c11eb9af79f8baadf7f392eee",
+                "reference": "c6c5428c93c3ae1c11eb9af79f8baadf7f392eee",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5"
+            },
+            "require-dev": {
+                "woocommerce/woocommerce-sniffs": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "AlexMinza\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Alexander Minza",
+                    "homepage": "https://www.alexminza.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Payment Gateway Base for WooCommerce",
+            "homepage": "https://github.com/alexminza/wc-payment-gateway-base",
+            "keywords": [
+                "payments",
+                "php",
+                "sdk",
+                "woocommerce",
+                "wordpress"
+            ],
+            "support": {
+                "forum": "https://github.com/alexminza/wc-payment-gateway-base/discussions",
+                "issues": "https://github.com/alexminza/wc-payment-gateway-base/issues",
+                "source": "https://github.com/alexminza/wc-payment-gateway-base"
+            },
+            "time": "2026-01-22T20:20:16+00:00"
         },
         {
             "name": "guzzlehttp/command",
