@@ -1128,9 +1128,10 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         }
 
         $order = wc_get_order($order_id);
+        $order_id = strval($order->get_id());
+        $order_total = floatval($order->get_total());
         $order_currency = $order->get_currency();
-        $order_id = strval($order_id);
-        $amount = floatval($amount);
+        $amount = isset($amount) ? floatval($amount) : $order_total;
 
         $rrn = strval($order->get_meta(self::MOD_RRN, true));
         $int_ref = strval($order->get_meta(self::MOD_INT_REF, true));
