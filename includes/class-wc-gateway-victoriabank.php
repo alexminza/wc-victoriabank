@@ -1135,6 +1135,8 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
         $order = wc_get_order($order_id);
         $order_currency = $order->get_currency();
+        $order_id = strval($order_id);
+        $amount = floatval($amount);
 
         $rrn = strval($order->get_meta(self::MOD_RRN, true));
         $int_ref = strval($order->get_meta(self::MOD_INT_REF, true));
@@ -1147,7 +1149,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $reversal_result = null;
         try {
             $client = $this->init_victoriabank_client();
-            $reversal_result = $client->orderReverse(strval($order_id), $amount, $order_currency, $rrn, $int_ref);
+            $reversal_result = $client->orderReverse($order_id, $amount, $order_currency, $rrn, $int_ref);
         } catch (\Exception $ex) {
             $this->log(
                 $ex->getMessage(),
@@ -1171,6 +1173,22 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             if (!empty($vbdata)) {
                 $action = strval($vbdata['ACTION']);
                 if (VictoriabankClient::ACTION_SUCCESS === $action) {
+                    /* translators: 1: Order ID, 2: Refund amount, 3: Payment method title, 4: Bank response text */
+                    $message = esc_html(sprintf(__('Order #%1$s refund of %2$s initiated via %3$s: %4$s', 'wc-victoriabank'), $order_id, $this->format_price($amount, $order_currency), $this->get_method_title(), $this->get_transaction_status_text($vbdata)));
+                    $message = $this->get_test_message($message);
+                    $this->log(
+                        $message,
+                        \WC_Log_Levels::INFO,
+                        array(
+                            'order_id' => $order_id,
+                            'amount' => $amount,
+                            'reason' => $reason,
+                            'reversal_result' => wp_json_encode($reversal_result),
+                            'vbdata' => $vbdata,
+                        )
+                    );
+
+                    $order->add_order_note($message);
                     return true;
                 }
             }
