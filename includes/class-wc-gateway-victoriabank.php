@@ -859,13 +859,13 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
                         //region Complete order payment
                         // https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book
-                        $order->add_meta_data(self::MOD_TRANSACTION_TYPE, $this->transaction_type, true);
-                        $order->add_meta_data(self::MOD_PAYMENT_RECEIPT, http_build_query($bank_response), true);
+                        $order->update_meta_data(self::MOD_TRANSACTION_TYPE, $this->transaction_type);
+                        $order->update_meta_data(self::MOD_PAYMENT_RECEIPT, http_build_query($bank_response));
 
-                        $order->add_meta_data(self::MOD_RRN, $rrn, true);
-                        $order->add_meta_data(self::MOD_INT_REF, $int_ref, true);
-                        $order->add_meta_data(self::MOD_APPROVAL, $approval, true);
-                        $order->add_meta_data(self::MOD_CARD, $card, true);
+                        $order->update_meta_data(self::MOD_RRN, $rrn);
+                        $order->update_meta_data(self::MOD_INT_REF, $int_ref);
+                        $order->update_meta_data(self::MOD_APPROVAL, $approval);
+                        $order->update_meta_data(self::MOD_CARD, $card);
 
                         $order->save();
 
