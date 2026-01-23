@@ -560,7 +560,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             )
         );
 
-        $order_total = self::get_order_net_total($order);
+        $order_total = floatval($order->get_remaining_refund_amount());
         $order_currency = $order->get_currency();
 
         $rrn = strval($order->get_meta(self::MOD_RRN, true));
