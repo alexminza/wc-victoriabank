@@ -1116,6 +1116,8 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
         wc_add_notice($message, 'error');
         $this->logs_admin_website_notice();
+
+        wp_safe_redirect($order->get_checkout_payment_url());
         return false;
     }
 
