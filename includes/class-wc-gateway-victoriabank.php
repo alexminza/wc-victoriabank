@@ -544,7 +544,10 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             );
         }
 
-        $this->receipt_page($order_id);
+        $result = $this->receipt_page($order_id) ? 'pending': 'failure';
+        return array(
+            'result' => $result,
+        );
     }
 
     public function complete_transaction(\WC_Order $order)
@@ -1093,7 +1096,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             $order->add_order_note($message);
 
             $this->generate_form($order);
-            return;
+            return true;
         } catch (\Exception $ex) {
             $this->log(
                 $ex->getMessage(),
@@ -1113,6 +1116,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
         wc_add_notice($message, 'error');
         $this->logs_admin_website_notice();
+        return false;
     }
 
     /**
@@ -1253,6 +1257,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $redirect_url = WC()->api_request_url("wc_{$this->id}_redirect");
         return (string) apply_filters('victoriabank_redirect_url', $redirect_url);
     }
+    //endregion
 
     //region Admin
     public static function order_actions(array $actions, \WC_Order $order)
