@@ -70,16 +70,16 @@
         },
         {
             "name": "alexminza/wc-payment-gateway-base",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alexminza/wc-payment-gateway-base.git",
-                "reference": "c6c5428c93c3ae1c11eb9af79f8baadf7f392eee"
+                "reference": "e92c8f756237d5bbb8d8cb4bb5d2488b4be2976d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alexminza/wc-payment-gateway-base/zipball/c6c5428c93c3ae1c11eb9af79f8baadf7f392eee",
-                "reference": "c6c5428c93c3ae1c11eb9af79f8baadf7f392eee",
+                "url": "https://api.github.com/repos/alexminza/wc-payment-gateway-base/zipball/e92c8f756237d5bbb8d8cb4bb5d2488b4be2976d",
+                "reference": "e92c8f756237d5bbb8d8cb4bb5d2488b4be2976d",
                 "shasum": ""
             },
             "require": {
@@ -119,7 +119,7 @@
                 "issues": "https://github.com/alexminza/wc-payment-gateway-base/issues",
                 "source": "https://github.com/alexminza/wc-payment-gateway-base"
             },
-            "time": "2026-01-22T20:20:16+00:00"
+            "time": "2026-01-24T14:19:36+00:00"
         },
         {
             "name": "guzzlehttp/command",
