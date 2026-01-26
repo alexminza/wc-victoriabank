@@ -663,7 +663,6 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                 \WC_Log_Levels::DEBUG,
                 array(
                     'order_id' => $order_id,
-                    'check_result' => wp_json_encode($check_result),
                     'check_data' => $check_data,
                 )
             );
@@ -1162,6 +1161,17 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
      */
     public function process_refund($order_id, $amount = null, $reason = '')
     {
+        $this->log(
+            __FUNCTION__,
+            \WC_Log_Levels::DEBUG,
+            array(
+                'order_id' => $order_id,
+                'amount' => $amount,
+                'reason' => $reason,
+                'backtrace' => true,
+            )
+        );
+
         if (!$this->check_settings()) {
             $message = wp_strip_all_tags($this->get_settings_admin_message());
             return new \WP_Error('check_settings', $message);
@@ -1218,7 +1228,6 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                             'order_id' => $order_id,
                             'amount' => $amount,
                             'reason' => $reason,
-                            'reversal_result' => wp_json_encode($reversal_result),
                             'reversal_data' => $reversal_data,
                         )
                     );
@@ -1239,7 +1248,6 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                 'order_id' => $order_id,
                 'amount' => $amount,
                 'reason' => $reason,
-                'reversal_result' => wp_json_encode($reversal_result),
                 'reversal_data' => $reversal_data,
             )
         );
