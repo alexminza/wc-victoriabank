@@ -603,7 +603,6 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                 array(
                     'order_id' => $order_id,
                     'order_total' => $order_total,
-                    'completion_result' => wp_json_encode($completion_result),
                 )
             );
 
