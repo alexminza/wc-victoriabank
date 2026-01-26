@@ -650,8 +650,13 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         if (!empty($check_result)) {
             $check_response = strval($check_result['body']);
             $check_data = self::parse_response_html_table($check_response);
+
+            //NOTE: Victoriabank gateway responds with plain HTML table markup
             $check_data_values = is_array($check_data) ? array_values($check_data) : array();
-            $transaction_status = count($check_data_values) >= 3 ? $check_data_values[2] : __('Unknown', 'wc-victoriabank');
+            $check_data_values['ACTION'] = isset($check_data_values[0]) ? $check_data_values[0] : '';
+            $check_data_values['TEXT'] = isset($check_data_values[2]) ? $check_data_values[2] : '';
+
+            $transaction_status = $this->get_transaction_status_text($check_data_values);
 
             /* translators: 1: Order ID, 2: Payment method title, 3: Payment status */
             $message = esc_html(sprintf(__('Order #%1$s %2$s payment status: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $transaction_status));
