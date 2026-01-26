@@ -1331,13 +1331,15 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
     public static function action_check_payment(\WC_Order $order)
     {
-        $plugin = new self();
+        /** @var WC_Gateway_Victoriabank $plugin */
+        $plugin = self::get_payment_gateway_instance();
         return $plugin->check_payment($order);
     }
 
     public static function action_complete_transaction(\WC_Order $order)
     {
-        $plugin = new self();
+        /** @var WC_Gateway_Victoriabank $plugin */
+        $plugin = self::get_payment_gateway_instance();
         return $plugin->complete_transaction($order);
     }
     //endregion
