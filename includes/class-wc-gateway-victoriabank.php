@@ -37,7 +37,8 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     const MOD_APPROVAL         = self::MOD_PREFIX . 'approval';
     const MOD_CARD             = self::MOD_PREFIX . 'card';
 
-    const MOD_ORDER_ID = 'order_id';
+    const MOD_ORDER_ID  = 'order_id';
+    const MOD_ORDER_KEY = 'order_key';
 
     const MOD_ACTION_COMPLETE_TRANSACTION = self::MOD_PREFIX . 'complete_transaction';
     const MOD_ACTION_CHECK_PAYMENT        = self::MOD_PREFIX . 'check_payment';
@@ -718,23 +719,21 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Verification is done via order existence check.
         $order_id = isset($_REQUEST[self::MOD_ORDER_ID]) ? absint(wp_unslash($_REQUEST[self::MOD_ORDER_ID])) : 0;
-        if (empty($order_id)) {
-            /* translators: 1: Payment method title */
-            $message = esc_html(sprintf(__('Order ID not received from %1$s.', 'wc-victoriabank'), $this->get_method_title()));
-            $this->log($message, \WC_Log_Levels::ERROR);
-
-            wc_add_notice($message, 'error');
-            $this->logs_admin_website_notice();
-
-            wp_safe_redirect(wc_get_cart_url());
-            return false;
-        }
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Verification is done via order key check.
+        $order_key = isset($_REQUEST[self::MOD_ORDER_KEY]) ? sanitize_text_field(wp_unslash($_REQUEST[self::MOD_ORDER_KEY])) : '';
 
         $order = wc_get_order($order_id);
-        if (empty($order)) {
-            /* translators: 1: Order ID, 2: Payment method title */
-            $message = esc_html(sprintf(__('Order #%1$s not found as received from %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
-            $this->log($message, \WC_Log_Levels::ERROR);
+        if (empty($order_id) || empty($order_key) || empty($order) || $order_key !== $order->get_order_key()) {
+            /* translators: 1: Payment method title */
+            $message = esc_html(sprintf(__('Invalid Order ID or Order Key received from %1$s.', 'wc-victoriabank'), $this->get_method_title()));
+            $this->log(
+                $message,
+                \WC_Log_Levels::ERROR,
+                array(
+                    'order_id' => $order_id,
+                    'order_key' => $order_key,
+                )
+            );
 
             wc_add_notice($message, 'error');
             $this->logs_admin_website_notice();
@@ -1102,7 +1101,13 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $order_email = $order->get_billing_email();
         $language = $this->get_language();
 
-        $redirect_url = add_query_arg(self::MOD_ORDER_ID, $order_id, $this->get_redirect_url());
+        $redirect_url = add_query_arg(
+            array(
+                self::MOD_ORDER_ID  => $order_id,
+                self::MOD_ORDER_KEY => $order->get_order_key(),
+            ),
+            $this->get_redirect_url()
+        );
 
         $client = $this->init_victoriabank_client();
         $authorize_request = $client->generateOrderAuthorizeRequest($order_id, $order_total, $order_currency, $order_description, $order_email, $redirect_url, $language);
