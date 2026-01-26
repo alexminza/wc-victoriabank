@@ -647,6 +647,15 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                 )
             );
         }
+
+        $this->log(
+            __FUNCTION__,
+            \WC_Log_Levels::DEBUG,
+            array(
+                'order_id' => $order_id,
+                'check_result' => wp_json_encode($check_result),
+            )
+        );
     }
 
     protected function check_transaction_order_data(\WC_Order $order, array $bank_response)
