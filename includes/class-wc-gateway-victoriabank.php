@@ -1004,7 +1004,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         wp_send_json_error($message);
     }
 
-    protected function process_response_form(string $vbresponse)
+    protected function process_response_html_form(string $vbresponse)
     {
         $this->log(
             __FUNCTION__,
@@ -1015,7 +1015,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             )
         );
 
-        $vbform = self::parse_response_form($vbresponse);
+        $vbform = self::parse_response_html_form($vbresponse);
         if (empty($vbform)) {
             return false;
         }
@@ -1023,9 +1023,14 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         return $this->process_response_data($vbform);
     }
 
-    protected function parse_response_form(string $vbformhtml)
+    protected function parse_response_html_form(string $vbhtml)
     {
-        return self::parse_response_regex($vbformhtml, '/<input.+name="(\w+)".+value="(.*?)"/i');
+        return self::parse_response_regex($vbhtml, '/<input.+?name=["\'](\w+?)["\'].+?value=["\'](.*?)["\']/i');
+    }
+
+    protected function parse_response_html_table(string $vbhtml)
+    {
+        return self::parse_response_regex($vbhtml, '/<td>(.*?)<\/td>\s*?<td>(.*?)<\/td>/i');
     }
 
     protected static function parse_response_post(string $vbpost)
@@ -1178,7 +1183,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $vbdata = null;
         if (!empty($reversal_result)) {
             $bank_response = strval($reversal_result['body']);
-            $vbdata = $this->parse_response_form($bank_response);
+            $vbdata = $this->parse_response_html_form($bank_response);
 
             if (!empty($vbdata)) {
                 $action = strval($vbdata['ACTION']);
