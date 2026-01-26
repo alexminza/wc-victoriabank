@@ -672,6 +672,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                 )
             );
 
+            $order->add_order_note($message);
             return;
         }
 
