@@ -544,7 +544,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             );
         }
 
-        $result = $this->receipt_page($order_id) ? 'pending': 'failure';
+        $result = $this->receipt_page($order_id) ? 'pending' : 'failure';
         return array(
             'result' => $result,
         );
@@ -648,14 +648,33 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             );
         }
 
-        $this->log(
-            __FUNCTION__,
-            \WC_Log_Levels::DEBUG,
-            array(
-                'order_id' => $order_id,
-                'check_result' => wp_json_encode($check_result),
-            )
-        );
+        if (!empty($check_result)) {
+            $check_response = strval($check_result['body']);
+            $check_data = self::parse_response_html_table($check_response);
+            $check_data_values = is_array($check_data) ? array_values($check_data) : array();
+            $transaction_status = count($check_data_values) >= 3 ? $check_data_values[2] : __('Unknown', 'wc-victoriabank');
+
+            /* translators: 1: Order ID, 2: Payment method title, 3: Payment status */
+            $message = esc_html(sprintf(__('Order #%1$s %2$s payment status: %3$s', 'wc-victoriabank'), $order_id, $this->get_method_title(), $transaction_status));
+            $message = $this->get_test_message($message);
+            \WC_Admin_Meta_Boxes::add_error($message);
+
+            $this->log(
+                $message,
+                \WC_Log_Levels::DEBUG,
+                array(
+                    'order_id' => $order_id,
+                    'check_result' => wp_json_encode($check_result),
+                    'check_data' => $check_data,
+                )
+            );
+
+            return;
+        }
+
+        /* translators: 1: Order ID */
+        $message = esc_html(sprintf(__('Order #%1$s payment check failed.', 'wc-victoriabank'), $order_id));
+        \WC_Admin_Meta_Boxes::add_error($message);
     }
 
     protected function check_transaction_order_data(\WC_Order $order, array $bank_response)
@@ -1023,12 +1042,12 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         return $this->process_response_data($vbform);
     }
 
-    protected function parse_response_html_form(string $vbhtml)
+    protected static function parse_response_html_form(string $vbhtml)
     {
         return self::parse_response_regex($vbhtml, '/<input.+?name=["\'](\w+?)["\'].+?value=["\'](.*?)["\']/i');
     }
 
-    protected function parse_response_html_table(string $vbhtml)
+    protected static function parse_response_html_table(string $vbhtml)
     {
         return self::parse_response_regex($vbhtml, '/<td>(.*?)<\/td>\s*?<td>(.*?)<\/td>/i');
     }
@@ -1063,7 +1082,9 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $vbdata = array();
         foreach ($matches as $match) {
             if (count($match) === 3) {
-                $vbdata[$match[1]] = $match[2];
+                $key = trim($match[1]);
+                $value = trim($match[2]);
+                $vbdata[$key] = $value;
             }
         }
 
@@ -1180,16 +1201,16 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             );
         }
 
-        $vbdata = null;
+        $reversal_data = null;
         if (!empty($reversal_result)) {
-            $bank_response = strval($reversal_result['body']);
-            $vbdata = $this->parse_response_html_form($bank_response);
+            $reversal_response = strval($reversal_result['body']);
+            $reversal_data = self::parse_response_html_form($reversal_response);
 
-            if (!empty($vbdata)) {
-                $action = strval($vbdata['ACTION']);
+            if (!empty($reversal_data)) {
+                $action = strval($reversal_data['ACTION']);
                 if (VictoriabankClient::ACTION_SUCCESS === $action) {
                     /* translators: 1: Order ID, 2: Refund amount, 3: Payment method title, 4: Bank response text */
-                    $message = esc_html(sprintf(__('Order #%1$s refund of %2$s initiated via %3$s: %4$s', 'wc-victoriabank'), $order_id, $this->format_price($amount, $order_currency), $this->get_method_title(), $this->get_transaction_status_text($vbdata)));
+                    $message = esc_html(sprintf(__('Order #%1$s refund of %2$s initiated via %3$s: %4$s', 'wc-victoriabank'), $order_id, $this->format_price($amount, $order_currency), $this->get_method_title(), $this->get_transaction_status_text($reversal_data)));
                     $message = $this->get_test_message($message);
                     $this->log(
                         $message,
@@ -1199,7 +1220,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                             'amount' => $amount,
                             'reason' => $reason,
                             'reversal_result' => wp_json_encode($reversal_result),
-                            'vbdata' => $vbdata,
+                            'reversal_data' => $reversal_data,
                         )
                     );
 
@@ -1210,7 +1231,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         }
 
         /* translators: 1: Order ID, 2: Refund amount, 3: Payment method title, 4: Bank response text */
-        $message = esc_html(sprintf(__('Order #%1$s refund of %2$s via %3$s failed: %4$s', 'wc-victoriabank'), $order_id, $this->format_price($amount, $order_currency), $this->get_method_title(), $this->get_transaction_status_text($vbdata)));
+        $message = esc_html(sprintf(__('Order #%1$s refund of %2$s via %3$s failed: %4$s', 'wc-victoriabank'), $order_id, $this->format_price($amount, $order_currency), $this->get_method_title(), $this->get_transaction_status_text($reversal_data)));
         $message = $this->get_test_message($message);
         $this->log(
             $message,
@@ -1220,7 +1241,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                 'amount' => $amount,
                 'reason' => $reason,
                 'reversal_result' => wp_json_encode($reversal_result),
-                'vbdata' => $vbdata,
+                'reversal_data' => $reversal_data,
             )
         );
 
