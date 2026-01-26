@@ -744,8 +744,6 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         }
 
         if ($order->is_paid()) {
-            // WC()->cart->empty_cart();
-
             /* translators: 1: Order ID, 2: Payment method title */
             $message = esc_html(sprintf(__('Order #%1$s paid successfully via %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
             $this->log($message, \WC_Log_Levels::INFO);
