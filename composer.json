@@ -40,7 +40,8 @@
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "automattic/jetpack-autoloader": true
-        }
+        },
+        "autoloader-suffix": "wc_victoriabank"
     },
     "prefer-stable": true,
     "require-dev": {
