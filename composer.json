@@ -30,14 +30,16 @@
         "php": ">=7.2.5",
         "alexminza/victoriabank-sdk": "^1.0",
         "alexminza/wc-payment-gateway-base": "^1.0",
-        "monolog/monolog": "^2.7"
+        "monolog/monolog": "^2.7",
+        "automattic/jetpack-autoloader": "^5.0"
     },
     "config": {
         "platform": {
             "php": "7.2.5"
         },
         "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "automattic/jetpack-autoloader": true
         }
     },
     "prefer-stable": true,
