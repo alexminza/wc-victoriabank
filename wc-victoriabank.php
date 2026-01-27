@@ -34,6 +34,8 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
+// https://vanrossum.dev/37-wordpress-and-composer
+// https://github.com/Automattic/jetpack-autoloader
 require_once __DIR__ . '/vendor/autoload_packages.php';
 
 const VICTORIABANK_MOD_PLUGIN_FILE = __FILE__;
