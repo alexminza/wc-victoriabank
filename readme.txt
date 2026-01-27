@@ -98,6 +98,7 @@ See [wc-victoriabank project releases on GitHub](https://github.com/alexminza/wc
 * Added bank signature algorithm configuration support: MD5 or SHA256
 * Improved keys management and connection settings
 * Improved logging and admin setup guidance
+* Improved [Composer packages versions compatibility](https://vanrossum.dev/37-wordpress-and-composer) by using [Jetpack Autoloader by Automattic](https://github.com/Automattic/jetpack-autoloader)
 * Code modernization and refactoring for better maintainability
 
 = 1.5.1 =
