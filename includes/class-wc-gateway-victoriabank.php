@@ -390,23 +390,16 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             return false;
         }
 
-        if (!$this->check_settings()) {
-            /* translators: 1: Plugin installation instructions URL */
-            $message_instructions = sprintf(__('See plugin documentation for <a href="%1$s" target="_blank">installation instructions</a>.', 'wc-victoriabank'), 'https://wordpress.org/plugins/wc-victoriabank/#installation');
-            $this->add_error(sprintf('<strong>%1$s</strong>: %2$s. %3$s', esc_html__('Connection Settings', 'wc-victoriabank'), esc_html__('Not configured', 'wc-victoriabank'), wp_kses_post($message_instructions)));
+        if (!$this->validate_public_key($this->vb_bank_public_key)) {
+            /* translators: 1: Field label */
+            $this->add_error(esc_html(sprintf(__('Invalid %1$s field.', 'wc-victoriabank'), $this->get_settings_field_label('vb_bank_public_key'))));
             return false;
-        } else {
-            if (!$this->validate_public_key($this->vb_bank_public_key)) {
-                /* translators: 1: Field label */
-                $this->add_error(esc_html(sprintf(__('Invalid %1$s field.', 'wc-victoriabank'), $this->get_settings_field_label('vb_bank_public_key'))));
-                return false;
-            }
+        }
 
-            if (!$this->validate_private_key($this->vb_private_key, $this->vb_private_key_pass)) {
-                /* translators: 1: Field label, 2: Field label */
-                $this->add_error(esc_html(sprintf(__('Invalid %1$s or %2$s fields.', 'wc-victoriabank'), $this->get_settings_field_label('vb_private_key'), $this->get_settings_field_label('vb_private_key_pass'))));
-                return false;
-            }
+        if (!$this->validate_private_key($this->vb_private_key, $this->vb_private_key_pass)) {
+            /* translators: 1: Field label, 2: Field label */
+            $this->add_error(esc_html(sprintf(__('Invalid %1$s or %2$s fields.', 'wc-victoriabank'), $this->get_settings_field_label('vb_private_key'), $this->get_settings_field_label('vb_private_key_pass'))));
+            return false;
         }
 
         return true;
