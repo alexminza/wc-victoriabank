@@ -444,12 +444,12 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
     public function validate_vb_private_key_field($key, $value)
     {
-        return $this->normalize_key_path($value);
+        return $this->migrate_key_path($value);
     }
 
     public function validate_vb_bank_public_key_field($key, $value)
     {
-        return $this->normalize_key_path($value);
+        return $this->migrate_key_path($value);
     }
     //endregion
 
@@ -488,6 +488,39 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                 )
             );
         }
+    }
+
+    protected function migrate_key_path(string $key_path)
+    {
+        $key_path = trim($key_path);
+
+        if (empty($key_path) || strpos($key_path, 'file://') === 0 || strpos($key_path, '---') === 0) {
+            return $key_path;
+        }
+
+        if (is_file($key_path) && self::is_temp_file($key_path)) {
+            $wp_filesystem = self::get_wp_filesystem();
+            $key_data = $wp_filesystem->get_contents($key_path);
+
+            if (false !== $key_data) {
+                return strval($key_data);
+            }
+        }
+
+        return $key_path;
+    }
+
+    protected static function is_temp_file(string $file_name)
+    {
+        $temp_dir = realpath(get_temp_dir());
+        $file_path = realpath($file_name);
+
+        if (empty($temp_dir) || empty($file_path)) {
+            return false;
+        }
+
+        $temp_dir = trailingslashit($temp_dir);
+        return strncmp($file_path, $temp_dir, strlen($temp_dir)) === 0;
     }
     //endregion
 
@@ -1297,7 +1330,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     }
     //endregion
 
-    //region Utility
+    //region Integration
     protected function get_callback_url()
     {
         // https://developer.woocommerce.com/docs/extensions/core-concepts/woocommerce-plugin-api-callback/
@@ -1310,9 +1343,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $redirect_url = WC()->api_request_url("wc_{$this->id}_redirect");
         return (string) apply_filters('victoriabank_redirect_url', $redirect_url);
     }
-    //endregion
 
-    //region Admin
     public static function order_actions(array $actions, \WC_Order $order)
     {
         if ($order->get_payment_method() !== self::MOD_ID) {
@@ -1346,9 +1377,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $plugin = self::get_payment_gateway_instance();
         return $plugin->complete_transaction($order);
     }
-    //endregion
 
-    //region WooCommerce
     public static function email_order_meta_fields(array $fields, bool $sent_to_admin, \WC_Order $order)
     {
         if (!$order->is_paid() || $order->get_payment_method() !== self::MOD_ID) {
