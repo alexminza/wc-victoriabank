@@ -1132,7 +1132,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                 self::MOD_ORDER_ID  => $order_id,
                 self::MOD_ORDER_KEY => $order->get_order_key(),
             ),
-            $this->get_redirect_url()
+            $this->get_redirect_url($order)
         );
 
         $client = $this->init_victoriabank_client();
@@ -1324,14 +1324,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     //endregion
 
     //region Integration
-    protected function get_callback_url()
-    {
-        // https://developer.woocommerce.com/docs/extensions/core-concepts/woocommerce-plugin-api-callback/
-        $callback_url = WC()->api_request_url("wc_{$this->id}");
-        return (string) apply_filters('victoriabank_callback_url', $callback_url);
-    }
-
-    protected function get_redirect_url()
+    protected function get_redirect_url(\WC_Order $order)
     {
         $redirect_url = WC()->api_request_url("wc_{$this->id}_redirect");
         return (string) apply_filters('victoriabank_redirect_url', $redirect_url);
