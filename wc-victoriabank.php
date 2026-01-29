@@ -65,7 +65,6 @@ function victoriabank_plugins_loaded_init()
 
     //Add WooCommerce email templates actions
     add_filter('woocommerce_email_order_meta_fields', array(WC_Gateway_Victoriabank::class, 'email_order_meta_fields'), 10, 3);
-
     //endregion
 }
 

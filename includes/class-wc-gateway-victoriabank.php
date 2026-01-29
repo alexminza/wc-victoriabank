@@ -270,12 +270,14 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                 'type'        => 'textarea',
                 'description' => '<code>file:///path/to/victoria_pub.pem</code>',
                 'placeholder' => "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----",
+                'class'       => 'code',
             ),
             'vb_private_key'  => array(
                 'title'       => __('Merchant private key', 'wc-victoriabank'),
                 'type'        => 'textarea',
                 'description' => '<code>file:///path/to/key.pem</code>',
                 'placeholder' => "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----",
+                'class'       => 'code',
             ),
             'vb_private_key_pass' => array(
                 'title'       => __('Private key passphrase', 'wc-victoriabank'),
@@ -315,6 +317,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                 'description' => sprintf('<a href="#" id="%1$s" class="button">%2$s</a><span class="spinner" style="float: none;"></span>', $this->get_field_key('process_callback_data'), esc_html__('Process', 'wc-victoriabank')),
                 'desc_tip'    => __('Manually process bank transaction response callback data received by email as part of the backup procedure.', 'wc-victoriabank'),
                 'placeholder' => "TERMINAL=49812345\nTRTYPE=0\nORDER=000123\nAMOUNT=123.45\nCURRENCY=MDL\n...",
+                'class'       => 'code',
             ),
         );
     }
