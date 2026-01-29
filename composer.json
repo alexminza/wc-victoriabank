@@ -41,7 +41,8 @@
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "automattic/jetpack-autoloader": true
         },
-        "autoloader-suffix": "wc_victoriabank"
+        "autoloader-suffix": "WC_Gateway_Victoriabank",
+        "optimize-autoloader": true
     },
     "prefer-stable": true,
     "require-dev": {
