@@ -9,7 +9,7 @@
             "command": "composer",
             "args": [
                 "update",
-                "--no-dev"
+                // "--no-dev"
             ],
             "problemMatcher": [],
             "options": {
