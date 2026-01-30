@@ -752,7 +752,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $order_key = isset($_REQUEST[self::MOD_ORDER_KEY]) ? sanitize_text_field(wp_unslash($_REQUEST[self::MOD_ORDER_KEY])) : '';
 
         $order = wc_get_order($order_id);
-        if (empty($order_id) || empty($order_key) || empty($order) || !hash_equals($order->get_order_key(), $order_key) || $this->id !== $order->get_payment_method()) {
+        if (empty($order_id) || empty($order_key) || empty($order) || !hash_equals($order->get_order_key(), $order_key)) {
             /* translators: 1: Payment method title */
             $message = esc_html(sprintf(__('Invalid Order ID or Order Key received from %1$s.', 'wc-victoriabank'), $this->get_method_title()));
             $this->log(
