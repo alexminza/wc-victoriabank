@@ -750,7 +750,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             $this->logs_admin_website_notice();
 
             wp_safe_redirect(wc_get_cart_url());
-            return false;
+            exit;
         }
 
         if ($order->is_paid()) {
@@ -761,7 +761,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             wc_add_notice($message, 'success');
 
             wp_safe_redirect($this->get_return_url($order));
-            return true;
+            exit;
         } else {
             /* translators: 1: Order ID, 2: Payment method title */
             $message = esc_html(sprintf(__('Order #%1$s payment failed via %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
@@ -771,7 +771,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             $this->logs_admin_website_notice();
 
             wp_safe_redirect($order->get_checkout_payment_url());
-            return false;
+            exit;
         }
     }
 
