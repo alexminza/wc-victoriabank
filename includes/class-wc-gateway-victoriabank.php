@@ -504,14 +504,16 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     protected static function is_temp_file(string $file_name)
     {
         $temp_dir = realpath(get_temp_dir());
-        $file_path = realpath($file_name);
+        $file_dir = realpath(dirname($file_name));
 
-        if (empty($temp_dir) || empty($file_path)) {
+        if (empty($temp_dir) || empty($file_dir)) {
             return false;
         }
 
         $temp_dir = trailingslashit($temp_dir);
-        return strncmp($file_path, $temp_dir, strlen($temp_dir)) === 0;
+        $file_dir = trailingslashit($file_dir);
+
+        return strncmp($file_dir, $temp_dir, strlen($temp_dir)) === 0;
     }
     //endregion
 
