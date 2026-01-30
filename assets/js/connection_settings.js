@@ -1,58 +1,59 @@
-/* global vb_connection_settings */
-jQuery(function () {
-    var vb_connection_basic_fields = jQuery(vb_connection_settings.connection_basic_fields_ids).closest("tr");
-    var vb_connection_advanced_fields = jQuery(vb_connection_settings.connection_advanced_fields_ids).closest("tr");
-    var vb_notification_advanced_fields = jQuery(vb_connection_settings.notification_advanced_fields_ids).closest("tr");
+/* global vb_connection_settings, ajaxurl */
+jQuery(function ($) {
+    var $connectionBasicFields = $(vb_connection_settings.connection_basic_fields_ids).closest('tr');
+    var $connectionAdvancedFields = $(vb_connection_settings.connection_advanced_fields_ids).closest('tr');
+    var $notificationAdvancedFields = $(vb_connection_settings.notification_advanced_fields_ids).closest('tr');
 
-    vb_connection_basic_fields.hide();
-    vb_connection_advanced_fields.hide();
-    vb_notification_advanced_fields.hide();
+    $connectionBasicFields.hide();
+    $connectionAdvancedFields.hide();
+    $notificationAdvancedFields.hide();
 
-    jQuery(vb_connection_settings.basic_settings_button_id).on("click", function () {
-        vb_connection_advanced_fields.hide();
-        vb_connection_basic_fields.show();
-        return false;
+    $(vb_connection_settings.basic_settings_button_id).on('click', function (e) {
+        e.preventDefault();
+        $connectionAdvancedFields.hide();
+        $connectionBasicFields.show();
     });
 
-    jQuery(vb_connection_settings.advanced_settings_button_id).on("click", function () {
-        vb_connection_basic_fields.hide();
-        vb_connection_advanced_fields.show();
-        return false;
+    $(vb_connection_settings.advanced_settings_button_id).on('click', function (e) {
+        e.preventDefault();
+        $connectionBasicFields.hide();
+        $connectionAdvancedFields.show();
     });
 
-    jQuery(vb_connection_settings.payment_notification_advanced_button_id).on("click", function () {
-        vb_notification_advanced_fields.show();
-        return false;
+    $(vb_connection_settings.payment_notification_advanced_button_id).on('click', function (e) {
+        e.preventDefault();
+        $notificationAdvancedFields.toggle();
     });
 
-    jQuery(vb_connection_settings.process_callback_data_button_id).on("click", function () {
+    $(vb_connection_settings.process_callback_data_button_id).on('click', function (e) {
+        e.preventDefault();
+
         if (!confirm(vb_connection_settings.message)) {
-            return false;
+            return;
         }
 
-        var $this = jQuery(this);
-
-        if ($this.prop("disabled")) {
-            return false;
+        var $this = $(this);
+        if ($this.prop('disabled')) {
+            return;
         }
 
-        $this.prop("disabled", true);
-        $this.next(".spinner").addClass("is-active");
+        $this.prop('disabled', true);
+        $this.next('.spinner').addClass('is-active');
 
-        var callback_data = jQuery(vb_connection_settings.vb_callback_data_field_id).val();
+        var callbackData = $(vb_connection_settings.vb_callback_data_field_id).val();
 
-        jQuery.ajax({
-            type: "POST",
+        $.ajax({
+            type: 'POST',
+            url: ajaxurl,
+            dataType: 'json',
             data: {
                 _ajax_nonce: vb_connection_settings.nonce,
                 action: vb_connection_settings.action,
-                callback_data: callback_data
+                callback_data: callbackData
             },
-            dataType: "json",
-            url: ajaxurl,
-            complete: function (response, textStatus) {
-                $this.prop("disabled", false);
-                $this.next(".spinner").removeClass("is-active");
+            complete: function (response) {
+                $this.prop('disabled', false);
+                $this.next('.spinner').removeClass('is-active');
 
                 if (response.responseJSON && response.responseJSON.data) {
                     alert(response.responseJSON.data);
@@ -61,7 +62,5 @@ jQuery(function () {
                 }
             }
         });
-
-        return false;
     });
 });
