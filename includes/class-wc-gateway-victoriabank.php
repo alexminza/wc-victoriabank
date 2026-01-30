@@ -722,11 +722,11 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $this->log_request(__FUNCTION__);
 
         // Received payment data from VB here instead of CallbackURL?
-        $request_method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
-        if ('POST' === $request_method) {
-            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verification is done via bank signature in process_response_data.
-            $this->process_response_data($_POST);
-        }
+        // $request_method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
+        // if ('POST' === $request_method) {
+        //     // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verification is done via bank signature in process_response_data.
+        //     $this->process_response_data($_POST);
+        // }
 
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Verification is done via order existence check.
         $order_id = isset($_REQUEST[self::MOD_ORDER_ID]) ? absint(wp_unslash($_REQUEST[self::MOD_ORDER_ID])) : 0;
