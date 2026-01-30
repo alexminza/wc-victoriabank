@@ -336,9 +336,6 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
     public function admin_options()
     {
-        $this->validate_settings();
-        $this->display_errors();
-
         // https://developer.woocommerce.com/2025/11/19/deprecation-of-wc_enqueue_js-in-10-4/
         $script_handle = self::MOD_PREFIX . 'connection_settings';
         wp_register_script($script_handle, plugins_url('assets/js/connection_settings.js', self::MOD_PLUGIN_FILE), array('jquery'), self::MOD_VERSION, true);
@@ -389,23 +386,21 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
     protected function validate_settings()
     {
-        if (!parent::validate_settings()) {
-            return false;
-        }
+        $validate_result = parent::validate_settings();
 
         if (!$this->validate_public_key($this->vb_bank_public_key)) {
             /* translators: 1: Field label */
             $this->add_error(esc_html(sprintf(__('Invalid %1$s field.', 'wc-victoriabank'), $this->get_settings_field_label('vb_bank_public_key'))));
-            return false;
+            $validate_result = false;
         }
 
         if (!$this->validate_private_key($this->vb_private_key, $this->vb_private_key_pass)) {
             /* translators: 1: Field label, 2: Field label */
             $this->add_error(esc_html(sprintf(__('Invalid %1$s or %2$s fields.', 'wc-victoriabank'), $this->get_settings_field_label('vb_private_key'), $this->get_settings_field_label('vb_private_key_pass'))));
-            return false;
+            $validate_result = false;
         }
 
-        return true;
+        return $validate_result;
     }
 
     public function validate_order_template_field($key, $value)
