@@ -722,11 +722,11 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $this->log_request(__FUNCTION__);
 
         // Received payment data from VB here instead of CallbackURL?
-        // $request_method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
-        // if ('POST' === $request_method) {
-        //     // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verification is done via bank signature in process_response_data.
-        //     $this->process_response_data($_POST);
-        // }
+        $request_method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
+        if ('POST' === $request_method) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verification is done via bank signature in process_response_data.
+            $this->process_response_data($_POST);
+        }
 
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Verification is done via order existence check.
         $order_id = isset($_REQUEST[self::MOD_ORDER_ID]) ? absint(wp_unslash($_REQUEST[self::MOD_ORDER_ID])) : 0;
@@ -1088,7 +1088,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     {
         $match_result = preg_match_all($regex, $vbresponse, $matches, PREG_SET_ORDER);
         if (empty($match_result)) {
-            return false;
+            return null;
         }
 
         $vbdata = array();
@@ -1096,6 +1096,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             if (count($match) === 3) {
                 $key = trim($match[1]);
                 $value = trim($match[2]);
+
                 $vbdata[$key] = $value;
             }
         }
@@ -1312,7 +1313,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     protected function get_redirect_url(\WC_Order $order)
     {
         $redirect_url = WC()->api_request_url("wc_{$this->id}_redirect");
-        return (string) apply_filters('victoriabank_redirect_url', $redirect_url);
+        return strval(apply_filters('victoriabank_redirect_url', $redirect_url));
     }
 
     public static function order_actions(array $actions, \WC_Order $order)
