@@ -87,6 +87,10 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         if (is_admin()) {
             add_action("woocommerce_update_options_payment_gateways_{$this->id}", array($this, 'process_admin_options'));
             add_action('wp_ajax_victoriabank_process_callback_data', array($this, 'process_callback_data'));
+
+            add_filter('woocommerce_order_actions', array($this, 'order_actions'), 10, 2);
+            add_action('woocommerce_order_action_' . self::MOD_ACTION_COMPLETE_TRANSACTION, array($this, 'action_complete_transaction'));
+            add_action('woocommerce_order_action_' . self::MOD_ACTION_CHECK_PAYMENT, array($this, 'action_check_payment'));
         }
 
         add_action("woocommerce_receipt_{$this->id}", array($this, 'receipt_page'));

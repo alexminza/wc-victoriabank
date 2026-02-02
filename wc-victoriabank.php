@@ -56,11 +56,6 @@ function victoriabank_plugins_loaded_init()
 
     if (is_admin()) {
         add_filter('plugin_action_links_' . plugin_basename(__FILE__), array(WC_Gateway_Victoriabank::class, 'plugin_action_links'));
-
-        //Add WooCommerce order actions
-        add_filter('woocommerce_order_actions', array(WC_Gateway_Victoriabank::class, 'order_actions'), 10, 2);
-        add_action('woocommerce_order_action_' . WC_Gateway_Victoriabank::MOD_ACTION_COMPLETE_TRANSACTION, array(WC_Gateway_Victoriabank::class, 'action_complete_transaction'));
-        add_action('woocommerce_order_action_' . WC_Gateway_Victoriabank::MOD_ACTION_CHECK_PAYMENT, array(WC_Gateway_Victoriabank::class, 'action_check_payment'));
     }
 
     //Add WooCommerce email templates actions
