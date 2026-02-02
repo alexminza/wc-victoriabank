@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "alexminza/victoriabank-sdk",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alexminza/victoriabank-sdk-php.git",
-                "reference": "b98f8f677fffa7d6053b80209f72f33ec136b838"
+                "reference": "93667fa550430c4a121d984e0ff97331f2df1ae5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alexminza/victoriabank-sdk-php/zipball/b98f8f677fffa7d6053b80209f72f33ec136b838",
-                "reference": "b98f8f677fffa7d6053b80209f72f33ec136b838",
+                "url": "https://api.github.com/repos/alexminza/victoriabank-sdk-php/zipball/93667fa550430c4a121d984e0ff97331f2df1ae5",
+                "reference": "93667fa550430c4a121d984e0ff97331f2df1ae5",
                 "shasum": ""
             },
             "require": {
@@ -26,8 +26,11 @@
                 "php": ">=7.2.5"
             },
             "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "*",
                 "monolog/monolog": "*",
+                "phpcompatibility/php-compatibility": "*",
                 "phpunit/phpunit": "*",
+                "squizlabs/php_codesniffer": "*",
                 "vlucas/phpdotenv": "*"
             },
             "suggest": {
@@ -66,7 +69,7 @@
                 "issues": "https://github.com/alexminza/victoriabank-sdk-php/issues",
                 "source": "https://github.com/alexminza/victoriabank-sdk-php"
             },
-            "time": "2026-01-17T10:08:10+00:00"
+            "time": "2026-02-02T13:21:20+00:00"
         },
         {
             "name": "alexminza/wc-payment-gateway-base",
