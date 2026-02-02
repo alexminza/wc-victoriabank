@@ -1046,7 +1046,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             )
         );
 
-        $vbform = self::parse_response_html_form($vbresponse);
+        $vbform = VictoriabankClient::parseHtmlForm($vbresponse);
         if (empty($vbform)) {
             return false;
         }
@@ -1054,14 +1054,9 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         return $this->process_response_data($vbform);
     }
 
-    protected static function parse_response_html_form(string $vbhtml)
-    {
-        return self::parse_response_regex($vbhtml, '/<input.+?name=["\'](\w+?)["\'].+?value=["\'](.*?)["\']/i');
-    }
-
     protected static function parse_response_html_table(string $vbhtml)
     {
-        return self::parse_response_regex($vbhtml, '/<td>(.*?)<\/td>\s*?<td>(.*?)<\/td>/i');
+        return VictoriabankClient::parseResponseRegex($vbhtml, '/<td>(.*?)<\/td>\s*?<td>(.*?)<\/td>/i');
     }
 
     protected static function parse_response_post(string $vbpost)
@@ -1080,26 +1075,6 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $vbpost = preg_replace('/\R+/', '&', $vbpost) ?? '';
         $vbdata = array();
         parse_str($vbpost, $vbdata);
-
-        return $vbdata;
-    }
-
-    protected static function parse_response_regex(string $vbresponse, string $regex)
-    {
-        $match_result = preg_match_all($regex, $vbresponse, $matches, PREG_SET_ORDER);
-        if (empty($match_result)) {
-            return null;
-        }
-
-        $vbdata = array();
-        foreach ($matches as $match) {
-            if (count($match) === 3) {
-                $key = trim($match[1]);
-                $value = trim($match[2]);
-
-                $vbdata[$key] = $value;
-            }
-        }
 
         return $vbdata;
     }
@@ -1234,7 +1209,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $reversal_data = null;
         if (!empty($reversal_result)) {
             $reversal_response = strval($reversal_result['body']);
-            $reversal_data = self::parse_response_html_form($reversal_response);
+            $reversal_data = VictoriabankClient::parseHtmlForm($reversal_response);
 
             if (!empty($reversal_data)) {
                 $action = strval($reversal_data['ACTION']);
