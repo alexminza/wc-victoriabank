@@ -1,11 +1,11 @@
-# Copyright (C) 2025 Alexander Minza
+# Copyright (C) 2026 Alexander Minza
 # This file is distributed under the same license as the Victoriabank Payment Gateway for WooCommerce package.
 msgid ""
 msgstr ""
 "Project-Id-Version: Payment Gateway for Victoriabank for WooCommerce 1.6.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-victoriabank\n"
 "POT-Creation-Date: 2026-02-02 15:38+0200\n"
-"PO-Revision-Date: 2026-02-02 15:46+0200\n"
+"PO-Revision-Date: 2026-02-02 15:59+0200\n"
 "Last-Translator: Alexander Minza <alex@alexminza.com>\n"
 "Language-Team: \n"
 "Language: ro\n"
