@@ -90,7 +90,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
             add_filter('woocommerce_order_actions', array($this, 'order_actions'), 10, 2);
             add_action('woocommerce_order_action_' . self::MOD_ACTION_COMPLETE_TRANSACTION, array($this, 'action_complete_transaction'));
-            add_action('woocommerce_order_action_' . self::MOD_ACTION_CHECK_PAYMENT, array($this, 'action_check_payment'));
+            // add_action('woocommerce_order_action_' . self::MOD_ACTION_CHECK_PAYMENT, array($this, 'action_check_payment'));
         }
 
         add_action("woocommerce_receipt_{$this->id}", array($this, 'receipt_page'));
@@ -1310,7 +1310,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         }
 
         /* translators: 1: Payment method title */
-        $actions[self::MOD_ACTION_CHECK_PAYMENT] = esc_html(sprintf(__('Check %1$s order payment', 'wc-victoriabank'), self::MOD_TITLE));
+        // $actions[self::MOD_ACTION_CHECK_PAYMENT] = esc_html(sprintf(__('Check %1$s order payment', 'wc-victoriabank'), self::MOD_TITLE));
 
         return $actions;
     }
