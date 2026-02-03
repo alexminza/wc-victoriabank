@@ -790,7 +790,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             wc_add_notice($message, 'notice');
 
             wp_safe_redirect(wc_get_cart_url());
-            return false;
+            exit;
         }
 
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verification is done via bank signature in process_response_data
@@ -1151,7 +1151,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $this->logs_admin_website_notice();
 
         wp_safe_redirect($order->get_checkout_payment_url());
-        return false;
+        exit;
     }
 
     /**
