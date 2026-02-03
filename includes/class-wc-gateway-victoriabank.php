@@ -78,8 +78,8 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $this->vb_merchant_url      = $this->get_option('vb_merchant_url');
         $this->vb_merchant_address  = $this->get_option('vb_merchant_address');
 
-        $this->vb_bank_public_key   = $this->normalize_key_path($this->get_option('vb_bank_public_key'));
-        $this->vb_private_key       = $this->normalize_key_path($this->get_option('vb_private_key'));
+        $this->vb_bank_public_key   = $this->get_option('vb_bank_public_key');
+        $this->vb_private_key       = $this->get_option('vb_private_key');
         $this->vb_private_key_pass  = $this->get_option('vb_private_key_pass');
         $this->vb_signature_algo    = $this->get_option('vb_signature_algo', VictoriabankClient::P_SIGN_HASH_ALGO_MD5);
         //endregion
@@ -340,6 +340,8 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
     public function admin_options()
     {
+        $this->initialize_keys();
+
         // https://developer.woocommerce.com/2025/11/19/deprecation-of-wc_enqueue_js-in-10-4/
         $script_handle = self::MOD_PREFIX . 'connection_settings';
         wp_register_script($script_handle, plugins_url('assets/js/connection_settings.js', self::MOD_PLUGIN_FILE), array('jquery'), self::MOD_VERSION, true);
@@ -485,6 +487,12 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         }
     }
 
+    protected function initialize_keys()
+    {
+        $this->vb_bank_public_key = $this->normalize_key_path($this->vb_bank_public_key);
+        $this->vb_private_key     = $this->normalize_key_path($this->vb_private_key);
+    }
+
     protected function migrate_key_path(string $key_path)
     {
         $key_path = trim($key_path);
@@ -509,6 +517,10 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     //region Payment
     protected function init_victoriabank_client()
     {
+        $this->initialize_keys();
+
+        // http://docs.guzzlephp.org/en/stable/request-options.html
+        // https://www.php.net/manual/en/function.curl-setopt.php
         $options = array(
             'base_uri' => $this->vb_base_url,
             'timeout'  => self::DEFAULT_TIMEOUT,
