@@ -1292,7 +1292,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     protected function get_redirect_url(\WC_Order $order)
     {
         $redirect_url = WC()->api_request_url("wc_{$this->id}_redirect");
-        return strval(apply_filters('victoriabank_redirect_url', $redirect_url));
+        return strval(apply_filters('victoriabank_redirect_url', $redirect_url, $order));
     }
 
     public static function order_actions(array $actions, \WC_Order $order)
