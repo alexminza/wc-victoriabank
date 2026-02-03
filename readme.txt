@@ -3,7 +3,7 @@ Contributors: alexminza
 Tags: Moldova, Victoriabank, Visa, Mastercard, payment gateway
 Requires at least: 4.8
 Tested up to: 6.9
-Stable tag: 1.5.1
+Stable tag: 1.6.0
 Requires PHP: 7.2.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -93,6 +93,14 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 
 See [wc-victoriabank project releases on GitHub](https://github.com/alexminza/wc-victoriabank/releases) for details.
 
+= 1.6.0 =
+* Migrated to new [PHP SDK for Victoriabank API](https://github.com/alexminza/victoriabank-sdk-php)
+* Added bank signature algorithm configuration support: MD5 or SHA256
+* Improved keys management and connection settings
+* Improved logging and admin setup guidance
+* Improved [Composer packages versions compatibility](https://vanrossum.dev/37-wordpress-and-composer) by using [Jetpack Autoloader by Automattic](https://github.com/Automattic/jetpack-autoloader)
+* Code modernization and refactoring for better maintainability
+
 = 1.5.1 =
 WP_Filesystem initialization fix.
 
@@ -163,6 +171,9 @@ Minor improvements
 Initial release
 
 == Upgrade Notice ==
+
+= 1.6.0 =
+Migrated to new [PHP SDK for Victoriabank API](https://github.com/alexminza/victoriabank-sdk-php).
 
 = 1.5.1 =
 WP_Filesystem initialization fix.
