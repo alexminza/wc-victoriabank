@@ -1309,8 +1309,10 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             }
         }
 
-        /* translators: 1: Payment method title */
-        // $actions[self::MOD_ACTION_CHECK_PAYMENT] = esc_html(sprintf(__('Check %1$s order payment', 'wc-victoriabank'), self::MOD_TITLE));
+        // elseif ($order->needs_payment()) {
+            /* translators: 1: Payment method title */
+            // $actions[self::MOD_ACTION_CHECK_PAYMENT] = esc_html(sprintf(__('Check %1$s order payment', 'wc-victoriabank'), self::MOD_TITLE));
+        // }
 
         return $actions;
     }
