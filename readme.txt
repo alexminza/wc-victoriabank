@@ -30,6 +30,10 @@ Accept Visa and Mastercard directly on your store with the Payment Gateway for V
 
 == Installation ==
 
+Before installation you need to sign up with **Victoriabank** to receive the merchant data and connection settings.
+
+See [https://www.victoriabank.md/en/carduri-pj/e-commerce](https://www.victoriabank.md/en/carduri-pj/e-commerce) and contact [Card.Acceptare@vb.md](mailto:Card.Acceptare@vb.md) for details.
+
 1. Generate the public / private key pair according to the instructions from *Appendix A*, section *"2. Key Generation and transmission"* of the *"e-Commerce Gateway merchant interface (CGI/WWW forms version)"* document received from the bank
 2. Configure the plugin Connection Settings by performing one of the following steps:
     * **BASIC**: Upload the generated PEM key files and the bank public key
@@ -42,6 +46,8 @@ Accept Visa and Mastercard directly on your store with the Payment Gateway for V
     * **Test case No 2**: Set *Transaction type* to *Authorization*, create a new order and pay with a test card, afterwards perform a full order refund
     * **Test case No 3**: Set *Transaction type* to *Charge*, create a new order and pay with a test card, afterwards perform a full order refund
 7. Disable *Test* and *Debug* modes when ready to accept live payments
+
+See [https://ecomt.victoriabank.md/cardop/images/instruction-ecom-vb.zip](https://ecomt.victoriabank.md/cardop/images/instruction-ecom-vb.zip) for more details.
 
 == Frequently Asked Questions ==
 
