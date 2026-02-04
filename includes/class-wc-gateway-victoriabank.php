@@ -332,7 +332,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             case self::LOGO_TYPE_BANK:
                 return plugins_url('assets/img/victoriabank.png', self::MOD_PLUGIN_FILE);
             case self::LOGO_TYPE_SYSTEMS:
-                return plugins_url('assets/img/paymentsystems.png', self::MOD_PLUGIN_FILE);
+                return plugins_url('assets/img/paymentsystems.svg', self::MOD_PLUGIN_FILE);
         }
 
         return '';
