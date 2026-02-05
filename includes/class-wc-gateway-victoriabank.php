@@ -910,7 +910,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                         if ($order->is_paid()) {
                             /* translators: 1: Order ID */
                             $message = sprintf(__('Order #%1$s already fully paid.', 'wc-victoriabank'), $order_id);
-                            $this->log($message, \WC_Log_Levels::WARNING);
+                            $this->log($message, \WC_Log_Levels::DEBUG);
 
                             return true;
                         }
