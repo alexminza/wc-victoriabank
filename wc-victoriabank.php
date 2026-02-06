@@ -75,6 +75,11 @@ add_action(
             // WooCommerce Cart Checkout Blocks compatibility
             // https://github.com/woocommerce/woocommerce/pull/36426
             \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('cart_checkout_blocks', __FILE__, true);
+
+            // WooCommerce Product Object Caching compatibility
+            // https://developer.woocommerce.com/2026/01/19/experimental-product-object-caching-in-woocommerce-10-5/
+            // https://github.com/woocommerce/woocommerce/pull/62041
+            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('product_instance_caching', __FILE__, true);
         }
     }
 );
