@@ -820,24 +820,33 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             )
         );
 
-        $validate_result = null;
+        $validation_result = null;
         try {
             $client = $this->init_victoriabank_client();
-            $validate_result = $client->validateResponse($bank_response);
+            $validation_result = $client->validateResponse($bank_response);
+
+            $this->log(
+                sprintf(__('Payment notification callback', 'wc-victoriabank')),
+                \WC_Log_Levels::INFO,
+                array(
+                    'validation_result' => $validation_result,
+                    'bank_response' => $bank_response,
+                )
+            );
         } catch (\Exception $ex) {
             $this->log(
                 $ex->getMessage(),
                 \WC_Log_Levels::ERROR,
                 array(
                     'bank_response' => $bank_response,
-                    'validate_result' => $validate_result,
+                    'validation_result' => $validation_result,
                     'exception' => (string) $ex,
                     'backtrace' => true,
                 )
             );
         }
 
-        if (!$validate_result) {
+        if (!$validation_result) {
             /* translators: 1: Payment method title */
             $message = esc_html(sprintf(__('%1$s payment notification callback validation failed.', 'wc-victoriabank'), $this->get_method_title()));
             $this->log(
@@ -845,7 +854,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                 \WC_Log_Levels::ERROR,
                 array(
                     'bank_response' => $bank_response,
-                    'validate_result' => $validate_result,
+                    'validation_result' => $validation_result,
                     'backtrace' => true,
                 )
             );
