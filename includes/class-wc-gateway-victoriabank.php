@@ -825,8 +825,10 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             $client = $this->init_victoriabank_client();
             $validation_result = $client->validateResponse($bank_response);
 
+            $message = esc_html(sprintf(__('Payment notification callback', 'wc-victoriabank')));
+            $message = $this->get_test_message($message);
             $this->log(
-                sprintf(__('Payment notification callback', 'wc-victoriabank')),
+                $message,
                 \WC_Log_Levels::INFO,
                 array(
                     'validation_result' => $validation_result,
@@ -849,6 +851,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         if (!$validation_result) {
             /* translators: 1: Payment method title */
             $message = esc_html(sprintf(__('%1$s payment notification callback validation failed.', 'wc-victoriabank'), $this->get_method_title()));
+            $message = $this->get_test_message($message);
             $this->log(
                 $message,
                 \WC_Log_Levels::ERROR,
@@ -879,6 +882,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         if (empty($order_id)) {
             /* translators: 1: Payment method title */
             $message = esc_html(sprintf(__('Order ID not received from %1$s.', 'wc-victoriabank'), $this->get_method_title()));
+            $message = $this->get_test_message($message);
             $this->log(
                 $message,
                 \WC_Log_Levels::ERROR,
@@ -894,6 +898,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         if (empty($order)) {
             /* translators: 1: Order ID, 2: Payment method title */
             $message = esc_html(sprintf(__('Order #%1$s not found as received from %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
+            $message = $this->get_test_message($message);
             $this->log(
                 $message,
                 \WC_Log_Levels::ERROR,
