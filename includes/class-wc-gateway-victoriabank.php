@@ -919,6 +919,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                         if ($order->is_paid()) {
                             /* translators: 1: Order ID */
                             $message = sprintf(__('Order #%1$s already fully paid.', 'wc-victoriabank'), $order_id);
+                            $message = $this->get_test_message($message);
                             $this->log($message, \WC_Log_Levels::DEBUG);
 
                             return true;
@@ -926,7 +927,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                         //endregion
 
                         //region Complete order payment
-                        // https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book
+                        // https://developer.woocommerce.com/docs/features/high-performance-order-storage/recipe-book/#apis-for-gettingsetting-posts-and-postmeta
                         $order->update_meta_data(self::MOD_TRANSACTION_TYPE, $this->transaction_type);
                         $order->update_meta_data(self::MOD_PAYMENT_RECEIPT, http_build_query($bank_response));
 
