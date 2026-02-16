@@ -825,7 +825,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             $client = $this->init_victoriabank_client();
             $validation_result = $client->validateResponse($bank_response);
 
-            $message = esc_html(sprintf(__('Payment notification callback', 'wc-victoriabank')));
+            $message = esc_html(__('Payment notification callback', 'wc-victoriabank'));
             $message = $this->get_test_message($message);
             $this->log(
                 $message,
