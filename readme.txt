@@ -3,7 +3,7 @@ Contributors: alexminza
 Tags: Moldova, Victoriabank, Visa, Mastercard, payment gateway
 Requires at least: 4.8
 Tested up to: 6.9
-Stable tag: 1.6.0
+Stable tag: 1.6.1
 Requires PHP: 7.2.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -30,6 +30,10 @@ Accept Visa and Mastercard directly on your store with the Payment Gateway for V
 
 == Installation ==
 
+Before installation you need to sign up with **Victoriabank** to receive the merchant data and connection settings.
+
+See [https://www.victoriabank.md/en/carduri-pj/e-commerce](https://www.victoriabank.md/en/carduri-pj/e-commerce) and contact [Card.Acceptare@vb.md](mailto:Card.Acceptare@vb.md) for details.
+
 1. Generate the public / private key pair according to the instructions from *Appendix A*, section *"2. Key Generation and transmission"* of the *"e-Commerce Gateway merchant interface (CGI/WWW forms version)"* document received from the bank
 2. Configure the plugin Connection Settings by performing one of the following steps:
     * **BASIC**: Upload the generated PEM key files and the bank public key
@@ -42,6 +46,8 @@ Accept Visa and Mastercard directly on your store with the Payment Gateway for V
     * **Test case No 2**: Set *Transaction type* to *Authorization*, create a new order and pay with a test card, afterwards perform a full order refund
     * **Test case No 3**: Set *Transaction type* to *Charge*, create a new order and pay with a test card, afterwards perform a full order refund
 7. Disable *Test* and *Debug* modes when ready to accept live payments
+
+See [https://ecomt.victoriabank.md/cardop/images/instruction-ecom-vb.zip](https://ecomt.victoriabank.md/cardop/images/instruction-ecom-vb.zip) for more details.
 
 == Frequently Asked Questions ==
 
@@ -92,6 +98,11 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 == Changelog ==
 
 See [wc-victoriabank project releases on GitHub](https://github.com/alexminza/wc-victoriabank/releases) for details.
+
+= 1.6.1 =
+* Improved keys initialization for better performance and maintainability
+* Added new SVG logos for better visual quality
+* Enhanced payment notification logging
 
 = 1.6.0 =
 * Migrated to new [PHP SDK for Victoriabank API](https://github.com/alexminza/victoriabank-sdk-php)
@@ -171,6 +182,9 @@ Minor improvements
 Initial release
 
 == Upgrade Notice ==
+
+= 1.6.1 =
+Improved keys initialization and logging. Added new SVG logos for better visual quality.
 
 = 1.6.0 =
 Migrated to new [PHP SDK for Victoriabank API](https://github.com/alexminza/victoriabank-sdk-php).

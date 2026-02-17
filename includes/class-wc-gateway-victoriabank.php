@@ -19,7 +19,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     const MOD_TEXT_DOMAIN = 'wc-victoriabank';
     const MOD_PREFIX      = 'vb_';
     const MOD_TITLE       = 'Victoriabank';
-    const MOD_VERSION     = '1.6.0';
+    const MOD_VERSION     = '1.6.1';
     const MOD_PLUGIN_FILE = VICTORIABANK_MOD_PLUGIN_FILE;
 
     const SUPPORTED_CURRENCIES = array('MDL', 'EUR', 'USD');
@@ -78,8 +78,8 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         $this->vb_merchant_url      = $this->get_option('vb_merchant_url');
         $this->vb_merchant_address  = $this->get_option('vb_merchant_address');
 
-        $this->vb_bank_public_key   = $this->normalize_key_path($this->get_option('vb_bank_public_key'));
-        $this->vb_private_key       = $this->normalize_key_path($this->get_option('vb_private_key'));
+        $this->vb_bank_public_key   = $this->get_option('vb_bank_public_key');
+        $this->vb_private_key       = $this->get_option('vb_private_key');
         $this->vb_private_key_pass  = $this->get_option('vb_private_key_pass');
         $this->vb_signature_algo    = $this->get_option('vb_signature_algo', VictoriabankClient::P_SIGN_HASH_ALGO_MD5);
         //endregion
@@ -330,9 +330,9 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     {
         switch ($logo_type) {
             case self::LOGO_TYPE_BANK:
-                return plugins_url('assets/img/victoriabank.png', self::MOD_PLUGIN_FILE);
+                return plugins_url('assets/img/victoriabank.svg', self::MOD_PLUGIN_FILE);
             case self::LOGO_TYPE_SYSTEMS:
-                return plugins_url('assets/img/paymentsystems.png', self::MOD_PLUGIN_FILE);
+                return plugins_url('assets/img/paymentsystems.svg', self::MOD_PLUGIN_FILE);
         }
 
         return '';
@@ -340,6 +340,8 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
     public function admin_options()
     {
+        $this->initialize_keys();
+
         // https://developer.woocommerce.com/2025/11/19/deprecation-of-wc_enqueue_js-in-10-4/
         $script_handle = self::MOD_PREFIX . 'connection_settings';
         wp_register_script($script_handle, plugins_url('assets/js/connection_settings.js', self::MOD_PLUGIN_FILE), array('jquery'), self::MOD_VERSION, true);
@@ -485,6 +487,12 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         }
     }
 
+    protected function initialize_keys()
+    {
+        $this->vb_bank_public_key = $this->normalize_key_path($this->vb_bank_public_key);
+        $this->vb_private_key     = $this->normalize_key_path($this->vb_private_key);
+    }
+
     protected function migrate_key_path(string $key_path)
     {
         $key_path = trim($key_path);
@@ -509,6 +517,10 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     //region Payment
     protected function init_victoriabank_client()
     {
+        $this->initialize_keys();
+
+        // http://docs.guzzlephp.org/en/stable/request-options.html
+        // https://www.php.net/manual/en/function.curl-setopt.php
         $options = array(
             'base_uri' => $this->vb_base_url,
             'timeout'  => self::DEFAULT_TIMEOUT,
@@ -808,32 +820,44 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             )
         );
 
-        $validate_result = null;
+        $validation_result = null;
         try {
             $client = $this->init_victoriabank_client();
-            $validate_result = $client->validateResponse($bank_response);
+            $validation_result = $client->validateResponse($bank_response);
+
+            $message = __('Payment notification callback', 'wc-victoriabank');
+            $message = $this->get_test_message($message);
+            $this->log(
+                $message,
+                \WC_Log_Levels::INFO,
+                array(
+                    'validation_result' => $validation_result,
+                    'bank_response' => $bank_response,
+                )
+            );
         } catch (\Exception $ex) {
             $this->log(
                 $ex->getMessage(),
                 \WC_Log_Levels::ERROR,
                 array(
                     'bank_response' => $bank_response,
-                    'validate_result' => $validate_result,
+                    'validation_result' => $validation_result,
                     'exception' => (string) $ex,
                     'backtrace' => true,
                 )
             );
         }
 
-        if (!$validate_result) {
+        if (!$validation_result) {
             /* translators: 1: Payment method title */
             $message = esc_html(sprintf(__('%1$s payment notification callback validation failed.', 'wc-victoriabank'), $this->get_method_title()));
+            $message = $this->get_test_message($message);
             $this->log(
                 $message,
                 \WC_Log_Levels::ERROR,
                 array(
                     'bank_response' => $bank_response,
-                    'validate_result' => $validate_result,
+                    'validation_result' => $validation_result,
                     'backtrace' => true,
                 )
             );
@@ -858,6 +882,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         if (empty($order_id)) {
             /* translators: 1: Payment method title */
             $message = esc_html(sprintf(__('Order ID not received from %1$s.', 'wc-victoriabank'), $this->get_method_title()));
+            $message = $this->get_test_message($message);
             $this->log(
                 $message,
                 \WC_Log_Levels::ERROR,
@@ -873,6 +898,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         if (empty($order)) {
             /* translators: 1: Order ID, 2: Payment method title */
             $message = esc_html(sprintf(__('Order #%1$s not found as received from %2$s.', 'wc-victoriabank'), $order_id, $this->get_method_title()));
+            $message = $this->get_test_message($message);
             $this->log(
                 $message,
                 \WC_Log_Levels::ERROR,
@@ -898,14 +924,15 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
                         if ($order->is_paid()) {
                             /* translators: 1: Order ID */
                             $message = sprintf(__('Order #%1$s already fully paid.', 'wc-victoriabank'), $order_id);
-                            $this->log($message, \WC_Log_Levels::WARNING);
+                            $message = $this->get_test_message($message);
+                            $this->log($message, \WC_Log_Levels::DEBUG);
 
                             return true;
                         }
                         //endregion
 
                         //region Complete order payment
-                        // https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book
+                        // https://developer.woocommerce.com/docs/features/high-performance-order-storage/recipe-book/#apis-for-gettingsetting-posts-and-postmeta
                         $order->update_meta_data(self::MOD_TRANSACTION_TYPE, $this->transaction_type);
                         $order->update_meta_data(self::MOD_PAYMENT_RECEIPT, http_build_query($bank_response));
 
