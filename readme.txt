@@ -99,6 +99,11 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 
 See [wc-victoriabank project releases on GitHub](https://github.com/alexminza/wc-victoriabank/releases) for details.
 
+= 1.6.1 =
+* Improved keys initialization for better performance and maintainability
+* Added new SVG logos for better visual quality
+* Enhanced payment notification logging
+
 = 1.6.0 =
 * Migrated to new [PHP SDK for Victoriabank API](https://github.com/alexminza/victoriabank-sdk-php)
 * Added bank signature algorithm configuration support: MD5 or SHA256
@@ -177,6 +182,9 @@ Minor improvements
 Initial release
 
 == Upgrade Notice ==
+
+= 1.6.1 =
+Improved keys initialization and logging. Added new SVG logos for better visual quality.
 
 = 1.6.0 =
 Migrated to new [PHP SDK for Victoriabank API](https://github.com/alexminza/victoriabank-sdk-php).
