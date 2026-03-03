@@ -3,7 +3,7 @@ Contributors: alexminza
 Tags: Moldova, Victoriabank, Visa, Mastercard, payment gateway
 Requires at least: 4.8
 Tested up to: 6.9
-Stable tag: 1.6.1
+Stable tag: 1.6.2
 Requires PHP: 7.2.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -99,6 +99,9 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 
 See [wc-victoriabank project releases on GitHub](https://github.com/alexminza/wc-victoriabank/releases) for details.
 
+= 1.6.2 =
+Added list of supported languages for better payment gateway localization integration.
+
 = 1.6.1 =
 * Improved keys initialization for better performance and maintainability
 * Added new SVG logos for better visual quality
@@ -182,6 +185,9 @@ Minor improvements
 Initial release
 
 == Upgrade Notice ==
+
+= 1.6.2 =
+Added list of supported languages for better payment gateway localization integration.
 
 = 1.6.1 =
 Improved keys initialization and logging. Added new SVG logos for better visual quality.

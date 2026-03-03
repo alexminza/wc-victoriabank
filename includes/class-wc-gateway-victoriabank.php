@@ -19,7 +19,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     const MOD_TEXT_DOMAIN = 'wc-victoriabank';
     const MOD_PREFIX      = 'vb_';
     const MOD_TITLE       = 'Victoriabank';
-    const MOD_VERSION     = '1.6.1';
+    const MOD_VERSION     = '1.6.2';
     const MOD_PLUGIN_FILE = VICTORIABANK_MOD_PLUGIN_FILE;
 
     const SUPPORTED_CURRENCIES = array('MDL', 'EUR', 'USD');
