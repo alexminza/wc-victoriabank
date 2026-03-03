@@ -23,6 +23,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     const MOD_PLUGIN_FILE = VICTORIABANK_MOD_PLUGIN_FILE;
 
     const SUPPORTED_CURRENCIES = array('MDL', 'EUR', 'USD');
+    const SUPPORTED_LANGUAGES  = array('en', 'ro', 'ru');
 
     const TRANSACTION_TYPE_CHARGE        = 'charge';
     const TRANSACTION_TYPE_AUTHORIZATION = 'authorization';
