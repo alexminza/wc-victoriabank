@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Victoriabank Payment Gateway for WooCommerce package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Payment Gateway for Victoriabank for WooCommerce 1.6.2\n"
+"Project-Id-Version: Payment Gateway for Victoriabank for WooCommerce 1.6.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-victoriabank\n"
-"POT-Creation-Date: 2026-03-03 19:19+0200\n"
-"PO-Revision-Date: 2026-03-03 19:20+0200\n"
+"POT-Creation-Date: 2026-07-28 19:41+0300\n"
+"PO-Revision-Date: 2026-07-28 19:42+0300\n"
 "Last-Translator: Alexander Minza <alex@alexminza.com>\n"
 "Language-Team: \n"
 "Language: ro\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?"
 "2:1));\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 
 #. Plugin Name of the plugin
 #: wc-victoriabank.php
@@ -306,199 +306,199 @@ msgid "Invalid %1$s or %2$s fields."
 msgstr "Câmpuri %1$s sau %2$s nevalide."
 
 #. translators: 1: Order ID, 2: Meta field key, 3: Meta field key
-#: includes/class-wc-gateway-victoriabank.php:602
-#: includes/class-wc-gateway-victoriabank.php:1218
+#: includes/class-wc-gateway-victoriabank.php:610
+#: includes/class-wc-gateway-victoriabank.php:1226
 #, php-format
 msgid "Order #%1$s missing meta fields %2$s, %3$s."
 msgstr "Comanda #%1$s lipsesc câmpurile meta %2$s, %3$s."
 
 #. translators: 1: Order ID, 2: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:627
+#: includes/class-wc-gateway-victoriabank.php:635
 #, php-format
 msgid "Order #%1$s payment completion via %2$s failed."
 msgstr "Finalizarea plății comenzii #%1$s prin %2$s a eșuat."
 
 #. translators: 1: Order ID, 2: Payment method title, 3: Payment status
-#: includes/class-wc-gateway-victoriabank.php:691
+#: includes/class-wc-gateway-victoriabank.php:699
 #, php-format
 msgid "Order #%1$s %2$s payment status: %3$s"
 msgstr "Starea plății comenzii #%1$s prin %2$s: %3$s"
 
 #. translators: 1: Order ID
-#: includes/class-wc-gateway-victoriabank.php:709
+#: includes/class-wc-gateway-victoriabank.php:717
 #, php-format
 msgid "Order #%1$s payment check failed."
 msgstr "Verificarea plății pentru comanda #%1$s a eșuat."
 
 #. translators: 1: Payment data order ID, 2: Payment data price, 3: Order ID, 4: Order total price
-#: includes/class-wc-gateway-victoriabank.php:728
+#: includes/class-wc-gateway-victoriabank.php:736
 #, php-format
 msgid "Order payment data mismatch: Payment: #%1$s %2$s, Order: #%3$s %4$s."
 msgstr ""
 "Date de plată comandă incorecte: Plata: #%1$s %2$s, Comanda: #%3$s %4$s."
 
 #. translators: 1: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:756
+#: includes/class-wc-gateway-victoriabank.php:764
 #, php-format
 msgid "Invalid Order ID or Order Key received from %1$s."
 msgstr "Order ID sau Order Key nevalide primite de la %1$s."
 
 #. translators: 1: Order ID, 2: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:775
+#: includes/class-wc-gateway-victoriabank.php:783
 #, php-format
 msgid "Order #%1$s paid successfully via %2$s."
 msgstr "Comanda #%1$s a fost platită cu succes prin %2$s."
 
 #. translators: 1: Order ID, 2: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:784
+#: includes/class-wc-gateway-victoriabank.php:792
 #, php-format
 msgid "Order #%1$s payment failed via %2$s."
 msgstr "Plata comenzii #%1$s prin %2$s a eșuat."
 
-#: includes/class-wc-gateway-victoriabank.php:801
+#: includes/class-wc-gateway-victoriabank.php:809
 msgid "This Callback URL works and should not be called directly."
 msgstr ""
 "Această adresă de apel invers (Callback URL) funcționează și nu trebuie "
 "apelată direct."
 
-#: includes/class-wc-gateway-victoriabank.php:829
+#: includes/class-wc-gateway-victoriabank.php:837
 msgid "Payment notification callback"
 msgstr "Notificare de plată"
 
 #. translators: 1: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:854
+#: includes/class-wc-gateway-victoriabank.php:862
 #, php-format
 msgid "%1$s payment notification callback validation failed."
 msgstr ""
 "Validarea apelului invers pentru notificarea de plată de la %1$s a eșuat."
 
 #. translators: 1: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:885
+#: includes/class-wc-gateway-victoriabank.php:893
 #, php-format
 msgid "Order ID not received from %1$s."
 msgstr "Order ID nu a fost primit de la %1$s."
 
 #. translators: 1: Order ID, 2: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:901
+#: includes/class-wc-gateway-victoriabank.php:909
 #, php-format
 msgid "Order #%1$s not found as received from %2$s."
 msgstr "Comanda #%1$s nu a fost găsită conform datelor primite de la %2$s."
 
 #. translators: 1: Order ID
-#: includes/class-wc-gateway-victoriabank.php:927
+#: includes/class-wc-gateway-victoriabank.php:935
 #, php-format
 msgid "Order #%1$s already fully paid."
 msgstr "Comanda #%1$s este deja plătită integral."
 
 #. translators: 1: Order ID, 2: Payment method title, 3: Payment data
-#: includes/class-wc-gateway-victoriabank.php:951
+#: includes/class-wc-gateway-victoriabank.php:959
 #, php-format
 msgid "Order #%1$s payment authorized via %2$s: %3$s"
 msgstr "Plata comenzii #%1$s a fost autorizată prin %2$s: %3$s"
 
 #. translators: 1: Order ID, 2: Payment method title, 3: Payment data
-#: includes/class-wc-gateway-victoriabank.php:973
+#: includes/class-wc-gateway-victoriabank.php:981
 #, php-format
 msgid "Order #%1$s payment completed via %2$s: %3$s"
 msgstr "Plata comenzii #%1$s a fost finalizată prin %2$s: %3$s"
 
 #. translators: 1: Order ID, 2: Refund amount, 3: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:988
+#: includes/class-wc-gateway-victoriabank.php:996
 #, php-format
 msgid "Order #%1$s refund of %2$s via %3$s approved."
 msgstr ""
 "Rambursarea comenzii #%1$s în valoare de %2$s prin %3$s a fost aprobată."
 
 #. translators: 1: Order ID, 2: Payment method title, 3: Bank response text
-#: includes/class-wc-gateway-victoriabank.php:1008
+#: includes/class-wc-gateway-victoriabank.php:1016
 #, php-format
 msgid "Order #%1$s payment transaction check failed via %2$s: %3$s"
 msgstr ""
 "Verificarea tranzacției de plată pentru comanda #%1$s prin %2$s a eșuat: %3$s"
 
 #. translators: 1: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:1039
+#: includes/class-wc-gateway-victoriabank.php:1047
 #, php-format
 msgid "%1$s is not configured"
 msgstr "%1$s nu este configurat corect"
 
-#: includes/class-wc-gateway-victoriabank.php:1046
+#: includes/class-wc-gateway-victoriabank.php:1054
 msgid "Empty message"
 msgstr "Mesaj vid"
 
-#: includes/class-wc-gateway-victoriabank.php:1053
+#: includes/class-wc-gateway-victoriabank.php:1061
 msgid "Invalid message"
 msgstr "Mesaj nevalid"
 
-#: includes/class-wc-gateway-victoriabank.php:1060
+#: includes/class-wc-gateway-victoriabank.php:1068
 msgid "Processed successfully"
 msgstr "Procesat cu succes"
 
-#: includes/class-wc-gateway-victoriabank.php:1065
+#: includes/class-wc-gateway-victoriabank.php:1073
 msgid "Processing error"
 msgstr "Eroare de procesare"
 
 #. translators: 1: Order ID, 2: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:1154
+#: includes/class-wc-gateway-victoriabank.php:1162
 #, php-format
 msgid "Order #%1$s payment initiated via %2$s."
 msgstr "Plata comenzii #%1$s a fost inițiată prin %2$s."
 
 #. translators: 1: Order ID, 2: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:1174
+#: includes/class-wc-gateway-victoriabank.php:1182
 #, php-format
 msgid "Order #%1$s payment initiation failed via %2$s."
 msgstr "Inițierea plății comenzii #%1$s prin %2$s a eșuat."
 
 #. translators: 1: Order ID, 2: Refund amount, 3: Payment method title, 4: Bank response text
-#: includes/class-wc-gateway-victoriabank.php:1250
+#: includes/class-wc-gateway-victoriabank.php:1258
 #, php-format
 msgid "Order #%1$s refund of %2$s initiated via %3$s: %4$s"
 msgstr ""
 "Rambursarea comenzii #%1$s în valoare de %2$s a fost inițiată prin %3$s: %4$s"
 
 #. translators: 1: Order ID, 2: Refund amount, 3: Payment method title, 4: Bank response text
-#: includes/class-wc-gateway-victoriabank.php:1270
+#: includes/class-wc-gateway-victoriabank.php:1278
 #, php-format
 msgid "Order #%1$s refund of %2$s via %3$s failed: %4$s"
 msgstr "Rambursarea comenzii #%1$s în valoare de %2$s prin %3$s a eșuat: %4$s"
 
-#: includes/class-wc-gateway-victoriabank.php:1290
-#: includes/class-wc-gateway-victoriabank.php:1311
+#: includes/class-wc-gateway-victoriabank.php:1298
+#: includes/class-wc-gateway-victoriabank.php:1319
 msgid "Unknown"
 msgstr "Necunoscut"
 
-#: includes/class-wc-gateway-victoriabank.php:1299
+#: includes/class-wc-gateway-victoriabank.php:1307
 msgid "Transaction successfully completed"
 msgstr "Tranzacția a fost finalizată cu succes"
 
-#: includes/class-wc-gateway-victoriabank.php:1302
+#: includes/class-wc-gateway-victoriabank.php:1310
 msgid "Duplicate transaction detected"
 msgstr "Tranzacție duplicată detectată"
 
-#: includes/class-wc-gateway-victoriabank.php:1305
+#: includes/class-wc-gateway-victoriabank.php:1313
 msgid "Transaction declined"
 msgstr "Tranzacție refuzată"
 
-#: includes/class-wc-gateway-victoriabank.php:1308
+#: includes/class-wc-gateway-victoriabank.php:1316
 msgid "Transaction processing fault"
 msgstr "Eroare de procesare a tranzacției"
 
 #. translators: 1: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:1336
+#: includes/class-wc-gateway-victoriabank.php:1370
 #, php-format
 msgid "Complete %1$s transaction"
 msgstr "Finalizează tranzacția prin %1$s"
 
-#: includes/class-wc-gateway-victoriabank.php:1369
+#: includes/class-wc-gateway-victoriabank.php:1403
 msgid "Retrieval Reference Number (RRN)"
 msgstr "Număr referință (RRN)"
 
-#: includes/class-wc-gateway-victoriabank.php:1374
+#: includes/class-wc-gateway-victoriabank.php:1408
 msgid "Authorization code"
 msgstr "Cod autorizare"
 
-#: includes/class-wc-gateway-victoriabank.php:1379
+#: includes/class-wc-gateway-victoriabank.php:1413
 msgid "Card number"
 msgstr "Număr card"
 

@@ -19,7 +19,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     const MOD_TEXT_DOMAIN = 'wc-victoriabank';
     const MOD_PREFIX      = 'vb_';
     const MOD_TITLE       = 'Victoriabank';
-    const MOD_VERSION     = '1.6.2';
+    const MOD_VERSION     = '1.6.3';
     const MOD_PLUGIN_FILE = VICTORIABANK_MOD_PLUGIN_FILE;
 
     const SUPPORTED_CURRENCIES = array('MDL', 'EUR', 'USD');
@@ -103,7 +103,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     {
         $blog_info_name = get_bloginfo('name');
         $home_url = home_url();
-        $store_address = WC()->mailer()->get_store_address();
+        $store_address = self::get_store_address();
 
         $this->form_fields = array(
             'enabled'         => array(
@@ -563,8 +563,16 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
      */
     public function process_payment($order_id)
     {
+        /**
+         * WooCommerce::is_store_api_request() is available since WooCommerce 8.9.2.
+         * This method existence guard keeps compatibility with older supported WooCommerce versions.
+         *
+         * @see https://github.com/woocommerce/woocommerce/blob/8.9.2/plugins/woocommerce/includes/class-woocommerce.php#L466-L477
+         */
+        $is_store_api_request = method_exists(WC(), 'is_store_api_request') && WC()->is_store_api_request();
+
         // https://github.com/woocommerce/woocommerce/issues/48126#issuecomment-2180991020
-        if (WC()->is_store_api_request() || is_ajax()) {
+        if ($is_store_api_request || is_ajax()) {
             $order = wc_get_order($order_id);
 
             return array(
@@ -1313,6 +1321,32 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
         }
 
         return join(': ', array_filter(array($action_status, $text), 'strlen'));
+    }
+    //endregion
+
+    //region Utility
+    /**
+     * Get the store address formatted for the payment gateway settings.
+     *
+     * WC_Emails::get_store_address() is publicly available since WooCommerce 9.9.0.
+     * This local formatter keeps compatibility with older supported WooCommerce versions.
+     *
+     * @see https://github.com/woocommerce/woocommerce/blob/9.9.0/plugins/woocommerce/includes/class-wc-emails.php#L701-L730
+     * @return string
+     */
+    protected static function get_store_address()
+    {
+        $wc_countries = WC()->countries;
+        $address = array(
+            'address_1' => $wc_countries->get_base_address(),
+            'address_2' => $wc_countries->get_base_address_2(),
+            'city'      => $wc_countries->get_base_city(),
+            'state'     => $wc_countries->get_base_state(),
+            'postcode'  => $wc_countries->get_base_postcode(),
+            'country'   => $wc_countries->get_base_country(),
+        );
+
+        return wp_specialchars_decode($wc_countries->get_formatted_address($address, ', '));
     }
     //endregion
 
