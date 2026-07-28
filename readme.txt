@@ -99,6 +99,9 @@ You can also contribute to the plugin by translating it. Simply visit [translate
 
 See [wc-victoriabank project releases on GitHub](https://github.com/alexminza/wc-victoriabank/releases) for details.
 
+= 1.6.3 =
+Improved compatibility with older supported WooCommerce versions.
+
 = 1.6.2 =
 Added list of supported languages for better payment gateway localization integration.
 
@@ -185,6 +188,9 @@ Minor improvements
 Initial release
 
 == Upgrade Notice ==
+
+= 1.6.3 =
+Improved compatibility with older supported WooCommerce versions.
 
 = 1.6.2 =
 Added list of supported languages for better payment gateway localization integration.

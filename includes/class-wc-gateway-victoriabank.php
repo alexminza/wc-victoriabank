@@ -564,7 +564,8 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
     public function process_payment($order_id)
     {
         /**
-         * WooCommerce::is_store_api_request()
+         * WooCommerce::is_store_api_request() is available since WooCommerce 8.9.2.
+         * This method existence guard keeps compatibility with older supported WooCommerce versions.
          *
          * @see https://github.com/woocommerce/woocommerce/blob/8.9.2/plugins/woocommerce/includes/class-woocommerce.php#L466-L477
          */
@@ -1325,7 +1326,10 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
 
     //region Utility
     /**
-     * WC_Emails::get_store_address()
+     * Get the store address formatted for the payment gateway settings.
+     *
+     * WC_Emails::get_store_address() is publicly available since WooCommerce 9.9.0.
+     * This local formatter keeps compatibility with older supported WooCommerce versions.
      *
      * @see https://github.com/woocommerce/woocommerce/blob/9.9.0/plugins/woocommerce/includes/class-wc-emails.php#L701-L730
      * @return string
@@ -1342,7 +1346,7 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
             'country'   => $wc_countries->get_base_country(),
         );
 
-        return $wc_countries->get_formatted_address($address, ', ');
+        return wp_specialchars_decode($wc_countries->get_formatted_address($address, ', '));
     }
     //endregion
 
