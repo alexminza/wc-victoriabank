@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Victoriabank Payment Gateway for WooCommerce package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Payment Gateway for Victoriabank for WooCommerce 1.6.2\n"
+"Project-Id-Version: Payment Gateway for Victoriabank for WooCommerce 1.6.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wc-victoriabank\n"
-"POT-Creation-Date: 2026-03-03 19:19+0200\n"
-"PO-Revision-Date: 2026-03-03 19:21+0200\n"
+"POT-Creation-Date: 2026-07-28 19:41+0300\n"
+"PO-Revision-Date: 2026-07-28 19:42+0300\n"
 "Last-Translator: Alexander Minza <alex@alexminza.com>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 
 #. Plugin Name of the plugin
 #: wc-victoriabank.php
@@ -310,32 +310,32 @@ msgid "Invalid %1$s or %2$s fields."
 msgstr "Недопустимые поля %1$s или %2$s."
 
 #. translators: 1: Order ID, 2: Meta field key, 3: Meta field key
-#: includes/class-wc-gateway-victoriabank.php:602
-#: includes/class-wc-gateway-victoriabank.php:1218
+#: includes/class-wc-gateway-victoriabank.php:610
+#: includes/class-wc-gateway-victoriabank.php:1226
 #, php-format
 msgid "Order #%1$s missing meta fields %2$s, %3$s."
 msgstr "В заказе #%1$s отсутствуют мета-поля %2$s, %3$s."
 
 #. translators: 1: Order ID, 2: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:627
+#: includes/class-wc-gateway-victoriabank.php:635
 #, php-format
 msgid "Order #%1$s payment completion via %2$s failed."
 msgstr "Ошибка проведения платежа по заказу #%1$s через %2$s."
 
 #. translators: 1: Order ID, 2: Payment method title, 3: Payment status
-#: includes/class-wc-gateway-victoriabank.php:691
+#: includes/class-wc-gateway-victoriabank.php:699
 #, php-format
 msgid "Order #%1$s %2$s payment status: %3$s"
 msgstr "Статус оплаты заказа #%1$s через %2$s: %3$s"
 
 #. translators: 1: Order ID
-#: includes/class-wc-gateway-victoriabank.php:709
+#: includes/class-wc-gateway-victoriabank.php:717
 #, php-format
 msgid "Order #%1$s payment check failed."
 msgstr "Ошибка проверки оплаты заказа #%1$s."
 
 #. translators: 1: Payment data order ID, 2: Payment data price, 3: Order ID, 4: Order total price
-#: includes/class-wc-gateway-victoriabank.php:728
+#: includes/class-wc-gateway-victoriabank.php:736
 #, php-format
 msgid "Order payment data mismatch: Payment: #%1$s %2$s, Order: #%3$s %4$s."
 msgstr ""
@@ -343,163 +343,163 @@ msgstr ""
 "%4$s."
 
 #. translators: 1: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:756
+#: includes/class-wc-gateway-victoriabank.php:764
 #, php-format
 msgid "Invalid Order ID or Order Key received from %1$s."
 msgstr "Недопустимые значения Order ID или Order Key получены от %1$s."
 
 #. translators: 1: Order ID, 2: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:775
+#: includes/class-wc-gateway-victoriabank.php:783
 #, php-format
 msgid "Order #%1$s paid successfully via %2$s."
 msgstr "Заказ #%1$s успешно оплачен через %2$s."
 
 #. translators: 1: Order ID, 2: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:784
+#: includes/class-wc-gateway-victoriabank.php:792
 #, php-format
 msgid "Order #%1$s payment failed via %2$s."
 msgstr "Ошибка оплаты заказа #%1$s через %2$s."
 
-#: includes/class-wc-gateway-victoriabank.php:801
+#: includes/class-wc-gateway-victoriabank.php:809
 msgid "This Callback URL works and should not be called directly."
 msgstr ""
 "Этот URL обратного вызова (Callback URL) работает и не должен вызываться "
 "напрямую."
 
-#: includes/class-wc-gateway-victoriabank.php:829
+#: includes/class-wc-gateway-victoriabank.php:837
 msgid "Payment notification callback"
 msgstr "Уведомление об оплате"
 
 #. translators: 1: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:854
+#: includes/class-wc-gateway-victoriabank.php:862
 #, php-format
 msgid "%1$s payment notification callback validation failed."
 msgstr "Ошибка проверки обратного вызова уведомления о платеже от %1$s."
 
 #. translators: 1: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:885
+#: includes/class-wc-gateway-victoriabank.php:893
 #, php-format
 msgid "Order ID not received from %1$s."
 msgstr "Номер заказа (Order ID) не получен от %1$s."
 
 #. translators: 1: Order ID, 2: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:901
+#: includes/class-wc-gateway-victoriabank.php:909
 #, php-format
 msgid "Order #%1$s not found as received from %2$s."
 msgstr "Заказ #%1$s не найден по данным полученным от %2$s."
 
 #. translators: 1: Order ID
-#: includes/class-wc-gateway-victoriabank.php:927
+#: includes/class-wc-gateway-victoriabank.php:935
 #, php-format
 msgid "Order #%1$s already fully paid."
 msgstr "Заказ #%1$s уже полностью оплачен."
 
 #. translators: 1: Order ID, 2: Payment method title, 3: Payment data
-#: includes/class-wc-gateway-victoriabank.php:951
+#: includes/class-wc-gateway-victoriabank.php:959
 #, php-format
 msgid "Order #%1$s payment authorized via %2$s: %3$s"
 msgstr "Оплата заказа #%1$s авторизована через %2$s: %3$s"
 
 #. translators: 1: Order ID, 2: Payment method title, 3: Payment data
-#: includes/class-wc-gateway-victoriabank.php:973
+#: includes/class-wc-gateway-victoriabank.php:981
 #, php-format
 msgid "Order #%1$s payment completed via %2$s: %3$s"
 msgstr "Платеж заказа #%1$s проведен через %2$s: %3$s"
 
 #. translators: 1: Order ID, 2: Refund amount, 3: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:988
+#: includes/class-wc-gateway-victoriabank.php:996
 #, php-format
 msgid "Order #%1$s refund of %2$s via %3$s approved."
 msgstr "Возврат заказа #%1$s в сумме %2$s через %3$s подтвержден."
 
 #. translators: 1: Order ID, 2: Payment method title, 3: Bank response text
-#: includes/class-wc-gateway-victoriabank.php:1008
+#: includes/class-wc-gateway-victoriabank.php:1016
 #, php-format
 msgid "Order #%1$s payment transaction check failed via %2$s: %3$s"
 msgstr "Ошибка проверки платежной транзакции по заказу #%1$s через %2$s: %3$s"
 
 #. translators: 1: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:1039
+#: includes/class-wc-gateway-victoriabank.php:1047
 #, php-format
 msgid "%1$s is not configured"
 msgstr "%1$s неправильно настроен"
 
-#: includes/class-wc-gateway-victoriabank.php:1046
+#: includes/class-wc-gateway-victoriabank.php:1054
 msgid "Empty message"
 msgstr "Пустое сообщение"
 
-#: includes/class-wc-gateway-victoriabank.php:1053
+#: includes/class-wc-gateway-victoriabank.php:1061
 msgid "Invalid message"
 msgstr "Недопустимое сообщение"
 
-#: includes/class-wc-gateway-victoriabank.php:1060
+#: includes/class-wc-gateway-victoriabank.php:1068
 msgid "Processed successfully"
 msgstr "Обработано успешно"
 
-#: includes/class-wc-gateway-victoriabank.php:1065
+#: includes/class-wc-gateway-victoriabank.php:1073
 msgid "Processing error"
 msgstr "Ошибка обработки"
 
 #. translators: 1: Order ID, 2: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:1154
+#: includes/class-wc-gateway-victoriabank.php:1162
 #, php-format
 msgid "Order #%1$s payment initiated via %2$s."
 msgstr "Платеж заказа #%1$s инициирован через %2$s."
 
 #. translators: 1: Order ID, 2: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:1174
+#: includes/class-wc-gateway-victoriabank.php:1182
 #, php-format
 msgid "Order #%1$s payment initiation failed via %2$s."
 msgstr "Ошибка инициирования оплаты заказа #%1$s через %2$s."
 
 #. translators: 1: Order ID, 2: Refund amount, 3: Payment method title, 4: Bank response text
-#: includes/class-wc-gateway-victoriabank.php:1250
+#: includes/class-wc-gateway-victoriabank.php:1258
 #, php-format
 msgid "Order #%1$s refund of %2$s initiated via %3$s: %4$s"
 msgstr "Возврат заказа #%1$s в сумме %2$s инициирован через %3$s: %4$s"
 
 #. translators: 1: Order ID, 2: Refund amount, 3: Payment method title, 4: Bank response text
-#: includes/class-wc-gateway-victoriabank.php:1270
+#: includes/class-wc-gateway-victoriabank.php:1278
 #, php-format
 msgid "Order #%1$s refund of %2$s via %3$s failed: %4$s"
 msgstr "Ошибка возврата заказа #%1$s в сумме %2$s через %3$s: %4$s"
 
-#: includes/class-wc-gateway-victoriabank.php:1290
-#: includes/class-wc-gateway-victoriabank.php:1311
+#: includes/class-wc-gateway-victoriabank.php:1298
+#: includes/class-wc-gateway-victoriabank.php:1319
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: includes/class-wc-gateway-victoriabank.php:1299
+#: includes/class-wc-gateway-victoriabank.php:1307
 msgid "Transaction successfully completed"
 msgstr "Транзакция успешно завершена"
 
-#: includes/class-wc-gateway-victoriabank.php:1302
+#: includes/class-wc-gateway-victoriabank.php:1310
 msgid "Duplicate transaction detected"
 msgstr "Обнаружен дубликат транзакции"
 
-#: includes/class-wc-gateway-victoriabank.php:1305
+#: includes/class-wc-gateway-victoriabank.php:1313
 msgid "Transaction declined"
 msgstr "Транзакция отклонена"
 
-#: includes/class-wc-gateway-victoriabank.php:1308
+#: includes/class-wc-gateway-victoriabank.php:1316
 msgid "Transaction processing fault"
 msgstr "Ошибка обработки транзакции"
 
 #. translators: 1: Payment method title
-#: includes/class-wc-gateway-victoriabank.php:1336
+#: includes/class-wc-gateway-victoriabank.php:1370
 #, php-format
 msgid "Complete %1$s transaction"
 msgstr "Провести платеж через %1$s"
 
-#: includes/class-wc-gateway-victoriabank.php:1369
+#: includes/class-wc-gateway-victoriabank.php:1403
 msgid "Retrieval Reference Number (RRN)"
 msgstr "Номер транзакции (RRN)"
 
-#: includes/class-wc-gateway-victoriabank.php:1374
+#: includes/class-wc-gateway-victoriabank.php:1408
 msgid "Authorization code"
 msgstr "Код авторизации"
 
-#: includes/class-wc-gateway-victoriabank.php:1379
+#: includes/class-wc-gateway-victoriabank.php:1413
 msgid "Card number"
 msgstr "Номер карты"
 
