@@ -1,9 +1,9 @@
 === Payment Gateway for Victoriabank for WooCommerce ===
 Contributors: alexminza
 Tags: Moldova, Victoriabank, Visa, Mastercard, payment gateway
-Requires at least: 4.8
-Tested up to: 6.9
-Stable tag: 1.6.2
+Requires at least: 5.3
+Tested up to: 7.0
+Stable tag: 1.6.3
 Requires PHP: 7.2.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
