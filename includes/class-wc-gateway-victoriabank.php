@@ -563,8 +563,15 @@ class WC_Gateway_Victoriabank extends WC_Payment_Gateway_Base
      */
     public function process_payment($order_id)
     {
+        /**
+         * WooCommerce::is_store_api_request()
+         *
+         * @see https://github.com/woocommerce/woocommerce/blob/8.9.2/plugins/woocommerce/includes/class-woocommerce.php#L466-L477
+         */
+        $is_store_api_request = method_exists(WC(), 'is_store_api_request') && WC()->is_store_api_request();
+
         // https://github.com/woocommerce/woocommerce/issues/48126#issuecomment-2180991020
-        if (WC()->is_store_api_request() || is_ajax()) {
+        if ($is_store_api_request || is_ajax()) {
             $order = wc_get_order($order_id);
 
             return array(
