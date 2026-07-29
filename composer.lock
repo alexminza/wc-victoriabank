@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2c85d99dc58c461250caeae767035cfd",
+    "content-hash": "ce389467d601917843e3e71f1e26f55b",
     "packages": [
         {
             "name": "alexminza/victoriabank-sdk",
@@ -1963,7 +1963,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.2.5"
+        "php": ">=7.2.5",
+        "ext-openssl": "*"
     },
     "platform-dev": {},
     "platform-overrides": {
